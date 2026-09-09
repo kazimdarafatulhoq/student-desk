@@ -14,11 +14,20 @@ namespace StudentManagement.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            string? connectionStringOverride = null)
         {
-            var connectionString = configuration.GetConnectionString("StudentManagementDb")
+            var connectionString = connectionStringOverride
+                ?? configuration.GetConnectionString("StudentManagementDb")
+                ?? configuration.GetConnectionString("StudentManagementSDB")
                 ?? configuration["ConnectionStrings:StudentManagementDb"]
-                ?? "Server=localhost;Database=StudentManagementDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true";
+                ?? configuration["ConnectionStrings:StudentManagementSDB"]
+                ?? "Server=localhost;Database=StudentManagementSDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true";
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new InvalidOperationException("SQL connection string is missing. Set App.config connectionStrings/StudentManagementDb (or StudentManagementSDB).");
 
             services.AddDbContext<StudentManagementDbContext>(options =>
                 options.UseSqlServer(connectionString, sql =>

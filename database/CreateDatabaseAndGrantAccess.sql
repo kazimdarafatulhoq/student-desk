@@ -1,28 +1,27 @@
 /*
-  Run this once in SSMS while connected as an administrator (Windows Admin or 'sa').
-  Creates StudentManagementDB and grants your Windows login db_owner access.
+  Run once in SSMS as SQL admin (sa) or Windows Administrator.
+  Creates the database your App.config points to and grants login [anik] access.
 */
 
-IF DB_ID(N'StudentManagementDB') IS NULL
+IF DB_ID(N'StudentManagementSDB') IS NULL
 BEGIN
-    CREATE DATABASE StudentManagementDB;
+    CREATE DATABASE StudentManagementSDB;
 END
 GO
 
-USE StudentManagementDB;
+USE StudentManagementSDB;
 GO
 
--- Grant the current Windows login access (skip if using SQL auth / sa)
-DECLARE @login sysname = SUSER_SNAME();
-IF @login IS NOT NULL
-   AND NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = @login)
+-- Grant SQL login [anik] db_owner on this database (ignore if login missing)
+IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = N'anik')
 BEGIN
-    DECLARE @sql nvarchar(500) =
-        N'CREATE USER ' + QUOTENAME(@login) + N' FOR LOGIN ' + QUOTENAME(@login) + N';' +
-        N'ALTER ROLE db_owner ADD MEMBER ' + QUOTENAME(@login) + N';';
-    EXEC sys.sp_executesql @sql;
+    IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = N'anik')
+        CREATE USER [anik] FOR LOGIN [anik];
+
+    IF IS_ROLEMEMBER(N'db_owner', N'anik') = 0 OR IS_ROLEMEMBER(N'db_owner', N'anik') IS NULL
+        ALTER ROLE db_owner ADD MEMBER [anik];
 END
 GO
 
-PRINT N'StudentManagementDB is ready. Now run StudentManagementDB.sql for full schema + seed data (or restart the app to let EF create tables).';
+PRINT N'StudentManagementSDB is ready for user [anik]. Restart the desktop app (or run StudentManagementDB.sql for full seed).';
 GO

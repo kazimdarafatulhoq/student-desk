@@ -1,3 +1,5 @@
+using System;
+using System.Configuration;
 using System.Windows.Forms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -5,13 +7,6 @@ using StudentManagement.Desktop.Forms;
 using StudentManagement.Infrastructure;
 using StudentManagement.Infrastructure.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
 namespace StudentManagement.Desktop
 {
     internal static class Program
@@ -30,9 +25,14 @@ namespace StudentManagement.Desktop
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
+            // Prefer App.config connection string (your SSMS / existing naming).
+            var appConfigCs =
+                ConfigurationManager.ConnectionStrings["StudentManagementDb"]?.ConnectionString
+                ?? ConfigurationManager.ConnectionStrings["StudentManagementSDB"]?.ConnectionString;
+
             var services = new ServiceCollection();
             services.AddSingleton<IConfiguration>(configuration);
-            services.AddInfrastructure(configuration);
+            services.AddInfrastructure(configuration, appConfigCs);
             services.AddTransient<frmLogin>();
             services.AddTransient<frmMainMenu>();
             services.AddTransient<frmStudentAdmission>();
@@ -56,8 +56,11 @@ namespace StudentManagement.Desktop
             {
                 MessageBox.Show(
                     ex.Message +
-                    "\n\nConnection string: appsettings.json / App.config" +
-                    "\nSetup script: database\\StudentManagementDB.sql",
+                    "\n\nApp.config server: NGBC-IT-168\\MSSQLSERVER1" +
+                    "\nDatabase: StudentManagementSDB" +
+                    "\n\nIf the database does not exist yet, run as SQL admin:" +
+                    "\n  database\\CreateDatabaseAndGrantAccess.sql" +
+                    "\nThen restart the app.",
                     "Database Setup Required",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
