@@ -3,48 +3,57 @@ using StudentManagement.Application.Services;
 using StudentManagement.Desktop.Helpers;
 using StudentManagement.Desktop.Theme;
 
-namespace StudentManagement.Desktop.Forms;
-
-public partial class frmLogin : Form
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+namespace StudentManagement.Desktop.Forms
 {
-    private readonly AuthService _auth;
-
-    public frmLogin(AuthService auth)
+    public partial class frmLogin : Form
     {
-        _auth = auth;
-        InitializeComponent();
-        UITheme.ApplyForm(this);
-        AcceptButton = btnLogin;
-    }
+        private readonly AuthService _auth;
 
-    private async void btnLogin_Click(object? sender, EventArgs e)
-    {
-        try
+        public frmLogin(AuthService auth)
         {
-            btnLogin.Enabled = false;
-            lblStatus.Text = "Authenticating...";
-            lblStatus.ForeColor = UITheme.TextMuted;
+            _auth = auth;
+            InitializeComponent();
+            UITheme.ApplyForm(this);
+            AcceptButton = btnLogin;
+        }
 
-            var session = await _auth.LoginAsync(new LoginRequest
+        private async void btnLogin_Click(object? sender, EventArgs e)
+        {
+            try
             {
-                Username = txtUsername.Text.Trim(),
-                Password = txtPassword.Text
-            });
+                btnLogin.Enabled = false;
+                lblStatus.Text = "Authenticating...";
+                lblStatus.ForeColor = UITheme.TextMuted;
 
-            AppSession.Set(session);
-            DialogResult = DialogResult.OK;
-            Close();
-        }
-        catch (Exception ex)
-        {
-            lblStatus.Text = ex.Message;
-            lblStatus.ForeColor = UITheme.Danger;
-            txtPassword.SelectAll();
-            txtPassword.Focus();
-        }
-        finally
-        {
-            btnLogin.Enabled = true;
+                var session = await _auth.LoginAsync(new LoginRequest
+                {
+                    Username = txtUsername.Text.Trim(),
+                    Password = txtPassword.Text
+                });
+
+                AppSession.Set(session);
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = ex.Message;
+                lblStatus.ForeColor = UITheme.Danger;
+                txtPassword.SelectAll();
+                txtPassword.Focus();
+            }
+            finally
+            {
+                btnLogin.Enabled = true;
+            }
         }
     }
 }

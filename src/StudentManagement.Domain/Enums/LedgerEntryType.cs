@@ -1,11 +1,18 @@
-namespace StudentManagement.Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-public enum LedgerEntryType
+namespace StudentManagement.Domain.Enums
 {
-    Invoice = 1,
-    Payment = 2,
-    Fine = 3,
-    Waiver = 4,
-    Adjustment = 5,
-    Advance = 6
+    public enum LedgerEntryType
+    {
+        Invoice = 1,
+        Payment = 2,
+        Fine = 3,
+        Waiver = 4,
+        Adjustment = 5,
+        Advance = 6
+    }
 }

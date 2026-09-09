@@ -2,7 +2,7 @@
 
 Enterprise desktop application for school admissions, fee POS collection, student ledgers, exam clearance, and admit-card printing.
 
-Built with **C# / .NET 8 Windows Forms**, **EF Core + SQL Server 2022**, and a clean multi-tier architecture.
+Built with **C# / .NET 5 Windows Forms**, **EF Core 5 + SQL Server 2022**, and a clean multi-tier architecture.
 
 ## Solution structure
 
@@ -17,9 +17,9 @@ Built with **C# / .NET 8 Windows Forms**, **EF Core + SQL Server 2022**, and a c
 ## Prerequisites
 
 - Windows 10/11
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0) (5.0.408 or later 5.0.x)
 - SQL Server 2022 (LocalDB, Express, or full)
-- Visual Studio 2022 (recommended) or `dotnet` CLI
+- Visual Studio 2019/2022 with .NET desktop development workload, or `dotnet` CLI
 
 ## Database setup
 

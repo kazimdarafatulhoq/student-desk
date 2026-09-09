@@ -1,9 +1,16 @@
-namespace StudentManagement.Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-public enum PaymentMethod
+namespace StudentManagement.Domain.Enums
 {
-    Cash = 1,
-    Bkash = 2,
-    Nagad = 3,
-    BankTransfer = 4
+    public enum PaymentMethod
+    {
+        Cash = 1,
+        Bkash = 2,
+        Nagad = 3,
+        BankTransfer = 4
+    }
 }

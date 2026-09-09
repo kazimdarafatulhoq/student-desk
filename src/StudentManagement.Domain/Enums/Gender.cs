@@ -1,8 +1,15 @@
-namespace StudentManagement.Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-public enum Gender
+namespace StudentManagement.Domain.Enums
 {
-    Male = 1,
-    Female = 2,
-    Other = 3
+    public enum Gender
+    {
+        Male = 1,
+        Female = 2,
+        Other = 3
+    }
 }
