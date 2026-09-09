@@ -55,9 +55,10 @@ namespace StudentManagement.Desktop
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Database initialization failed. Ensure SQL Server is reachable and the connection string in appsettings.json / App.config is correct.\n\n" +
-                    ex.Message,
-                    "Startup Warning",
+                    ex.Message +
+                    "\n\nConnection string: appsettings.json / App.config" +
+                    "\nSetup script: database\\StudentManagementDB.sql",
+                    "Database Setup Required",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }

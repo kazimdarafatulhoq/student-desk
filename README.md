@@ -23,9 +23,12 @@ Built with **C# / .NET 5 Windows Forms**, **EF Core 5 + SQL Server 2022**, and a
 
 ## Database setup
 
-1. Open SQL Server Management Studio (or `sqlcmd`).
-2. Run [`database/StudentManagementDB.sql`](database/StudentManagementDB.sql).
-3. Update the connection string in:
+Your Windows login may not have `CREATE DATABASE` permission. Create the database once as an admin:
+
+1. Open **SQL Server Management Studio** as Administrator (or connect with `sa`).
+2. Run [`database/CreateDatabaseAndGrantAccess.sql`](database/CreateDatabaseAndGrantAccess.sql) (creates DB + grants your login access).
+3. Run [`database/StudentManagementDB.sql`](database/StudentManagementDB.sql) for full schema and demo data.
+4. Update the connection string in:
    - `src/StudentManagement.Desktop/appsettings.json`
    - `src/StudentManagement.Desktop/App.config`
 
@@ -35,7 +38,13 @@ Default connection string:
 Server=localhost\SQLEXPRESS;Database=StudentManagementDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true
 ```
 
-On first launch the app also runs `DatabaseBootstrapper`, which ensures schema/seed users exist if the database is empty.
+If you use LocalDB instead, set:
+
+```
+Server=(localdb)\MSSQLLocalDB;Database=StudentManagementDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true
+```
+
+On startup the app seeds demo users when the database is reachable. It will **not** keep failing on CREATE DATABASE once `StudentManagementDB` exists.
 
 ### Default login
 

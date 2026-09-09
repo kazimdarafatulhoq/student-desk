@@ -1,25 +1,24 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StudentManagement.Application.Security;
 using StudentManagement.Domain.Entities;
 using StudentManagement.Domain.Enums;
-using StudentManagement.Infrastructure.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 namespace StudentManagement.Infrastructure.Data
 {
     /// <summary>
-    /// Ensures schema exists and seeds a known admin user when the database is empty.
-    /// Prefer running database/StudentManagementDB.sql for full production setup.
+    /// Seeds demo users/lookups. Prefer running database/StudentManagementDB.sql once as an admin.
+    /// Does not require CREATE DATABASE permission when the database already exists.
     /// </summary>
     public static class DatabaseBootstrapper
     {
         public static async Task InitializeAsync(StudentManagementDbContext db, CancellationToken ct = default)
         {
-            await db.Database.EnsureCreatedAsync(ct);
+            await EnsureSchemaAsync(db, ct);
 
             await EnsureUserAsync(db, "admin", "System Super Admin", "Admin@123", UserRole.SuperAdmin, "admin@school.edu", ct);
             await EnsureUserAsync(db, "accounts", "Accounts Manager", "Accounts@123", UserRole.AccountsManager, "accounts@school.edu", ct);
@@ -68,6 +67,78 @@ namespace StudentManagement.Infrastructure.Data
             }
 
             await db.SaveChangesAsync(ct);
+        }
+
+        private static async Task EnsureSchemaAsync(StudentManagementDbContext db, CancellationToken ct)
+        {
+            var canConnect = false;
+            try
+            {
+                canConnect = await db.Database.CanConnectAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                throw BuildSetupException(
+                    "Cannot reach SQL Server with the current connection string.",
+                    ex);
+            }
+
+            if (canConnect)
+            {
+                // Database already exists — create missing tables only (no CREATE DATABASE).
+                await db.Database.EnsureCreatedAsync(ct);
+                return;
+            }
+
+            // Database missing: try auto-create; if denied, tell the user to run the SQL script.
+            try
+            {
+                await db.Database.EnsureCreatedAsync(ct);
+            }
+            catch (Exception ex) when (IsCreateDatabaseDenied(ex))
+            {
+                throw BuildSetupException(
+                    "SQL Server refused CREATE DATABASE (permission denied on 'master').\n\n" +
+                    "One-time fix:\n" +
+                    "1. Open SQL Server Management Studio as Administrator (or use the 'sa' login).\n" +
+                    "2. Open and execute: database\\StudentManagementDB.sql\n" +
+                    "3. Confirm appsettings.json points to that same server/instance.\n" +
+                    "4. Restart the application.",
+                    ex);
+            }
+            catch (Exception ex)
+            {
+                throw BuildSetupException(
+                    "Database could not be created or opened. Check SQL Server is running and the connection string is correct.",
+                    ex);
+            }
+        }
+
+        private static bool IsCreateDatabaseDenied(Exception ex)
+        {
+            for (var current = ex; current != null; current = current.InnerException)
+            {
+                if (current is SqlException sql &&
+                    (sql.Number == 262 || sql.Message.IndexOf("CREATE DATABASE permission denied", StringComparison.OrdinalIgnoreCase) >= 0))
+                {
+                    return true;
+                }
+
+                if (current.Message.IndexOf("CREATE DATABASE permission denied", StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static InvalidOperationException BuildSetupException(string message, Exception inner)
+            => new InvalidOperationException(message + "\n\nDetails: " + GetRootMessage(inner), inner);
+
+        private static string GetRootMessage(Exception ex)
+        {
+            while (ex.InnerException != null)
+                ex = ex.InnerException;
+            return ex.Message;
         }
 
         private static async Task EnsureUserAsync(
