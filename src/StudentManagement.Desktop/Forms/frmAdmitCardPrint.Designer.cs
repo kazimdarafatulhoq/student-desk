@@ -12,15 +12,15 @@ namespace StudentManagement.Desktop.Forms
 {
     partial class frmAdmitCardPrint
     {
-        private Label lblTitle = null!;
-        private ComboBox cboStudent = null!;
-        private ComboBox cboTerm = null!;
-        private ComboBox cboClass = null!;
-        private CheckBox chkOverride = null!;
-        private TextBox txtReason = null!;
-        private Button btnIssue = null!;
-        private Button btnBatch = null!;
-        private Label lblStatus = null!;
+        private Label lblTitle;
+        private ComboBox cboStudent;
+        private ComboBox cboTerm;
+        private ComboBox cboClass;
+        private CheckBox chkOverride;
+        private TextBox txtReason;
+        private Button btnIssue;
+        private Button btnBatch;
+        private Label lblStatus;
 
         private void InitializeComponent()
         {

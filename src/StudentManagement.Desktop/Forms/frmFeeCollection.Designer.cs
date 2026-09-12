@@ -12,27 +12,27 @@ namespace StudentManagement.Desktop.Forms
 {
     partial class frmFeeCollection
     {
-        private Label lblTitle = null!;
-        private Panel pnlSearch = null!;
-        private TextBox txtSearch = null!;
-        private Button btnFind = null!;
-        private Panel pnlBio = null!;
-        private Label lblBioName = null!;
-        private Label lblBioReg = null!;
-        private Label lblBioClass = null!;
-        private Label lblBioDue = null!;
-        private Label lblBioPhone = null!;
-        private Panel pnlMatrix = null!;
-        private FlowLayoutPanel flpMonths = null!;
-        private TextBox txtTuitionUnit = null!;
-        private TextBox txtFine = null!;
-        private TextBox txtWaiver = null!;
-        private ComboBox cboPaymentMethod = null!;
-        private TextBox txtTxnRef = null!;
-        private TextBox txtRemarks = null!;
-        private Label lblTuitionTotal = null!;
-        private Label lblNetPayable = null!;
-        private Button btnCollect = null!;
+        private Label lblTitle;
+        private Panel pnlSearch;
+        private TextBox txtSearch;
+        private Button btnFind;
+        private Panel pnlBio;
+        private Label lblBioName;
+        private Label lblBioReg;
+        private Label lblBioClass;
+        private Label lblBioDue;
+        private Label lblBioPhone;
+        private Panel pnlMatrix;
+        private FlowLayoutPanel flpMonths;
+        private TextBox txtTuitionUnit;
+        private TextBox txtFine;
+        private TextBox txtWaiver;
+        private ComboBox cboPaymentMethod;
+        private TextBox txtTxnRef;
+        private TextBox txtRemarks;
+        private Label lblTuitionTotal;
+        private Label lblNetPayable;
+        private Button btnCollect;
 
         private void InitializeComponent()
         {

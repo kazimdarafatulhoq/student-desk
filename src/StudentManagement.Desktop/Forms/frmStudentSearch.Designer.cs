@@ -12,18 +12,18 @@ namespace StudentManagement.Desktop.Forms
 {
     partial class frmStudentSearch
     {
-        private Label lblTitle = null!;
-        private Panel pnlFilter = null!;
-        private ComboBox cboClass = null!;
-        private ComboBox cboSection = null!;
-        private TextBox txtQuery = null!;
-        private Button btnSearch = null!;
-        private DataGridView dgvStudents = null!;
-        private Label lblCount = null!;
-        private Button btnEdit = null!;
-        private Button btnLedger = null!;
-        private Button btnCollect = null!;
-        private Button btnAdmit = null!;
+        private Label lblTitle;
+        private Panel pnlFilter;
+        private ComboBox cboClass;
+        private ComboBox cboSection;
+        private TextBox txtQuery;
+        private Button btnSearch;
+        private DataGridView dgvStudents;
+        private Label lblCount;
+        private Button btnEdit;
+        private Button btnLedger;
+        private Button btnCollect;
+        private Button btnAdmit;
 
         private void InitializeComponent()
         {

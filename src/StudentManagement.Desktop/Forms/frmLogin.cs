@@ -15,12 +15,17 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmLogin : Form
     {
-        private readonly AuthService _auth;
+        private AuthService _auth;
 
-        public frmLogin(AuthService auth)
+        /// <summary>Parameterless constructor required by the WinForms designer.</summary>
+        public frmLogin()
+        {
+            InitializeComponent();
+        }
+
+        public frmLogin(AuthService auth) : this()
         {
             _auth = auth;
-            InitializeComponent();
             UITheme.ApplyForm(this);
             AcceptButton = btnLogin;
         }

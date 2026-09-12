@@ -1,78 +1,302 @@
+using System.Drawing;
+using System.Windows.Forms;
 using StudentManagement.Desktop.Theme;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
 namespace StudentManagement.Desktop.Forms
 {
     partial class frmStudentLedger
     {
-        private Label lblTitle = null!;
-        private ComboBox cboStudent = null!;
-        private Panel cardInvoiced = null!;
-        private Panel cardPaid = null!;
-        private Panel cardAdvance = null!;
-        private Panel cardDue = null!;
-        private Label lblInvoiced = null!;
-        private Label lblPaid = null!;
-        private Label lblAdvance = null!;
-        private Label lblDue = null!;
-        private DataGridView dgvLedger = null!;
-        private Button btnPrint = null!;
-        private Button btnExport = null!;
+        private Label lblTitle;
+        private Label lblSelect;
+        private ComboBox cboStudent;
+        private Panel cardInvoiced;
+        private Panel cardPaid;
+        private Panel cardAdvance;
+        private Panel cardDue;
+        private Label lblInvoicedTitle;
+        private Label lblPaidTitle;
+        private Label lblAdvanceTitle;
+        private Label lblDueTitle;
+        private Label lblInvoiced;
+        private Label lblPaid;
+        private Label lblAdvance;
+        private Label lblDue;
+        private DataGridView dgvLedger;
+        private Button btnPrint;
+        private Button btnExport;
 
         private void InitializeComponent()
         {
-            SuspendLayout();
-            Text = "Student Ledger";
-            BackColor = UITheme.Canvas;
-
-            lblTitle = new Label { Text = "Financial Ledger Statement", Font = UITheme.FontHeader, ForeColor = UITheme.TextPrimary, Location = new Point(16, 12), AutoSize = true };
-            var lblSelect = new Label { Text = "Student", Location = new Point(16, 55), AutoSize = true, ForeColor = UITheme.TextMuted };
-            cboStudent = new ComboBox { Location = new Point(80, 52), Width = 420, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
-            cboStudent.SelectedIndexChanged += cboStudent_SelectedIndexChanged;
-
-            cardInvoiced = Stat("Total Invoiced (Debits)", out lblInvoiced, UITheme.Danger, new Point(16, 95));
-            cardPaid = Stat("Total Paid (Credits)", out lblPaid, UITheme.Success, new Point(250, 95));
-            cardAdvance = Stat("Advance Wallet", out lblAdvance, UITheme.Primary, new Point(484, 95));
-            cardDue = Stat("Net Due Balance", out lblDue, UITheme.Warning, new Point(718, 95));
-
-            dgvLedger = new DataGridView { Location = new Point(16, 220), Size = new Size(960, 320), ReadOnly = true };
-            dgvLedger.Columns.Add("Date", "Date");
-            dgvLedger.Columns.Add("Voucher", "Voucher No");
-            dgvLedger.Columns.Add("Particulars", "Particulars / Description");
-            dgvLedger.Columns.Add("Period", "Fee Period");
-            dgvLedger.Columns.Add("Debit", "Debit (৳)");
-            dgvLedger.Columns.Add("Credit", "Credit (৳)");
-            dgvLedger.Columns.Add("Balance", "Running Balance (৳)");
-            dgvLedger.Columns.Add("Status", "Status");
-
-            btnPrint = new Button { Text = "Print Statement", Location = new Point(16, 555), Size = new Size(150, 36) };
-            btnPrint.Click += btnPrint_Click;
-            btnExport = new Button { Text = "Export CSV / Excel", Location = new Point(180, 555), Size = new Size(170, 36), Tag = "ghost" };
-            btnExport.Click += btnExport_Click;
-
-            Controls.AddRange(new Control[] { lblTitle, lblSelect, cboStudent, cardInvoiced, cardPaid, cardAdvance, cardDue, dgvLedger, btnPrint, btnExport });
-            ResumeLayout(false);
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.lblSelect = new System.Windows.Forms.Label();
+            this.cboStudent = new System.Windows.Forms.ComboBox();
+            this.cardInvoiced = new System.Windows.Forms.Panel();
+            this.lblInvoicedTitle = new System.Windows.Forms.Label();
+            this.lblInvoiced = new System.Windows.Forms.Label();
+            this.cardPaid = new System.Windows.Forms.Panel();
+            this.lblPaidTitle = new System.Windows.Forms.Label();
+            this.lblPaid = new System.Windows.Forms.Label();
+            this.cardAdvance = new System.Windows.Forms.Panel();
+            this.lblAdvanceTitle = new System.Windows.Forms.Label();
+            this.lblAdvance = new System.Windows.Forms.Label();
+            this.cardDue = new System.Windows.Forms.Panel();
+            this.lblDueTitle = new System.Windows.Forms.Label();
+            this.lblDue = new System.Windows.Forms.Label();
+            this.dgvLedger = new System.Windows.Forms.DataGridView();
+            this.btnPrint = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.cardInvoiced.SuspendLayout();
+            this.cardPaid.SuspendLayout();
+            this.cardAdvance.SuspendLayout();
+            this.cardDue.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvLedger)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = UITheme.FontHeader;
+            this.lblTitle.ForeColor = UITheme.TextPrimary;
+            this.lblTitle.Location = new System.Drawing.Point(16, 12);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(220, 25);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "Financial Ledger Statement";
+            // 
+            // lblSelect
+            // 
+            this.lblSelect.AutoSize = true;
+            this.lblSelect.ForeColor = UITheme.TextMuted;
+            this.lblSelect.Location = new System.Drawing.Point(16, 55);
+            this.lblSelect.Name = "lblSelect";
+            this.lblSelect.Size = new System.Drawing.Size(48, 15);
+            this.lblSelect.TabIndex = 1;
+            this.lblSelect.Text = "Student";
+            // 
+            // cboStudent
+            // 
+            this.cboStudent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStudent.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cboStudent.Location = new System.Drawing.Point(80, 52);
+            this.cboStudent.Name = "cboStudent";
+            this.cboStudent.Size = new System.Drawing.Size(420, 23);
+            this.cboStudent.TabIndex = 2;
+            this.cboStudent.SelectedIndexChanged += new System.EventHandler(this.cboStudent_SelectedIndexChanged);
+            // 
+            // cardInvoiced
+            // 
+            this.cardInvoiced.BackColor = UITheme.Card;
+            this.cardInvoiced.Controls.Add(this.lblInvoicedTitle);
+            this.cardInvoiced.Controls.Add(this.lblInvoiced);
+            this.cardInvoiced.Location = new System.Drawing.Point(16, 95);
+            this.cardInvoiced.Name = "cardInvoiced";
+            this.cardInvoiced.Size = new System.Drawing.Size(220, 100);
+            this.cardInvoiced.TabIndex = 3;
+            this.cardInvoiced.Paint += new System.Windows.Forms.PaintEventHandler(this.Card_Paint);
+            // 
+            // lblInvoicedTitle
+            // 
+            this.lblInvoicedTitle.AutoSize = true;
+            this.lblInvoicedTitle.ForeColor = UITheme.TextMuted;
+            this.lblInvoicedTitle.Location = new System.Drawing.Point(12, 12);
+            this.lblInvoicedTitle.Name = "lblInvoicedTitle";
+            this.lblInvoicedTitle.Size = new System.Drawing.Size(130, 15);
+            this.lblInvoicedTitle.TabIndex = 0;
+            this.lblInvoicedTitle.Text = "Total Invoiced (Debits)";
+            // 
+            // lblInvoiced
+            // 
+            this.lblInvoiced.AutoSize = true;
+            this.lblInvoiced.Font = UITheme.FontHeader;
+            this.lblInvoiced.ForeColor = UITheme.Danger;
+            this.lblInvoiced.Location = new System.Drawing.Point(12, 45);
+            this.lblInvoiced.Name = "lblInvoiced";
+            this.lblInvoiced.Size = new System.Drawing.Size(60, 25);
+            this.lblInvoiced.TabIndex = 1;
+            this.lblInvoiced.Text = "৳ 0.00";
+            // 
+            // cardPaid
+            // 
+            this.cardPaid.BackColor = UITheme.Card;
+            this.cardPaid.Controls.Add(this.lblPaidTitle);
+            this.cardPaid.Controls.Add(this.lblPaid);
+            this.cardPaid.Location = new System.Drawing.Point(250, 95);
+            this.cardPaid.Name = "cardPaid";
+            this.cardPaid.Size = new System.Drawing.Size(220, 100);
+            this.cardPaid.TabIndex = 4;
+            this.cardPaid.Paint += new System.Windows.Forms.PaintEventHandler(this.Card_Paint);
+            // 
+            // lblPaidTitle
+            // 
+            this.lblPaidTitle.AutoSize = true;
+            this.lblPaidTitle.ForeColor = UITheme.TextMuted;
+            this.lblPaidTitle.Location = new System.Drawing.Point(12, 12);
+            this.lblPaidTitle.Name = "lblPaidTitle";
+            this.lblPaidTitle.Size = new System.Drawing.Size(110, 15);
+            this.lblPaidTitle.TabIndex = 0;
+            this.lblPaidTitle.Text = "Total Paid (Credits)";
+            // 
+            // lblPaid
+            // 
+            this.lblPaid.AutoSize = true;
+            this.lblPaid.Font = UITheme.FontHeader;
+            this.lblPaid.ForeColor = UITheme.Success;
+            this.lblPaid.Location = new System.Drawing.Point(12, 45);
+            this.lblPaid.Name = "lblPaid";
+            this.lblPaid.Size = new System.Drawing.Size(60, 25);
+            this.lblPaid.TabIndex = 1;
+            this.lblPaid.Text = "৳ 0.00";
+            // 
+            // cardAdvance
+            // 
+            this.cardAdvance.BackColor = UITheme.Card;
+            this.cardAdvance.Controls.Add(this.lblAdvanceTitle);
+            this.cardAdvance.Controls.Add(this.lblAdvance);
+            this.cardAdvance.Location = new System.Drawing.Point(484, 95);
+            this.cardAdvance.Name = "cardAdvance";
+            this.cardAdvance.Size = new System.Drawing.Size(220, 100);
+            this.cardAdvance.TabIndex = 5;
+            this.cardAdvance.Paint += new System.Windows.Forms.PaintEventHandler(this.Card_Paint);
+            // 
+            // lblAdvanceTitle
+            // 
+            this.lblAdvanceTitle.AutoSize = true;
+            this.lblAdvanceTitle.ForeColor = UITheme.TextMuted;
+            this.lblAdvanceTitle.Location = new System.Drawing.Point(12, 12);
+            this.lblAdvanceTitle.Name = "lblAdvanceTitle";
+            this.lblAdvanceTitle.Size = new System.Drawing.Size(90, 15);
+            this.lblAdvanceTitle.TabIndex = 0;
+            this.lblAdvanceTitle.Text = "Advance Wallet";
+            // 
+            // lblAdvance
+            // 
+            this.lblAdvance.AutoSize = true;
+            this.lblAdvance.Font = UITheme.FontHeader;
+            this.lblAdvance.ForeColor = UITheme.Primary;
+            this.lblAdvance.Location = new System.Drawing.Point(12, 45);
+            this.lblAdvance.Name = "lblAdvance";
+            this.lblAdvance.Size = new System.Drawing.Size(60, 25);
+            this.lblAdvance.TabIndex = 1;
+            this.lblAdvance.Text = "৳ 0.00";
+            // 
+            // cardDue
+            // 
+            this.cardDue.BackColor = UITheme.Card;
+            this.cardDue.Controls.Add(this.lblDueTitle);
+            this.cardDue.Controls.Add(this.lblDue);
+            this.cardDue.Location = new System.Drawing.Point(718, 95);
+            this.cardDue.Name = "cardDue";
+            this.cardDue.Size = new System.Drawing.Size(220, 100);
+            this.cardDue.TabIndex = 6;
+            this.cardDue.Paint += new System.Windows.Forms.PaintEventHandler(this.Card_Paint);
+            // 
+            // lblDueTitle
+            // 
+            this.lblDueTitle.AutoSize = true;
+            this.lblDueTitle.ForeColor = UITheme.TextMuted;
+            this.lblDueTitle.Location = new System.Drawing.Point(12, 12);
+            this.lblDueTitle.Name = "lblDueTitle";
+            this.lblDueTitle.Size = new System.Drawing.Size(100, 15);
+            this.lblDueTitle.TabIndex = 0;
+            this.lblDueTitle.Text = "Net Due Balance";
+            // 
+            // lblDue
+            // 
+            this.lblDue.AutoSize = true;
+            this.lblDue.Font = UITheme.FontHeader;
+            this.lblDue.ForeColor = UITheme.Warning;
+            this.lblDue.Location = new System.Drawing.Point(12, 45);
+            this.lblDue.Name = "lblDue";
+            this.lblDue.Size = new System.Drawing.Size(60, 25);
+            this.lblDue.TabIndex = 1;
+            this.lblDue.Text = "৳ 0.00";
+            // 
+            // dgvLedger
+            // 
+            this.dgvLedger.AllowUserToAddRows = false;
+            this.dgvLedger.AllowUserToDeleteRows = false;
+            this.dgvLedger.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvLedger.Location = new System.Drawing.Point(16, 220);
+            this.dgvLedger.Name = "dgvLedger";
+            this.dgvLedger.ReadOnly = true;
+            this.dgvLedger.RowTemplate.Height = 25;
+            this.dgvLedger.Size = new System.Drawing.Size(960, 320);
+            this.dgvLedger.TabIndex = 7;
+            // 
+            // btnPrint
+            // 
+            this.btnPrint.Location = new System.Drawing.Point(16, 555);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(150, 36);
+            this.btnPrint.TabIndex = 8;
+            this.btnPrint.Text = "Print Statement";
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            // 
+            // btnExport
+            // 
+            this.btnExport.Location = new System.Drawing.Point(180, 555);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(170, 36);
+            this.btnExport.TabIndex = 9;
+            this.btnExport.Tag = "ghost";
+            this.btnExport.Text = "Export CSV / Excel";
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // frmStudentLedger
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = UITheme.Canvas;
+            this.ClientSize = new System.Drawing.Size(1000, 620);
+            this.Controls.Add(this.lblTitle);
+            this.Controls.Add(this.lblSelect);
+            this.Controls.Add(this.cboStudent);
+            this.Controls.Add(this.cardInvoiced);
+            this.Controls.Add(this.cardPaid);
+            this.Controls.Add(this.cardAdvance);
+            this.Controls.Add(this.cardDue);
+            this.Controls.Add(this.dgvLedger);
+            this.Controls.Add(this.btnPrint);
+            this.Controls.Add(this.btnExport);
+            this.Name = "frmStudentLedger";
+            this.Text = "Student Ledger";
+            this.Load += new System.EventHandler(this.frmStudentLedger_LoadColumns);
+            this.cardInvoiced.ResumeLayout(false);
+            this.cardInvoiced.PerformLayout();
+            this.cardPaid.ResumeLayout(false);
+            this.cardPaid.PerformLayout();
+            this.cardAdvance.ResumeLayout(false);
+            this.cardAdvance.PerformLayout();
+            this.cardDue.ResumeLayout(false);
+            this.cardDue.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvLedger)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
-        private static Panel Stat(string title, out Label value, Color color, Point loc)
+        private void Card_Paint(object sender, PaintEventArgs e)
         {
-            var p = new Panel { Tag = "card", BackColor = UITheme.Card, Location = loc, Size = new Size(220, 100) };
-            p.Paint += (_, e) =>
+            Panel panel = sender as Panel;
+            if (panel == null)
+                return;
+            using (Pen pen = new Pen(UITheme.Border))
             {
-                using var pen = new Pen(UITheme.Border);
-                e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
-            };
-            var t = new Label { Text = title, Location = new Point(12, 12), AutoSize = true, ForeColor = UITheme.TextMuted };
-            value = new Label { Text = "৳ 0.00", Location = new Point(12, 45), AutoSize = true, Font = UITheme.FontHeader, ForeColor = color };
-            p.Controls.AddRange(new Control[] { t, value });
-            return p;
+                e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
+            }
+        }
+
+        private void frmStudentLedger_LoadColumns(object sender, System.EventArgs e)
+        {
+            if (this.dgvLedger.Columns.Count > 0)
+                return;
+            this.dgvLedger.Columns.Add("Date", "Date");
+            this.dgvLedger.Columns.Add("Voucher", "Voucher No");
+            this.dgvLedger.Columns.Add("Particulars", "Particulars / Description");
+            this.dgvLedger.Columns.Add("Period", "Fee Period");
+            this.dgvLedger.Columns.Add("Debit", "Debit (৳)");
+            this.dgvLedger.Columns.Add("Credit", "Credit (৳)");
+            this.dgvLedger.Columns.Add("Balance", "Running Balance (৳)");
+            this.dgvLedger.Columns.Add("Status", "Status");
         }
     }
 }

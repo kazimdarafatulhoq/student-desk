@@ -16,15 +16,20 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmAppUser : Form
     {
-        private readonly AuthService _auth;
+        private AuthService _auth;
 
-        public frmAppUser(AuthService auth)
+        /// <summary>Parameterless constructor required by the WinForms designer.</summary>
+        public frmAppUser()
+        {
+            InitializeComponent();
+        }
+
+        public frmAppUser(AuthService auth) : this()
         {
             _auth = auth;
-            InitializeComponent();
             UITheme.ApplyForm(this);
-            cboRole.DataSource = Enum.GetValues(typeof(UserRole));
-            Load += async (_, _) => await RefreshUsersAsync();
+            cboRole.DataSource = System.Enum.GetValues(typeof(StudentManagement.Domain.Enums.UserRole));
+            Load += async (s, e) => await RefreshUsersAsync();
         }
 
         private async Task RefreshUsersAsync()

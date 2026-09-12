@@ -17,19 +17,24 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmAdmitCardPrint : Form
     {
-        private readonly StudentService _students;
-        private readonly ExamService _exams;
+        private StudentService _students;
+        private ExamService _exams;
         private List<StudentDto> _lookup = new();
         private List<ExamTerm> _terms = new();
         private List<ClassDto> _classes = new();
 
-        public frmAdmitCardPrint(StudentService students, ExamService exams)
+        /// <summary>Parameterless constructor required by the WinForms designer.</summary>
+        public frmAdmitCardPrint()
+        {
+            InitializeComponent();
+        }
+
+        public frmAdmitCardPrint(StudentService students, ExamService exams) : this()
         {
             _students = students;
             _exams = exams;
-            InitializeComponent();
             UITheme.ApplyForm(this);
-            Load += async (_, _) => await LoadDataAsync();
+            Load += async (s, e) => await LoadDataAsync();
         }
 
         private async Task LoadDataAsync()

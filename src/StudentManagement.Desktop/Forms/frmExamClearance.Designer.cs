@@ -12,13 +12,13 @@ namespace StudentManagement.Desktop.Forms
 {
     partial class frmExamClearance
     {
-        private Label lblTitle = null!;
-        private ComboBox cboStudent = null!;
-        private ComboBox cboTerm = null!;
-        private CheckBox chkOverride = null!;
-        private TextBox txtOverrideReason = null!;
-        private Button btnVerify = null!;
-        private Label lblResult = null!;
+        private Label lblTitle;
+        private ComboBox cboStudent;
+        private ComboBox cboTerm;
+        private CheckBox chkOverride;
+        private TextBox txtOverrideReason;
+        private Button btnVerify;
+        private Label lblResult;
 
         private void InitializeComponent()
         {

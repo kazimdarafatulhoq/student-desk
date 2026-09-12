@@ -15,19 +15,24 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmStudentSearch : Form
     {
-        private readonly StudentService _students;
+        private StudentService _students;
         private List<StudentDto> _rows = new();
 
         public event Action<StudentDto>? OpenLedgerRequested;
         public event Action<StudentDto>? CollectFeeRequested;
         public event Action<StudentDto>? PrintAdmitRequested;
 
-        public frmStudentSearch(StudentService students)
+        /// <summary>Parameterless constructor required by the WinForms designer.</summary>
+        public frmStudentSearch()
+        {
+            InitializeComponent();
+        }
+
+        public frmStudentSearch(StudentService students) : this()
         {
             _students = students;
-            InitializeComponent();
             UITheme.ApplyForm(this);
-            Load += async (_, _) =>
+            Load += async (s, e) =>
             {
                 await LoadLookupsAsync();
                 await SearchAsync();

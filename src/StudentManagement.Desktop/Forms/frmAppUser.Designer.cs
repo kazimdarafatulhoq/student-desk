@@ -12,17 +12,17 @@ namespace StudentManagement.Desktop.Forms
 {
     partial class frmAppUser
     {
-        private Label lblTitle = null!;
-        private Panel pnlCreate = null!;
-        private TextBox txtUsername = null!;
-        private TextBox txtFullName = null!;
-        private TextBox txtPassword = null!;
-        private TextBox txtEmail = null!;
-        private TextBox txtPhone = null!;
-        private ComboBox cboRole = null!;
-        private Button btnCreate = null!;
-        private DataGridView dgvUsers = null!;
-        private Button btnToggle = null!;
+        private Label lblTitle;
+        private Panel pnlCreate;
+        private TextBox txtUsername;
+        private TextBox txtFullName;
+        private TextBox txtPassword;
+        private TextBox txtEmail;
+        private TextBox txtPhone;
+        private ComboBox cboRole;
+        private Button btnCreate;
+        private DataGridView dgvUsers;
+        private Button btnToggle;
 
         private void InitializeComponent()
         {

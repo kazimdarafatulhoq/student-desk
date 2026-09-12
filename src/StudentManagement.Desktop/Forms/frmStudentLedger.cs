@@ -16,19 +16,24 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmStudentLedger : Form
     {
-        private readonly StudentService _students;
-        private readonly FeeService _fees;
+        private StudentService _students;
+        private FeeService _fees;
         private List<StudentDto> _lookup = new();
         private LedgerSummaryDto? _summary;
         private IReadOnlyList<LedgerEntryDto> _entries = Array.Empty<LedgerEntryDto>();
 
-        public frmStudentLedger(StudentService students, FeeService fees)
+        /// <summary>Parameterless constructor required by the WinForms designer.</summary>
+        public frmStudentLedger()
+        {
+            InitializeComponent();
+        }
+
+        public frmStudentLedger(StudentService students, FeeService fees) : this()
         {
             _students = students;
             _fees = fees;
-            InitializeComponent();
             UITheme.ApplyForm(this);
-            Load += async (_, _) => await LoadStudentsAsync();
+            Load += async (s, e) => await LoadStudentsAsync();
             dgvLedger.CellFormatting += dgvLedger_CellFormatting;
         }
 

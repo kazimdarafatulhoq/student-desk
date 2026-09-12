@@ -17,21 +17,26 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmFeeCollection : Form
     {
-        private readonly StudentService _students;
-        private readonly FeeService _fees;
+        private StudentService _students;
+        private FeeService _fees;
         private StudentDto? _student;
-        private readonly List<CheckBox> _monthChecks = new();
+        private List<CheckBox> _monthChecks = new();
 
-        public frmFeeCollection(StudentService students, FeeService fees)
+        /// <summary>Parameterless constructor required by the WinForms designer.</summary>
+        public frmFeeCollection()
+        {
+            InitializeComponent();
+        }
+
+        public frmFeeCollection(StudentService students, FeeService fees) : this()
         {
             _students = students;
             _fees = fees;
-            InitializeComponent();
             UITheme.ApplyForm(this);
-            cboPaymentMethod.DataSource = Enum.GetValues(typeof(PaymentMethod));
+            cboPaymentMethod.DataSource = System.Enum.GetValues(typeof(StudentManagement.Domain.Enums.PaymentMethod));
             BuildMonthMatrix();
-            txtFine.TextChanged += (_, _) => Recalc();
-            txtWaiver.TextChanged += (_, _) => Recalc();
+            txtFine.TextChanged += (s, e) => Recalc();
+            txtWaiver.TextChanged += (s, e) => Recalc();
         }
 
         private void BuildMonthMatrix()

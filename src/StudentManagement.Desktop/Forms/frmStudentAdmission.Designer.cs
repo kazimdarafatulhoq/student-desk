@@ -12,27 +12,27 @@ namespace StudentManagement.Desktop.Forms
 {
     partial class frmStudentAdmission
     {
-        private Label lblTitle = null!;
-        private GroupBox grpPersonal = null!;
-        private GroupBox grpAddress = null!;
-        private GroupBox grpAcademic = null!;
-        private TextBox txtFullName = null!;
-        private TextBox txtFatherName = null!;
-        private TextBox txtMotherName = null!;
-        private ComboBox cboBloodGroup = null!;
-        private ComboBox cboGender = null!;
-        private DateTimePicker dtpDateOfBirth = null!;
-        private TextBox txtAge = null!;
-        private TextBox txtGuardianPhone = null!;
-        private TextBox txtPresentAddress = null!;
-        private TextBox txtPermanentAddress = null!;
-        private CheckBox chkSameAddress = null!;
-        private ComboBox cboClass = null!;
-        private ComboBox cboSection = null!;
-        private TextBox txtRollNumber = null!;
-        private TextBox txtTuitionFee = null!;
-        private Button btnSave = null!;
-        private Button btnReset = null!;
+        private Label lblTitle;
+        private GroupBox grpPersonal;
+        private GroupBox grpAddress;
+        private GroupBox grpAcademic;
+        private TextBox txtFullName;
+        private TextBox txtFatherName;
+        private TextBox txtMotherName;
+        private ComboBox cboBloodGroup;
+        private ComboBox cboGender;
+        private DateTimePicker dtpDateOfBirth;
+        private TextBox txtAge;
+        private TextBox txtGuardianPhone;
+        private TextBox txtPresentAddress;
+        private TextBox txtPermanentAddress;
+        private CheckBox chkSameAddress;
+        private ComboBox cboClass;
+        private ComboBox cboSection;
+        private TextBox txtRollNumber;
+        private TextBox txtTuitionFee;
+        private Button btnSave;
+        private Button btnReset;
 
         private void InitializeComponent()
         {

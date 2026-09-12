@@ -15,16 +15,21 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmDashboard : Form
     {
-        private readonly StudentService _students;
-        private readonly FeeService _fees;
+        private StudentService _students;
+        private FeeService _fees;
 
-        public frmDashboard(StudentService students, FeeService fees)
+        /// <summary>Parameterless constructor required by the WinForms designer.</summary>
+        public frmDashboard()
+        {
+            InitializeComponent();
+        }
+
+        public frmDashboard(StudentService students, FeeService fees) : this()
         {
             _students = students;
             _fees = fees;
-            InitializeComponent();
             UITheme.ApplyForm(this);
-            Load += async (_, _) => await LoadStatsAsync();
+            Load += async (s, e) => await LoadStatsAsync();
         }
 
         private async Task LoadStatsAsync()

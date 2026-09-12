@@ -30,11 +30,11 @@ namespace StudentManagement.Desktop.Theme
         public static readonly Color Sidebar = ColorTranslator.FromHtml("#020617");
         public static readonly Color InputBack = ColorTranslator.FromHtml("#0B1220");
 
-        public static readonly Font FontBody = new("Segoe UI", 9F, FontStyle.Regular);
-        public static readonly Font FontSubtitle = new("Segoe UI", 10F, FontStyle.Bold);
-        public static readonly Font FontHeader = new("Segoe UI", 14F, FontStyle.Bold);
-        public static readonly Font FontTitle = new("Segoe UI", 18F, FontStyle.Bold);
-        public static readonly Font FontNav = new("Segoe UI", 10F, FontStyle.Regular);
+        public static readonly Font FontBody = new Font("Segoe UI", 9F, FontStyle.Regular);
+        public static readonly Font FontSubtitle = new Font("Segoe UI", 10F, FontStyle.Bold);
+        public static readonly Font FontHeader = new Font("Segoe UI", 14F, FontStyle.Bold);
+        public static readonly Font FontTitle = new Font("Segoe UI", 18F, FontStyle.Bold);
+        public static readonly Font FontNav = new Font("Segoe UI", 10F, FontStyle.Regular);
 
         public static void ApplyForm(Form form)
         {
@@ -214,7 +214,7 @@ namespace StudentManagement.Desktop.Theme
             grid.RowTemplate.Height = 36;
         }
 
-        public static Panel CreateCard(string title, Control? content = null)
+        public static Panel CreateCard(string title, Control content)
         {
             var panel = new Panel
             {
@@ -223,10 +223,12 @@ namespace StudentManagement.Desktop.Theme
                 Padding = new Padding(16),
                 Margin = new Padding(8)
             };
-            panel.Paint += (_, e) =>
+            panel.Paint += delegate (object sender, PaintEventArgs e)
             {
-                using var pen = new Pen(Border);
-                e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
+                using (Pen pen = new Pen(Border))
+                {
+                    e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
+                }
             };
 
             var lbl = new Label
@@ -239,7 +241,7 @@ namespace StudentManagement.Desktop.Theme
                 Height = 28
             };
             panel.Controls.Add(lbl);
-            if (content is not null)
+            if (content != null)
             {
                 content.Dock = DockStyle.Fill;
                 panel.Controls.Add(content);

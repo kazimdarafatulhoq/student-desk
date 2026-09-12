@@ -12,26 +12,26 @@ namespace StudentManagement.Desktop.Forms
 {
     partial class frmMainMenu
     {
-        private Panel pnlSidebar = null!;
-        private Panel pnlHeader = null!;
-        private Panel pnlContentContainer = null!;
-        private StatusStrip statusBar = null!;
-        private ToolStripStatusLabel lblDbStatus = null!;
-        private ToolStripStatusLabel lblSync = null!;
-        private Label lblLogo = null!;
-        private Label lblUserRole = null!;
-        private Label lblSession = null!;
-        private Label lblClock = null!;
-        private Button btnToggleSidebar = null!;
-        private Button btnDashboard = null!;
-        private Button btnAdmission = null!;
-        private Button btnSearch = null!;
-        private Button btnFeeCollection = null!;
-        private Button btnLedger = null!;
-        private Button btnExamClearance = null!;
-        private Button btnAdmitCard = null!;
-        private Button btnUsers = null!;
-        private Button btnLogout = null!;
+        private Panel pnlSidebar;
+        private Panel pnlHeader;
+        private Panel pnlContentContainer;
+        private StatusStrip statusBar;
+        private ToolStripStatusLabel lblDbStatus;
+        private ToolStripStatusLabel lblSync;
+        private Label lblLogo;
+        private Label lblUserRole;
+        private Label lblSession;
+        private Label lblClock;
+        private Button btnToggleSidebar;
+        private Button btnDashboard;
+        private Button btnAdmission;
+        private Button btnSearch;
+        private Button btnFeeCollection;
+        private Button btnLedger;
+        private Button btnExamClearance;
+        private Button btnAdmitCard;
+        private Button btnUsers;
+        private Button btnLogout;
 
         private void InitializeComponent()
         {
@@ -131,12 +131,7 @@ namespace StudentManagement.Desktop.Forms
                 Location = new Point(920, 22)
             };
             pnlHeader.Controls.AddRange(new Control[] { lblLogo, lblUserRole, lblSession, lblClock });
-            pnlHeader.Resize += (_, _) =>
-            {
-                lblClock.Left = pnlHeader.Width - lblClock.Width - 20;
-                lblUserRole.Left = pnlHeader.Width - 360;
-                lblSession.Left = pnlHeader.Width - 360;
-            };
+            pnlHeader.Resize += new System.EventHandler(this.pnlHeader_Resize);
 
             pnlContentContainer = new Panel
             {
@@ -160,24 +155,29 @@ namespace StudentManagement.Desktop.Forms
 
         private static Button NavButton(string text, string accessible)
         {
-            var b = new Button
-            {
-                Text = text,
-                AccessibleName = text,
-                Tag = "nav",
-                Width = 200,
-                Height = 44,
-                FlatStyle = FlatStyle.Flat,
-                TextAlign = ContentAlignment.MiddleLeft,
-                ForeColor = UITheme.TextMuted,
-                BackColor = Color.Transparent,
-                Margin = new Padding(0, 2, 0, 2),
-                Font = UITheme.FontNav,
-                Cursor = Cursors.Hand
-            };
+            Button b = new Button();
+            b.Text = text;
+            b.AccessibleName = text;
+            b.Tag = "nav";
+            b.Width = 200;
+            b.Height = 44;
+            b.FlatStyle = FlatStyle.Flat;
+            b.TextAlign = ContentAlignment.MiddleLeft;
+            b.ForeColor = UITheme.TextMuted;
+            b.BackColor = Color.Transparent;
+            b.Margin = new Padding(0, 2, 0, 2);
+            b.Font = UITheme.FontNav;
+            b.Cursor = Cursors.Hand;
             b.FlatAppearance.BorderSize = 0;
             b.FlatAppearance.MouseOverBackColor = UITheme.Card;
             return b;
+        }
+
+        private void pnlHeader_Resize(object sender, EventArgs e)
+        {
+            this.lblClock.Left = this.pnlHeader.Width - this.lblClock.Width - 20;
+            this.lblUserRole.Left = this.pnlHeader.Width - 360;
+            this.lblSession.Left = this.pnlHeader.Width - 360;
         }
     }
 }

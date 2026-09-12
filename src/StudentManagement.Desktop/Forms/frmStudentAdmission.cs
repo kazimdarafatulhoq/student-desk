@@ -17,15 +17,20 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmStudentAdmission : Form
     {
-        private readonly StudentService _students;
+        private StudentService _students;
 
-        public frmStudentAdmission(StudentService students)
+        /// <summary>Parameterless constructor required by the WinForms designer.</summary>
+        public frmStudentAdmission()
+        {
+            InitializeComponent();
+        }
+
+        public frmStudentAdmission(StudentService students) : this()
         {
             _students = students;
-            InitializeComponent();
             UITheme.ApplyForm(this);
-            Load += async (_, _) => await LoadLookupsAsync();
-            dtpDateOfBirth.ValueChanged += (_, _) => UpdateAge();
+            Load += async (s, e) => await LoadLookupsAsync();
+            dtpDateOfBirth.ValueChanged += (s, e) => UpdateAge();
             chkSameAddress.CheckedChanged += chkSameAddress_CheckedChanged;
         }
 
