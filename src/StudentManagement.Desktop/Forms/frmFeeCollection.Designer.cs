@@ -41,7 +41,7 @@ namespace StudentManagement.Desktop.Forms
             AutoScroll = true;
             BackColor = UITheme.Canvas;
 
-            lblTitle = new Label { Text = "Fee POS Collection", Font = UITheme.FontHeader, ForeColor = UITheme.TextPrimary, Location = new Point(16, 12), AutoSize = true };
+            lblTitle = new Label { Text = "Fee Collection Counter", Font = UITheme.FontHeader, ForeColor = UITheme.TextPrimary, Location = new Point(16, 12), AutoSize = true };
 
             pnlSearch = new Panel { Tag = "card", BackColor = UITheme.Card, Location = new Point(16, 50), Size = new Size(960, 60) };
             txtSearch = new TextBox { Location = new Point(16, 16), Width = 360, PlaceholderText = "Reg ID or Mobile" };

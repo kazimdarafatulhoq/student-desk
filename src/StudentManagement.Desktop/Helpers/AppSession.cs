@@ -13,7 +13,7 @@ namespace StudentManagement.Desktop.Helpers
     public static class AppSession
     {
         public static AuthSession? Current { get; private set; }
-        public static string InstitutionName { get; set; } = "Horizon Academy";
+        public static string InstitutionName { get; set; } = "Ideal High School & College";
         public static string ReportsPath { get; set; } =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "StudentManagement", "Reports");
 

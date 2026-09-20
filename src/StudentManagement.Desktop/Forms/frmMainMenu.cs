@@ -61,9 +61,25 @@ namespace StudentManagement.Desktop.Forms
 
             lblUserRole.Text = AppSession.Current.FullName + "  ·  " + AppSession.RoleDisplay;
             lblSession.Text = "Session: " + AppSession.Current.AcademicSession;
+            lblProfileName.Text = AppSession.Current.FullName;
+            lblProfileStatus.Text = "●  " + AppSession.RoleDisplay + " (Online)";
+            lblProfileStatus.ForeColor = UITheme.Online;
+            string initials = GetInitials(AppSession.Current.FullName);
+            lblAvatar.Tag = initials;
+            lblAvatar.Invalidate();
             ApplyRoleVisibility();
             await RefreshDbStatusAsync();
             OpenChild<frmDashboard>();
+        }
+
+        private static string GetInitials(string fullName)
+        {
+            if (string.IsNullOrWhiteSpace(fullName))
+                return "AD";
+            string[] parts = fullName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 1)
+                return parts[0].Substring(0, Math.Min(2, parts[0].Length)).ToUpperInvariant();
+            return (parts[0][0].ToString() + parts[parts.Length - 1][0]).ToUpperInvariant();
         }
 
         private void ApplyRoleVisibility()
@@ -119,11 +135,12 @@ namespace StudentManagement.Desktop.Forms
             {
                 foreach (Control c in GetAllButtons(host))
                 {
-                    if (c.Tag != null && c.Tag.ToString() == "nav")
-                    {
-                        c.BackColor = Color.Transparent;
-                        c.ForeColor = UITheme.TextMuted;
-                    }
+                    Button b = c as Button;
+                    if (b == null)
+                        continue;
+                    string tag = b.Tag != null ? b.Tag.ToString() : string.Empty;
+                    if (tag == "nav" || tag == "nav-active")
+                        UITheme.SetNavActive(b, false);
                 }
             }
 
@@ -138,10 +155,7 @@ namespace StudentManagement.Desktop.Forms
             else if (formName == nameof(frmAppUser)) active = btnUsers;
 
             if (active != null)
-            {
-                active.BackColor = UITheme.Card;
-                active.ForeColor = UITheme.TextPrimary;
-            }
+                UITheme.SetNavActive(active, true);
         }
 
         private System.Collections.Generic.IEnumerable<Control> GetAllButtons(Control root)
@@ -157,14 +171,24 @@ namespace StudentManagement.Desktop.Forms
         private void btnToggleSidebar_Click(object sender, EventArgs e)
         {
             _sidebarExpanded = !_sidebarExpanded;
-            pnlSidebar.Width = _sidebarExpanded ? 220 : 64;
+            pnlSidebar.Width = _sidebarExpanded ? 260 : 72;
+            pnlProfile.Visible = _sidebarExpanded;
             foreach (Control host in pnlSidebar.Controls)
             {
                 foreach (Control c in GetAllButtons(host))
                 {
                     Button b = c as Button;
-                    if (b != null && b != btnToggleSidebar && b.Tag != null && b.Tag.ToString() == "nav")
+                    if (b == null)
+                        continue;
+                    string tag = b.Tag != null ? b.Tag.ToString() : string.Empty;
+                    if (b != btnToggleSidebar && (tag == "nav" || tag == "nav-active"))
                         b.Text = _sidebarExpanded ? (b.AccessibleName ?? b.Text) : string.Empty;
+                }
+                foreach (Control child in host.Controls)
+                {
+                    Label section = child as Label;
+                    if (section != null && section.Tag != null && section.Tag.ToString() == "muted")
+                        section.Visible = _sidebarExpanded;
                 }
             }
             btnToggleSidebar.Text = _sidebarExpanded ? "☰  Collapse" : "☰";
@@ -178,6 +202,11 @@ namespace StudentManagement.Desktop.Forms
         private void btnExamClearance_Click(object sender, EventArgs e) { OpenChild<frmExamClearance>(); }
         private void btnAdmitCard_Click(object sender, EventArgs e) { OpenChild<frmAdmitCardPrint>(); }
         private void btnUsers_Click(object sender, EventArgs e) { OpenChild<frmAppUser>(); }
+
+        public void OpenFeeCollectionFromDashboard()
+        {
+            OpenChild<frmFeeCollection>();
+        }
 
         private void btnLogout_Click(object sender, EventArgs e)
         {

@@ -33,7 +33,7 @@ namespace StudentManagement.Desktop.Forms
 
             lblTitle = new Label
             {
-                Text = "Student Search & Records",
+                Text = "Student Directory",
                 Font = UITheme.FontHeader,
                 ForeColor = UITheme.TextPrimary,
                 Location = new Point(16, 12),

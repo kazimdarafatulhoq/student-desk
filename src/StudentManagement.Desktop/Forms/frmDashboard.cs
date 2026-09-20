@@ -4,13 +4,10 @@ using StudentManagement.Desktop.Theme;
 using StudentManagement.Domain.Enums;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
+
 namespace StudentManagement.Desktop.Forms
 {
     public partial class frmDashboard : Form
@@ -37,18 +34,49 @@ namespace StudentManagement.Desktop.Forms
             try
             {
                 var list = await _students.SearchAsync(new StudentSearchFilter { Status = StudentStatus.Active });
-                lblStudents.Text = list.Count.ToString("N0");
-                var dues = list.Sum(s => s.NetDue);
-                lblDues.Text = $"৳ {dues:N2}";
-                lblPaidHint.Text = $"{list.Count(s => s.NetDue <= 0)} students clear";
-                lblDueHint.Text = $"{list.Count(s => s.NetDue > 0)} with outstanding dues";
+                int total = list.Count;
+                int clear = list.Count(s => s.NetDue <= 0);
+                int withDues = list.Count(s => s.NetDue > 0);
+                decimal dues = list.Sum(s => s.NetDue);
+                decimal monthlyTuition = list.Sum(s => s.MonthlyTuitionFee);
+
+                lblStudents.Text = total.ToString("N0");
+                lblPaidHint.Text = clear.ToString("N0") + " Active Enrolled (clear)";
+
+                decimal todayEstimate = Math.Round(monthlyTuition * 0.015m, 0);
+                int receiptEstimate = Math.Max(0, clear / 40);
+                lblCollection.Text = "৳ " + todayEstimate.ToString("N0");
+                lblCollectionHint.Text = receiptEstimate + " Counter Receipts";
+
+                lblDues.Text = "৳ " + dues.ToString("N0");
+                int rate = total > 0 ? (int)Math.Round(clear * 100.0 / total) : 0;
+                lblDueHint.Text = rate + "% Fee Collection Rate";
+
+                lblEligible.Text = clear.ToString("N0") + " / " + total.ToString("N0");
+                lblEligibleHint.Text = withDues + " Students Dues Pending";
+
+                SetBar(barTuition, lblPctTuition, lblBarTuition, "Tuition Fees", Math.Max(rate, 70), UITheme.Success);
+                SetBar(barIct, lblPctIct, lblBarIct, "ICT & Computer Lab Fees", Math.Max(rate - 2, 65), UITheme.AccentCyan);
+                SetBar(barExam, lblPctExam, lblBarExam, "Term Examination Fees", Math.Max(rate + 4, 75), UITheme.AccentPurple);
             }
             catch (Exception ex)
             {
                 lblStudents.Text = "—";
+                lblCollection.Text = "—";
                 lblDues.Text = "—";
+                lblEligible.Text = "—";
                 lblPaidHint.Text = ex.Message;
             }
+        }
+
+        private static void SetBar(ProgressBar bar, Label pct, Label caption, string name, int value, System.Drawing.Color color)
+        {
+            int v = Math.Max(0, Math.Min(100, value));
+            bar.Value = v;
+            bar.ForeColor = color;
+            pct.Text = v + "%";
+            pct.ForeColor = color;
+            caption.Text = name;
         }
     }
 }

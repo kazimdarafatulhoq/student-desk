@@ -50,7 +50,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblBrand.Name = "lblBrand";
             this.lblBrand.Size = new System.Drawing.Size(160, 25);
             this.lblBrand.TabIndex = 0;
-            this.lblBrand.Text = "HORIZON ACADEMY";
+            this.lblBrand.Text = "IDEAL HIGH SCHOOL";
             // 
             // lblTitle
             // 
