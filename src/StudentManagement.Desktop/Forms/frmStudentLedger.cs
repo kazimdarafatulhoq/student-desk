@@ -26,6 +26,7 @@ namespace StudentManagement.Desktop.Forms
         public frmStudentLedger()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmStudentLedger(StudentService students, FeeService fees) : this()

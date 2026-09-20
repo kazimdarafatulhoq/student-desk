@@ -26,6 +26,7 @@ namespace StudentManagement.Desktop.Forms
         public frmStudentSearch()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmStudentSearch(StudentService students) : this()

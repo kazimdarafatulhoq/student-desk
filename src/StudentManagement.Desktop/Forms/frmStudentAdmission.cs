@@ -23,6 +23,7 @@ namespace StudentManagement.Desktop.Forms
         public frmStudentAdmission()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmStudentAdmission(StudentService students) : this()

@@ -27,6 +27,7 @@ namespace StudentManagement.Desktop.Forms
         public frmAdmitCardPrint()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmAdmitCardPrint(StudentService students, ExamService exams) : this()

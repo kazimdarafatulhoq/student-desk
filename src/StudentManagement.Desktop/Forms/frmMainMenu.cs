@@ -21,6 +21,7 @@ namespace StudentManagement.Desktop.Forms
         public frmMainMenu()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmMainMenu(IServiceProvider services) : this()

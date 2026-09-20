@@ -1,4 +1,3 @@
-using StudentManagement.Desktop.Theme;
 
 using System;
 using System.Collections.Generic;
@@ -28,18 +27,18 @@ namespace StudentManagement.Desktop.Forms
         {
             SuspendLayout();
             Text = "User Management";
-            BackColor = UITheme.Canvas;
+            BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
 
-            lblTitle = new Label { Text = "User Access & Security (RBAC)", Font = UITheme.FontHeader, ForeColor = UITheme.TextPrimary, Location = new Point(16, 12), AutoSize = true };
+            lblTitle = new Label { Text = "User Access & Security (RBAC)", Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold), ForeColor = System.Drawing.Color.White, Location = new Point(16, 12), AutoSize = true };
 
-            pnlCreate = new Panel { Tag = "card", BackColor = UITheme.Card, Location = new Point(16, 55), Size = new Size(960, 140) };
+            pnlCreate = new Panel { Tag = "card", BackColor = System.Drawing.Color.FromArgb(13, 20, 48), Location = new Point(16, 55), Size = new Size(960, 140) };
             txtUsername = Field(pnlCreate, "Username", 16, 16, 150);
             txtFullName = Field(pnlCreate, "Full Name", 180, 16, 200);
             txtPassword = Field(pnlCreate, "Password", 400, 16, 160);
             txtPassword.UseSystemPasswordChar = true;
             txtEmail = Field(pnlCreate, "Email", 580, 16, 180);
             txtPhone = Field(pnlCreate, "Phone", 780, 16, 140);
-            var lblRole = new Label { Text = "Role", Location = new Point(16, 75), AutoSize = true, ForeColor = UITheme.TextMuted };
+            var lblRole = new Label { Text = "Role", Location = new Point(16, 75), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
             cboRole = new ComboBox { Location = new Point(16, 95), Width = 200, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
             btnCreate = new Button { Text = "Create User", Location = new Point(240, 92), Size = new Size(140, 34) };
             btnCreate.Click += btnCreate_Click;
@@ -62,8 +61,8 @@ namespace StudentManagement.Desktop.Forms
 
         private static TextBox Field(Control parent, string label, int x, int y, int width)
         {
-            parent.Controls.Add(new Label { Text = label, Location = new Point(x, y), AutoSize = true, ForeColor = UITheme.TextMuted });
-            var tb = new TextBox { Location = new Point(x, y + 20), Width = width, BackColor = UITheme.InputBack, ForeColor = UITheme.TextPrimary, BorderStyle = BorderStyle.FixedSingle };
+            parent.Controls.Add(new Label { Text = label, Location = new Point(x, y), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) });
+            var tb = new TextBox { Location = new Point(x, y + 20), Width = width, BackColor = System.Drawing.Color.FromArgb(17, 24, 39), ForeColor = System.Drawing.Color.White, BorderStyle = BorderStyle.FixedSingle };
             parent.Controls.Add(tb);
             return tb;
         }

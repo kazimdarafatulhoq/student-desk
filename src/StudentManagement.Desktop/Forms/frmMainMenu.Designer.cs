@@ -1,4 +1,3 @@
-using StudentManagement.Desktop.Theme;
 
 using System;
 using System.Drawing;
@@ -39,15 +38,15 @@ namespace StudentManagement.Desktop.Forms
             Text = "Ideal High School & College — Student Management";
             WindowState = FormWindowState.Maximized;
             MinimumSize = new Size(1100, 700);
-            BackColor = UITheme.Canvas;
-            Font = UITheme.FontBody;
+            BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
+            Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular);
 
             pnlSidebar = new Panel
             {
                 Tag = "sidebar",
                 Dock = DockStyle.Left,
                 Width = 260,
-                BackColor = UITheme.Sidebar,
+                BackColor = System.Drawing.Color.FromArgb(7, 11, 24),
                 Padding = new Padding(10, 12, 10, 12)
             };
 
@@ -55,7 +54,7 @@ namespace StudentManagement.Desktop.Forms
             {
                 Dock = DockStyle.Top,
                 Height = 72,
-                BackColor = UITheme.Sidebar,
+                BackColor = System.Drawing.Color.FromArgb(7, 11, 24),
                 Padding = new Padding(8, 4, 8, 8)
             };
             lblAvatar = new Label
@@ -66,7 +65,7 @@ namespace StudentManagement.Desktop.Forms
                 TextAlign = ContentAlignment.MiddleCenter,
                 BackColor = Color.Transparent,
                 ForeColor = Color.White,
-                Font = UITheme.FontSubtitle,
+                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
                 Tag = "AD"
             };
             lblAvatar.Paint += Avatar_Paint;
@@ -75,16 +74,16 @@ namespace StudentManagement.Desktop.Forms
                 Text = "Administrator",
                 Location = new Point(60, 12),
                 AutoSize = true,
-                ForeColor = UITheme.TextPrimary,
-                Font = UITheme.FontSubtitle
+                ForeColor = System.Drawing.Color.White,
+                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold)
             };
             lblProfileStatus = new Label
             {
                 Text = "●  Administrator (Online)",
                 Location = new Point(60, 36),
                 AutoSize = true,
-                ForeColor = UITheme.Online,
-                Font = UITheme.FontBody
+                ForeColor = System.Drawing.Color.FromArgb(34, 197, 94),
+                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular)
             };
             pnlProfile.Controls.AddRange(new Control[] { lblAvatar, lblProfileName, lblProfileStatus });
 
@@ -117,7 +116,7 @@ namespace StudentManagement.Desktop.Forms
                 WrapContents = false,
                 AutoScroll = true,
                 Tag = "sidebar",
-                BackColor = UITheme.Sidebar,
+                BackColor = System.Drawing.Color.FromArgb(7, 11, 24),
                 Padding = new Padding(2)
             };
             navFlow.Controls.Add(btnToggleSidebar);
@@ -143,22 +142,22 @@ namespace StudentManagement.Desktop.Forms
                 Dock = DockStyle.Top,
                 Height = 64,
                 Tag = "header",
-                BackColor = UITheme.HeaderBack,
+                BackColor = System.Drawing.Color.FromArgb(10, 16, 36),
                 Padding = new Padding(16, 8, 16, 8)
             };
             lblLogo = new Label
             {
                 Text = "IDEAL HIGH SCHOOL & COLLEGE",
-                Font = UITheme.FontHeader,
-                ForeColor = UITheme.TextPrimary,
+                Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
                 AutoSize = true,
                 Location = new Point(16, 18)
             };
             lblUserRole = new Label
             {
                 Text = "User",
-                Font = UITheme.FontSubtitle,
-                ForeColor = UITheme.TextPrimary,
+                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
                 AutoSize = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
                 Location = new Point(700, 10)
@@ -167,7 +166,7 @@ namespace StudentManagement.Desktop.Forms
             {
                 Text = "Session",
                 Tag = "muted",
-                ForeColor = UITheme.TextMuted,
+                ForeColor = System.Drawing.Color.FromArgb(138, 147, 166),
                 AutoSize = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
                 Location = new Point(700, 34)
@@ -175,7 +174,7 @@ namespace StudentManagement.Desktop.Forms
             lblClock = new Label
             {
                 Text = DateTime.Now.ToString("dd-MMM-yyyy  HH:mm:ss"),
-                ForeColor = UITheme.TextMuted,
+                ForeColor = System.Drawing.Color.FromArgb(138, 147, 166),
                 AutoSize = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
                 Location = new Point(920, 22)
@@ -186,11 +185,11 @@ namespace StudentManagement.Desktop.Forms
             pnlContentContainer = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = UITheme.Canvas,
+                BackColor = System.Drawing.Color.FromArgb(9, 12, 23),
                 Padding = new Padding(8)
             };
 
-            statusBar = new StatusStrip { BackColor = UITheme.HeaderBack, ForeColor = UITheme.TextMuted };
+            statusBar = new StatusStrip { BackColor = System.Drawing.Color.FromArgb(10, 16, 36), ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
             lblDbStatus = new ToolStripStatusLabel("Database: Checking...");
             lblSync = new ToolStripStatusLabel("Ledger sync: —") { Spring = true, TextAlign = ContentAlignment.MiddleRight };
             statusBar.Items.AddRange(new ToolStripItem[] { lblDbStatus, lblSync });
@@ -209,7 +208,7 @@ namespace StudentManagement.Desktop.Forms
             {
                 Text = text,
                 Tag = "muted",
-                ForeColor = UITheme.TextMuted,
+                ForeColor = System.Drawing.Color.FromArgb(138, 147, 166),
                 Font = new Font("Segoe UI", 8F, FontStyle.Bold),
                 AutoSize = true,
                 Margin = new Padding(12, 16, 4, 6),
@@ -227,21 +226,21 @@ namespace StudentManagement.Desktop.Forms
             b.Height = 42;
             b.FlatStyle = FlatStyle.Flat;
             b.TextAlign = ContentAlignment.MiddleLeft;
-            b.ForeColor = UITheme.TextMuted;
+            b.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
             b.BackColor = Color.Transparent;
             b.Margin = new Padding(0, 2, 0, 2);
-            b.Font = UITheme.FontNav;
+            b.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             b.Cursor = Cursors.Hand;
             b.Padding = new Padding(12, 0, 8, 0);
             b.FlatAppearance.BorderSize = 0;
-            b.FlatAppearance.MouseOverBackColor = UITheme.Card;
+            b.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             return b;
         }
 
         private void Avatar_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            using (var brush = new SolidBrush(UITheme.Primary))
+            using (var brush = new SolidBrush(System.Drawing.Color.FromArgb(37, 99, 235)))
                 e.Graphics.FillEllipse(brush, 0, 0, lblAvatar.Width - 1, lblAvatar.Height - 1);
             string initials = lblAvatar.Tag != null ? lblAvatar.Tag.ToString() : "AD";
             TextRenderer.DrawText(

@@ -5,39 +5,36 @@ using System.Windows.Forms;
 namespace StudentManagement.Desktop.Theme
 {
     /// <summary>
-    /// Ideal High School reference theme — deep navy canvas, sapphire primary,
-    /// emerald success, amber warning, rose danger (matches dashboard mockups).
+    /// Ideal High School theme — navy canvas, sapphire primary, emerald/amber/rose status.
+    /// Do NOT reference this class from InitializeComponent (breaks the VS WinForms designer).
+    /// Call UITheme.ApplyForm(this) from the form constructor after InitializeComponent.
     /// </summary>
     public static class UITheme
     {
-        // Surfaces (reference: #090C17 / #070B18 / #0D1430)
-        public static readonly Color Canvas = ColorTranslator.FromHtml("#090C17");
-        public static readonly Color Sidebar = ColorTranslator.FromHtml("#070B18");
-        public static readonly Color Card = ColorTranslator.FromHtml("#0D1430");
-        public static readonly Color InputBack = ColorTranslator.FromHtml("#111827");
-        public static readonly Color Border = ColorTranslator.FromHtml("#243049");
-        public static readonly Color GridAlt = ColorTranslator.FromHtml("#0B1228");
-        public static readonly Color HeaderBack = ColorTranslator.FromHtml("#0A1024");
+        public static readonly Color Canvas = Color.FromArgb(9, 12, 23);
+        public static readonly Color Sidebar = Color.FromArgb(7, 11, 24);
+        public static readonly Color Card = Color.FromArgb(13, 20, 48);
+        public static readonly Color InputBack = Color.FromArgb(17, 24, 39);
+        public static readonly Color Border = Color.FromArgb(36, 48, 73);
+        public static readonly Color GridAlt = Color.FromArgb(11, 18, 40);
+        public static readonly Color HeaderBack = Color.FromArgb(10, 16, 36);
 
-        // Accents
-        public static readonly Color Primary = ColorTranslator.FromHtml("#2563EB");
-        public static readonly Color PrimaryHover = ColorTranslator.FromHtml("#1D4ED8");
-        public static readonly Color PrimaryIndigo = ColorTranslator.FromHtml("#4F46E5");
-        public static readonly Color AccentPurple = ColorTranslator.FromHtml("#8B5CF6");
-        public static readonly Color AccentCyan = ColorTranslator.FromHtml("#3B82F6");
-        public static readonly Color Selection = ColorTranslator.FromHtml("#1D4ED8");
+        public static readonly Color Primary = Color.FromArgb(37, 99, 235);
+        public static readonly Color PrimaryHover = Color.FromArgb(29, 78, 216);
+        public static readonly Color PrimaryIndigo = Color.FromArgb(79, 70, 229);
+        public static readonly Color AccentPurple = Color.FromArgb(139, 92, 246);
+        public static readonly Color AccentCyan = Color.FromArgb(59, 130, 246);
+        public static readonly Color Selection = Color.FromArgb(29, 78, 216);
 
-        // Status
-        public static readonly Color Success = ColorTranslator.FromHtml("#10B981");
-        public static readonly Color Online = ColorTranslator.FromHtml("#22C55E");
-        public static readonly Color Warning = ColorTranslator.FromHtml("#FACC15");
-        public static readonly Color Partial = ColorTranslator.FromHtml("#F9A03F");
-        public static readonly Color Danger = ColorTranslator.FromHtml("#F43F5E");
+        public static readonly Color Success = Color.FromArgb(16, 185, 129);
+        public static readonly Color Online = Color.FromArgb(34, 197, 94);
+        public static readonly Color Warning = Color.FromArgb(250, 204, 21);
+        public static readonly Color Partial = Color.FromArgb(249, 160, 63);
+        public static readonly Color Danger = Color.FromArgb(244, 63, 94);
 
-        // Typography (reference secondary: #8A93A6 / #A0AEC0)
         public static readonly Color TextPrimary = Color.White;
-        public static readonly Color TextMuted = ColorTranslator.FromHtml("#8A93A6");
-        public static readonly Color TextDim = ColorTranslator.FromHtml("#A0AEC0");
+        public static readonly Color TextMuted = Color.FromArgb(138, 147, 166);
+        public static readonly Color TextDim = Color.FromArgb(160, 174, 192);
 
         public static readonly Font FontBody = new Font("Segoe UI", 9F, FontStyle.Regular);
         public static readonly Font FontSubtitle = new Font("Segoe UI", 10F, FontStyle.Bold);
@@ -49,6 +46,9 @@ namespace StudentManagement.Desktop.Theme
 
         public static void ApplyForm(Form form)
         {
+            if (form == null)
+                return;
+
             form.BackColor = Canvas;
             form.ForeColor = TextPrimary;
             form.Font = FontBody;
@@ -58,6 +58,9 @@ namespace StudentManagement.Desktop.Theme
 
         public static void ApplyControl(Control control)
         {
+            if (control == null)
+                return;
+
             switch (control)
             {
                 case FlowLayoutPanel flow:
@@ -88,7 +91,6 @@ namespace StudentManagement.Desktop.Theme
                 case CheckBox check:
                     check.ForeColor = TextPrimary;
                     check.FlatStyle = FlatStyle.Flat;
-                    check.FlatAppearance.CheckedBackColor = Primary;
                     break;
                 case Button button:
                     StyleButton(button);
@@ -105,6 +107,9 @@ namespace StudentManagement.Desktop.Theme
                     strip.BackColor = HeaderBack;
                     strip.ForeColor = TextMuted;
                     break;
+                case ProgressBar bar:
+                    bar.BackColor = InputBack;
+                    break;
             }
 
             foreach (Control child in control.Controls)
@@ -115,57 +120,48 @@ namespace StudentManagement.Desktop.Theme
         {
             string tag = panel.Tag != null ? panel.Tag.ToString() : string.Empty;
             if (tag == "card")
-            {
                 panel.BackColor = Card;
-                panel.Padding = new Padding(12);
-            }
             else if (tag == "sidebar")
-            {
                 panel.BackColor = Sidebar;
-            }
             else if (tag == "header")
-            {
                 panel.BackColor = HeaderBack;
-            }
             else
-            {
                 panel.BackColor = panel.Parent != null ? panel.Parent.BackColor : Canvas;
-            }
         }
 
         private static void ApplyLabel(Label label)
         {
             string tag = label.Tag != null ? label.Tag.ToString() : string.Empty;
-            // Empty tag preserves designer ForeColor/Font (colored metrics, etc.)
             if (string.IsNullOrEmpty(tag))
                 return;
 
-            if (tag.Contains("muted") || tag.Contains("dim"))
+            if (tag.IndexOf("muted", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                tag.IndexOf("dim", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.ForeColor = TextMuted;
-            else if (tag.Contains("section"))
+            else if (tag.IndexOf("section", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.ForeColor = Primary;
-            else if (tag.Contains("success"))
+            else if (tag.IndexOf("success", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.ForeColor = Success;
-            else if (tag.Contains("danger"))
+            else if (tag.IndexOf("danger", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.ForeColor = Danger;
-            else if (tag.Contains("warning"))
+            else if (tag.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.ForeColor = Warning;
-            else if (tag.Contains("primary"))
+            else if (tag.IndexOf("primary", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.ForeColor = Primary;
-            else if (tag.Contains("cyan"))
+            else if (tag.IndexOf("cyan", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.ForeColor = AccentCyan;
-            else if (tag.Contains("purple"))
+            else if (tag.IndexOf("purple", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.ForeColor = AccentPurple;
             else
                 label.ForeColor = TextPrimary;
 
-            if (tag.Contains("header"))
+            if (tag.IndexOf("header", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.Font = FontHeader;
-            else if (tag.Contains("subtitle"))
+            else if (tag.IndexOf("subtitle", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.Font = FontSubtitle;
-            else if (tag.Contains("metric"))
+            else if (tag.IndexOf("metric", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.Font = FontMetric;
-            else if (tag.Contains("section"))
+            else if (tag.IndexOf("section", StringComparison.OrdinalIgnoreCase) >= 0)
                 label.Font = FontSection;
         }
 
@@ -185,23 +181,23 @@ namespace StudentManagement.Desktop.Theme
             combo.Font = FontBody;
         }
 
-        public static void StyleButton(Button button, bool primary = true, bool danger = false, bool success = false)
+        public static void StyleButton(Button button)
         {
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
             button.Cursor = Cursors.Hand;
             button.Font = FontSubtitle;
-            button.Height = Math.Max(button.Height, 36);
-            button.Padding = new Padding(8, 4, 8, 4);
+            if (button.Height < 36)
+                button.Height = 36;
 
             string tag = button.Tag != null ? button.Tag.ToString() : string.Empty;
 
-            if (tag == "danger" || danger)
+            if (tag == "danger")
             {
                 button.BackColor = Danger;
                 button.ForeColor = Color.White;
             }
-            else if (tag == "success" || success)
+            else if (tag == "success")
             {
                 button.BackColor = Success;
                 button.ForeColor = Color.White;
@@ -229,7 +225,6 @@ namespace StudentManagement.Desktop.Theme
             }
             else if (tag == "nav-active")
             {
-                // Reference: solid sapphire pill for active sidebar item
                 button.BackColor = Primary;
                 button.ForeColor = Color.White;
                 button.TextAlign = ContentAlignment.MiddleLeft;
@@ -239,7 +234,7 @@ namespace StudentManagement.Desktop.Theme
             }
             else
             {
-                button.BackColor = primary ? Primary : PrimaryIndigo;
+                button.BackColor = Primary;
                 button.ForeColor = Color.White;
                 button.FlatAppearance.MouseOverBackColor = PrimaryHover;
             }
@@ -268,6 +263,7 @@ namespace StudentManagement.Desktop.Theme
             grid.AllowUserToResizeRows = false;
             grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            grid.ColumnHeadersHeight = 40;
             grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = HeaderBack,
@@ -278,7 +274,6 @@ namespace StudentManagement.Desktop.Theme
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 Padding = new Padding(8, 4, 8, 4)
             };
-            grid.ColumnHeadersHeight = 40;
             grid.DefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = Card,
@@ -312,48 +307,15 @@ namespace StudentManagement.Desktop.Theme
             return TextMuted;
         }
 
-        public static Panel CreateCard(string title, Control content)
+        public static void PaintCardBorder(PaintEventArgs e, Control card, Color accent)
         {
-            Panel panel = new Panel();
-            panel.Tag = "card";
-            panel.BackColor = Card;
-            panel.Padding = new Padding(16);
-            panel.Margin = new Padding(8);
-            panel.Paint += delegate (object sender, PaintEventArgs e)
-            {
-                using (Pen pen = new Pen(Border))
-                {
-                    e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
-                }
-            };
-
-            Label lbl = new Label();
-            lbl.Text = title;
-            lbl.Tag = "muted";
-            lbl.Font = FontSubtitle;
-            lbl.ForeColor = TextMuted;
-            lbl.Dock = DockStyle.Top;
-            lbl.Height = 28;
-            panel.Controls.Add(lbl);
-
-            if (content != null)
-            {
-                content.Dock = DockStyle.Fill;
-                panel.Controls.Add(content);
-                content.BringToFront();
-            }
-            return panel;
-        }
-
-        public static Label CreateStatValue(string value, Color color)
-        {
-            Label label = new Label();
-            label.Text = value;
-            label.Font = FontMetric;
-            label.ForeColor = color;
-            label.Dock = DockStyle.Fill;
-            label.TextAlign = ContentAlignment.MiddleLeft;
-            return label;
+            if (e == null || card == null)
+                return;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            using (Pen border = new Pen(Border))
+                e.Graphics.DrawRectangle(border, 0, 0, card.Width - 1, card.Height - 1);
+            using (Pen accentPen = new Pen(accent, 3))
+                e.Graphics.DrawLine(accentPen, 0, 8, 0, card.Height - 8);
         }
     }
 }

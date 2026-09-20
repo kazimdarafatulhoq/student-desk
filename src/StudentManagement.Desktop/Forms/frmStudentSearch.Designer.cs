@@ -1,4 +1,3 @@
-using StudentManagement.Desktop.Theme;
 
 using System;
 using System.Collections.Generic;
@@ -29,13 +28,13 @@ namespace StudentManagement.Desktop.Forms
         {
             SuspendLayout();
             Text = "Student Search";
-            BackColor = UITheme.Canvas;
+            BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
 
             lblTitle = new Label
             {
                 Text = "Student Directory",
-                Font = UITheme.FontHeader,
-                ForeColor = UITheme.TextPrimary,
+                Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
                 Location = new Point(16, 12),
                 AutoSize = true
             };
@@ -43,7 +42,7 @@ namespace StudentManagement.Desktop.Forms
             pnlFilter = new Panel
             {
                 Tag = "card",
-                BackColor = UITheme.Card,
+                BackColor = System.Drawing.Color.FromArgb(13, 20, 48),
                 Location = new Point(16, 50),
                 Size = new Size(960, 70)
             };
@@ -70,7 +69,7 @@ namespace StudentManagement.Desktop.Forms
             dgvStudents.Columns.Add("Status", "Status");
             dgvStudents.Columns[0].Width = 40;
 
-            lblCount = new Label { Text = "0 record(s)", Location = new Point(16, 515), AutoSize = true, ForeColor = UITheme.TextMuted };
+            lblCount = new Label { Text = "0 record(s)", Location = new Point(16, 515), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
             btnEdit = new Button { Text = "Edit Profile", Location = new Point(16, 545), Size = new Size(130, 36), Tag = "ghost" };
             btnEdit.Click += btnEdit_Click;
             btnLedger = new Button { Text = "View Financial Ledger", Location = new Point(160, 545), Size = new Size(180, 36), Tag = "ghost" };

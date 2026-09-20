@@ -22,6 +22,7 @@ namespace StudentManagement.Desktop.Forms
         public frmAppUser()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmAppUser(AuthService auth) : this()

@@ -25,6 +25,7 @@ namespace StudentManagement.Desktop.Forms
         public frmExamClearance()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmExamClearance(StudentService students, ExamService exams) : this()

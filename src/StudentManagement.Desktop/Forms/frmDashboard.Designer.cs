@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using StudentManagement.Desktop.Theme;
 
 namespace StudentManagement.Desktop.Forms
 {
@@ -45,15 +44,15 @@ namespace StudentManagement.Desktop.Forms
             lblTitle = new Label
             {
                 AutoSize = true,
-                Font = UITheme.FontHeader,
-                ForeColor = UITheme.TextPrimary,
+                Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
                 Location = new Point(16, 16),
                 Text = "Main Dashboard & Real-Time Analytics"
             };
             lblSubtitle = new Label
             {
                 AutoSize = true,
-                ForeColor = UITheme.TextMuted,
+                ForeColor = System.Drawing.Color.FromArgb(138, 147, 166),
                 Tag = "muted",
                 Location = new Point(16, 48),
                 Text = "Institutional overview for Ideal High School & College."
@@ -68,61 +67,61 @@ namespace StudentManagement.Desktop.Forms
             btnQuickFee.Click += btnQuickFee_Click;
 
             cardStudents = MetricCard(16, 90, "Total Active Students", out lblStudentsTitle, out lblStudents, out lblPaidHint);
-            lblStudents.ForeColor = UITheme.TextPrimary;
-            lblPaidHint.ForeColor = UITheme.Success;
+            lblStudents.ForeColor = System.Drawing.Color.White;
+            lblPaidHint.ForeColor = System.Drawing.Color.FromArgb(16, 185, 129);
             lblPaidHint.Tag = "success";
-            cardStudents.Paint += (s, e) => PaintCard(e, cardStudents, UITheme.Primary);
+            cardStudents.Paint += cardStudents_Paint;
 
             cardCollection = MetricCard(300, 90, "Today's Collection", out lblCollectionTitle, out lblCollection, out lblCollectionHint);
-            lblCollection.ForeColor = UITheme.Primary;
+            lblCollection.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
             lblCollection.Tag = "primary,metric";
-            lblCollectionHint.ForeColor = UITheme.TextMuted;
+            lblCollectionHint.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
             lblCollectionHint.Tag = "muted";
-            cardCollection.Paint += (s, e) => PaintCard(e, cardCollection, UITheme.Primary);
+            cardCollection.Paint += cardCollection_Paint;
 
             cardDues = MetricCard(584, 90, "Current Month Due", out lblDuesTitle, out lblDues, out lblDueHint);
-            lblDues.ForeColor = UITheme.Warning;
+            lblDues.ForeColor = System.Drawing.Color.FromArgb(250, 204, 21);
             lblDues.Tag = "warning,metric";
-            lblDueHint.ForeColor = UITheme.Danger;
+            lblDueHint.ForeColor = System.Drawing.Color.FromArgb(244, 63, 94);
             lblDueHint.Tag = "danger";
-            cardDues.Paint += (s, e) => PaintCard(e, cardDues, UITheme.Warning);
+            cardDues.Paint += cardDues_Paint;
 
             cardEligible = MetricCard(868, 90, "Exam Admit Eligible", out lblEligibleTitle, out lblEligible, out lblEligibleHint);
-            lblEligible.ForeColor = UITheme.Success;
+            lblEligible.ForeColor = System.Drawing.Color.FromArgb(16, 185, 129);
             lblEligible.Tag = "success,metric";
-            lblEligibleHint.ForeColor = UITheme.Danger;
+            lblEligibleHint.ForeColor = System.Drawing.Color.FromArgb(244, 63, 94);
             lblEligibleHint.Tag = "danger";
-            cardEligible.Paint += (s, e) => PaintCard(e, cardEligible, UITheme.Success);
+            cardEligible.Paint += cardEligible_Paint;
 
             cardBreakdown = new Panel
             {
                 Tag = "card",
-                BackColor = UITheme.Card,
+                BackColor = System.Drawing.Color.FromArgb(13, 20, 48),
                 Location = new Point(16, 260),
                 Size = new Size(1132, 220),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
-            cardBreakdown.Paint += (s, e) => PaintCard(e, cardBreakdown, UITheme.AccentPurple);
+            cardBreakdown.Paint += cardBreakdown_Paint;
             lblBreakdownTitle = new Label
             {
                 Text = "Monthly Collection Breakdown",
-                Font = UITheme.FontSubtitle,
-                ForeColor = UITheme.TextPrimary,
+                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
                 Location = new Point(20, 16),
                 AutoSize = true
             };
 
             lblBarTuition = BarLabel("Tuition Fees", 20, 56);
-            barTuition = ThemedBar(20, 80, UITheme.Success);
-            lblPctTuition = PctLabel(UITheme.Success, 1060, 78);
+            barTuition = ThemedBar(20, 80, System.Drawing.Color.FromArgb(16, 185, 129));
+            lblPctTuition = PctLabel(System.Drawing.Color.FromArgb(16, 185, 129), 1060, 78);
 
             lblBarIct = BarLabel("ICT & Computer Lab Fees", 20, 112);
-            barIct = ThemedBar(20, 136, UITheme.AccentCyan);
-            lblPctIct = PctLabel(UITheme.AccentCyan, 1060, 134);
+            barIct = ThemedBar(20, 136, System.Drawing.Color.FromArgb(59, 130, 246));
+            lblPctIct = PctLabel(System.Drawing.Color.FromArgb(59, 130, 246), 1060, 134);
 
             lblBarExam = BarLabel("Term Examination Fees", 20, 168);
-            barExam = ThemedBar(20, 192, UITheme.AccentPurple);
-            lblPctExam = PctLabel(UITheme.AccentPurple, 1060, 190);
+            barExam = ThemedBar(20, 192, System.Drawing.Color.FromArgb(139, 92, 246));
+            lblPctExam = PctLabel(System.Drawing.Color.FromArgb(139, 92, 246), 1060, 190);
 
             cardBreakdown.Controls.AddRange(new Control[]
             {
@@ -134,7 +133,7 @@ namespace StudentManagement.Desktop.Forms
 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = UITheme.Canvas;
+            BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
             ClientSize = new Size(1180, 520);
             Controls.Add(lblTitle);
             Controls.Add(lblSubtitle);
@@ -156,15 +155,15 @@ namespace StudentManagement.Desktop.Forms
             Panel card = new Panel
             {
                 Tag = "card",
-                BackColor = UITheme.Card,
+                BackColor = System.Drawing.Color.FromArgb(13, 20, 48),
                 Location = new Point(x, y),
                 Size = new Size(260, 140)
             };
             titleLabel = new Label
             {
                 Text = title,
-                Font = UITheme.FontSubtitle,
-                ForeColor = UITheme.TextMuted,
+                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.FromArgb(138, 147, 166),
                 Tag = "muted",
                 Location = new Point(20, 18),
                 AutoSize = true
@@ -172,8 +171,8 @@ namespace StudentManagement.Desktop.Forms
             valueLabel = new Label
             {
                 Text = "...",
-                Font = UITheme.FontMetric,
-                ForeColor = UITheme.TextPrimary,
+                Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
                 Location = new Point(20, 50),
                 AutoSize = true
             };
@@ -182,7 +181,7 @@ namespace StudentManagement.Desktop.Forms
                 Text = string.Empty,
                 Location = new Point(20, 100),
                 AutoSize = true,
-                ForeColor = UITheme.TextMuted
+                ForeColor = System.Drawing.Color.FromArgb(138, 147, 166)
             };
             card.Controls.Add(titleLabel);
             card.Controls.Add(valueLabel);
@@ -195,7 +194,7 @@ namespace StudentManagement.Desktop.Forms
             return new Label
             {
                 Text = text,
-                ForeColor = UITheme.TextMuted,
+                ForeColor = System.Drawing.Color.FromArgb(138, 147, 166),
                 Tag = "muted",
                 Location = new Point(x, y),
                 AutoSize = true
@@ -213,7 +212,7 @@ namespace StudentManagement.Desktop.Forms
                 Maximum = 100,
                 Value = 0,
                 ForeColor = fill,
-                BackColor = UITheme.InputBack
+                BackColor = System.Drawing.Color.FromArgb(17, 24, 39)
             };
         }
 
@@ -229,9 +228,36 @@ namespace StudentManagement.Desktop.Forms
             };
         }
 
+        private void cardStudents_Paint(object sender, PaintEventArgs e)
+        {
+            PaintCard(e, cardStudents, Color.FromArgb(37, 99, 235));
+        }
+
+        private void cardCollection_Paint(object sender, PaintEventArgs e)
+        {
+            PaintCard(e, cardCollection, Color.FromArgb(37, 99, 235));
+        }
+
+        private void cardDues_Paint(object sender, PaintEventArgs e)
+        {
+            PaintCard(e, cardDues, Color.FromArgb(250, 204, 21));
+        }
+
+        private void cardEligible_Paint(object sender, PaintEventArgs e)
+        {
+            PaintCard(e, cardEligible, Color.FromArgb(16, 185, 129));
+        }
+
+        private void cardBreakdown_Paint(object sender, PaintEventArgs e)
+        {
+            PaintCard(e, cardBreakdown, Color.FromArgb(139, 92, 246));
+        }
+
         private static void PaintCard(PaintEventArgs e, Panel card, Color accent)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            using (Pen border = new Pen(Color.FromArgb(36, 48, 73)))
+                e.Graphics.DrawRectangle(border, 0, 0, card.Width - 1, card.Height - 1);
             using (Pen accentPen = new Pen(accent, 3))
                 e.Graphics.DrawLine(accentPen, 0, 8, 0, card.Height - 8);
         }

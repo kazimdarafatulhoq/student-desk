@@ -1,6 +1,5 @@
 using System.Drawing;
 using System.Windows.Forms;
-using StudentManagement.Desktop.Theme;
 
 namespace StudentManagement.Desktop.Forms
 {
@@ -55,8 +54,8 @@ namespace StudentManagement.Desktop.Forms
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = UITheme.FontHeader;
-            this.lblTitle.ForeColor = UITheme.TextPrimary;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.Location = new System.Drawing.Point(16, 12);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(220, 25);
@@ -66,7 +65,7 @@ namespace StudentManagement.Desktop.Forms
             // lblSelect
             // 
             this.lblSelect.AutoSize = true;
-            this.lblSelect.ForeColor = UITheme.TextMuted;
+            this.lblSelect.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
             this.lblSelect.Location = new System.Drawing.Point(16, 55);
             this.lblSelect.Name = "lblSelect";
             this.lblSelect.Size = new System.Drawing.Size(48, 15);
@@ -85,7 +84,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             // cardInvoiced
             // 
-            this.cardInvoiced.BackColor = UITheme.Card;
+            this.cardInvoiced.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             this.cardInvoiced.Controls.Add(this.lblInvoicedTitle);
             this.cardInvoiced.Controls.Add(this.lblInvoiced);
             this.cardInvoiced.Location = new System.Drawing.Point(16, 95);
@@ -97,7 +96,7 @@ namespace StudentManagement.Desktop.Forms
             // lblInvoicedTitle
             // 
             this.lblInvoicedTitle.AutoSize = true;
-            this.lblInvoicedTitle.ForeColor = UITheme.TextMuted;
+            this.lblInvoicedTitle.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
             this.lblInvoicedTitle.Location = new System.Drawing.Point(12, 12);
             this.lblInvoicedTitle.Name = "lblInvoicedTitle";
             this.lblInvoicedTitle.Size = new System.Drawing.Size(130, 15);
@@ -107,8 +106,8 @@ namespace StudentManagement.Desktop.Forms
             // lblInvoiced
             // 
             this.lblInvoiced.AutoSize = true;
-            this.lblInvoiced.Font = UITheme.FontHeader;
-            this.lblInvoiced.ForeColor = UITheme.Danger;
+            this.lblInvoiced.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblInvoiced.ForeColor = System.Drawing.Color.FromArgb(244, 63, 94);
             this.lblInvoiced.Location = new System.Drawing.Point(12, 45);
             this.lblInvoiced.Name = "lblInvoiced";
             this.lblInvoiced.Size = new System.Drawing.Size(60, 25);
@@ -117,7 +116,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             // cardPaid
             // 
-            this.cardPaid.BackColor = UITheme.Card;
+            this.cardPaid.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             this.cardPaid.Controls.Add(this.lblPaidTitle);
             this.cardPaid.Controls.Add(this.lblPaid);
             this.cardPaid.Location = new System.Drawing.Point(250, 95);
@@ -129,7 +128,7 @@ namespace StudentManagement.Desktop.Forms
             // lblPaidTitle
             // 
             this.lblPaidTitle.AutoSize = true;
-            this.lblPaidTitle.ForeColor = UITheme.TextMuted;
+            this.lblPaidTitle.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
             this.lblPaidTitle.Location = new System.Drawing.Point(12, 12);
             this.lblPaidTitle.Name = "lblPaidTitle";
             this.lblPaidTitle.Size = new System.Drawing.Size(110, 15);
@@ -139,8 +138,8 @@ namespace StudentManagement.Desktop.Forms
             // lblPaid
             // 
             this.lblPaid.AutoSize = true;
-            this.lblPaid.Font = UITheme.FontHeader;
-            this.lblPaid.ForeColor = UITheme.Success;
+            this.lblPaid.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblPaid.ForeColor = System.Drawing.Color.FromArgb(16, 185, 129);
             this.lblPaid.Location = new System.Drawing.Point(12, 45);
             this.lblPaid.Name = "lblPaid";
             this.lblPaid.Size = new System.Drawing.Size(60, 25);
@@ -149,7 +148,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             // cardAdvance
             // 
-            this.cardAdvance.BackColor = UITheme.Card;
+            this.cardAdvance.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             this.cardAdvance.Controls.Add(this.lblAdvanceTitle);
             this.cardAdvance.Controls.Add(this.lblAdvance);
             this.cardAdvance.Location = new System.Drawing.Point(484, 95);
@@ -161,7 +160,7 @@ namespace StudentManagement.Desktop.Forms
             // lblAdvanceTitle
             // 
             this.lblAdvanceTitle.AutoSize = true;
-            this.lblAdvanceTitle.ForeColor = UITheme.TextMuted;
+            this.lblAdvanceTitle.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
             this.lblAdvanceTitle.Location = new System.Drawing.Point(12, 12);
             this.lblAdvanceTitle.Name = "lblAdvanceTitle";
             this.lblAdvanceTitle.Size = new System.Drawing.Size(90, 15);
@@ -171,8 +170,8 @@ namespace StudentManagement.Desktop.Forms
             // lblAdvance
             // 
             this.lblAdvance.AutoSize = true;
-            this.lblAdvance.Font = UITheme.FontHeader;
-            this.lblAdvance.ForeColor = UITheme.Primary;
+            this.lblAdvance.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblAdvance.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
             this.lblAdvance.Location = new System.Drawing.Point(12, 45);
             this.lblAdvance.Name = "lblAdvance";
             this.lblAdvance.Size = new System.Drawing.Size(60, 25);
@@ -181,7 +180,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             // cardDue
             // 
-            this.cardDue.BackColor = UITheme.Card;
+            this.cardDue.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             this.cardDue.Controls.Add(this.lblDueTitle);
             this.cardDue.Controls.Add(this.lblDue);
             this.cardDue.Location = new System.Drawing.Point(718, 95);
@@ -193,7 +192,7 @@ namespace StudentManagement.Desktop.Forms
             // lblDueTitle
             // 
             this.lblDueTitle.AutoSize = true;
-            this.lblDueTitle.ForeColor = UITheme.TextMuted;
+            this.lblDueTitle.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
             this.lblDueTitle.Location = new System.Drawing.Point(12, 12);
             this.lblDueTitle.Name = "lblDueTitle";
             this.lblDueTitle.Size = new System.Drawing.Size(100, 15);
@@ -203,8 +202,8 @@ namespace StudentManagement.Desktop.Forms
             // lblDue
             // 
             this.lblDue.AutoSize = true;
-            this.lblDue.Font = UITheme.FontHeader;
-            this.lblDue.ForeColor = UITheme.Warning;
+            this.lblDue.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblDue.ForeColor = System.Drawing.Color.FromArgb(250, 204, 21);
             this.lblDue.Location = new System.Drawing.Point(12, 45);
             this.lblDue.Name = "lblDue";
             this.lblDue.Size = new System.Drawing.Size(60, 25);
@@ -246,7 +245,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = UITheme.Canvas;
+            this.BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
             this.ClientSize = new System.Drawing.Size(1000, 620);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.lblSelect);
@@ -279,7 +278,7 @@ namespace StudentManagement.Desktop.Forms
             Panel panel = sender as Panel;
             if (panel == null)
                 return;
-            using (Pen pen = new Pen(UITheme.Border))
+            using (Pen pen = new Pen(System.Drawing.Color.FromArgb(36, 48, 73)))
             {
                 e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
             }

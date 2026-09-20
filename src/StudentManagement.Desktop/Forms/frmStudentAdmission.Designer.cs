@@ -1,4 +1,3 @@
-using StudentManagement.Desktop.Theme;
 
 using System;
 using System.Collections.Generic;
@@ -39,13 +38,13 @@ namespace StudentManagement.Desktop.Forms
             SuspendLayout();
             Text = "Student Admission";
             AutoScroll = true;
-            BackColor = UITheme.Canvas;
+            BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
 
             lblTitle = new Label
             {
                 Text = "Student Registration & Admission Form",
-                Font = UITheme.FontHeader,
-                ForeColor = UITheme.TextPrimary,
+                Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
                 Location = new Point(16, 12),
                 AutoSize = true
             };
@@ -53,7 +52,7 @@ namespace StudentManagement.Desktop.Forms
             {
                 Text = "Capture student biodata, guardian contacts, and class placement.",
                 Tag = "muted",
-                ForeColor = UITheme.TextMuted,
+                ForeColor = System.Drawing.Color.FromArgb(138, 147, 166),
                 Location = new Point(16, 44),
                 AutoSize = true
             };
@@ -86,7 +85,7 @@ namespace StudentManagement.Desktop.Forms
                 Text = "Permanent same as Present",
                 Location = new Point(20, 125),
                 AutoSize = true,
-                ForeColor = UITheme.TextPrimary
+                ForeColor = System.Drawing.Color.White
             };
             grpAddress.Controls.Add(chkSameAddress);
 
@@ -112,21 +111,21 @@ private static GroupBox Section(string title, Point location, Size size)
             group.Text = title;
             group.Location = location;
             group.Size = size;
-            group.BackColor = UITheme.Card;
-            group.ForeColor = UITheme.Primary;
-            group.Font = UITheme.FontSection;
+            group.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
+            group.ForeColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            group.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             return group;
         }
 
         private static void LabelAt(Control parent, string text, int x, int y)
         {
-            parent.Controls.Add(new Label { Text = text, Location = new Point(x, y), AutoSize = true, ForeColor = UITheme.TextMuted });
+            parent.Controls.Add(new Label { Text = text, Location = new Point(x, y), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) });
         }
 
         private static TextBox Field(Control parent, string label, int x, int y, int width)
         {
             LabelAt(parent, label, x, y);
-            var tb = new TextBox { Location = new Point(x, y + 20), Size = new Size(width, 26), BackColor = UITheme.InputBack, ForeColor = UITheme.TextPrimary, BorderStyle = BorderStyle.FixedSingle };
+            var tb = new TextBox { Location = new Point(x, y + 20), Size = new Size(width, 26), BackColor = System.Drawing.Color.FromArgb(17, 24, 39), ForeColor = System.Drawing.Color.White, BorderStyle = BorderStyle.FixedSingle };
             parent.Controls.Add(tb);
             return tb;
         }
@@ -140,8 +139,8 @@ private static GroupBox Section(string title, Point location, Size size)
                 Size = new Size(width, height),
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical,
-                BackColor = UITheme.InputBack,
-                ForeColor = UITheme.TextPrimary,
+                BackColor = System.Drawing.Color.FromArgb(17, 24, 39),
+                ForeColor = System.Drawing.Color.White,
                 BorderStyle = BorderStyle.FixedSingle
             };
             parent.Controls.Add(tb);
@@ -157,8 +156,8 @@ private static GroupBox Section(string title, Point location, Size size)
                 Size = new Size(width, 26),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 FlatStyle = FlatStyle.Flat,
-                BackColor = UITheme.InputBack,
-                ForeColor = UITheme.TextPrimary
+                BackColor = System.Drawing.Color.FromArgb(17, 24, 39),
+                ForeColor = System.Drawing.Color.White
             };
             parent.Controls.Add(cb);
             return cb;

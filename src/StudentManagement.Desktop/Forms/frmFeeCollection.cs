@@ -26,6 +26,7 @@ namespace StudentManagement.Desktop.Forms
         public frmFeeCollection()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmFeeCollection(StudentService students, FeeService fees) : this()

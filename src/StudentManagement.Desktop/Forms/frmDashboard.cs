@@ -19,6 +19,7 @@ namespace StudentManagement.Desktop.Forms
         public frmDashboard()
         {
             InitializeComponent();
+            UITheme.ApplyForm(this);
         }
 
         public frmDashboard(StudentService students, FeeService fees) : this()
