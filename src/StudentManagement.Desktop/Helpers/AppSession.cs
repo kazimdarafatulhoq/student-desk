@@ -1,13 +1,7 @@
+using System;
+using System.IO;
 using StudentManagement.Application.DTOs;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
 namespace StudentManagement.Desktop.Helpers
 {
     public static class AppSession
@@ -17,12 +11,15 @@ namespace StudentManagement.Desktop.Helpers
         public static string ReportsPath { get; set; } =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "StudentManagement", "Reports");
 
-        public static bool IsAuthenticated => Current is not null;
+        /// <summary>When true, the app uses in-memory demo data (no SQL Server).</summary>
+        public static bool OfflineMode { get; set; }
+
+        public static bool IsAuthenticated => Current != null;
 
         public static void Set(AuthSession session) => Current = session;
 
         public static void Clear() => Current = null;
 
-        public static string RoleDisplay => Current?.Role.ToString() ?? "Guest";
+        public static string RoleDisplay => Current != null ? Current.Role.ToString() : "Guest";
     }
 }

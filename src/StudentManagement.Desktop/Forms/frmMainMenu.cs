@@ -97,6 +97,14 @@ namespace StudentManagement.Desktop.Forms
         {
             try
             {
+                if (AppSession.OfflineMode)
+                {
+                    lblDbStatus.Text = "Database: Design Mode (Offline)";
+                    lblDbStatus.ForeColor = UITheme.Warning;
+                    lblSync.Text = "Ledger sync: Demo data";
+                    return;
+                }
+
                 IUnitOfWork uow = _scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 bool ok = await uow.TestConnectionAsync();
                 lblDbStatus.Text = ok ? "Database: Connected" : "Database: Offline";

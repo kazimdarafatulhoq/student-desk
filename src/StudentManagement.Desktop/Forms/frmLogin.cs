@@ -1,16 +1,12 @@
+using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using StudentManagement.Application.DTOs;
 using StudentManagement.Application.Services;
 using StudentManagement.Desktop.Helpers;
 using StudentManagement.Desktop.Theme;
+using StudentManagement.Domain.Enums;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
 namespace StudentManagement.Desktop.Forms
 {
     public partial class frmLogin : Form
@@ -29,9 +25,15 @@ namespace StudentManagement.Desktop.Forms
             _auth = auth;
             UITheme.ApplyForm(this);
             AcceptButton = btnLogin;
+            if (AppSession.OfflineMode)
+            {
+                lblHint.Text = "Design mode (no database) — admin / Admin@123";
+                lblStatus.Text = "OfflineMode: SQL Server disconnected";
+                lblStatus.ForeColor = UITheme.Warning;
+            }
         }
 
-        private async void btnLogin_Click(object? sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
             try
             {
@@ -39,11 +41,33 @@ namespace StudentManagement.Desktop.Forms
                 lblStatus.Text = "Authenticating...";
                 lblStatus.ForeColor = UITheme.TextMuted;
 
-                var session = await _auth.LoginAsync(new LoginRequest
+                string user = txtUsername.Text.Trim();
+                string pass = txtPassword.Text;
+
+                AuthSession session;
+                if (AppSession.OfflineMode)
                 {
-                    Username = txtUsername.Text.Trim(),
-                    Password = txtPassword.Text
-                });
+                    if (!string.Equals(user, "admin", StringComparison.OrdinalIgnoreCase) || pass != "Admin@123")
+                        throw new UnauthorizedAccessException("Invalid username or password.");
+
+                    session = new AuthSession
+                    {
+                        UserId = 1,
+                        Username = "admin",
+                        FullName = "System Super Admin",
+                        Role = UserRole.SuperAdmin,
+                        AcademicSession = "2025-2026",
+                        LoginAt = DateTime.Now
+                    };
+                }
+                else
+                {
+                    session = await _auth.LoginAsync(new LoginRequest
+                    {
+                        Username = user,
+                        Password = pass
+                    });
+                }
 
                 AppSession.Set(session);
                 DialogResult = DialogResult.OK;

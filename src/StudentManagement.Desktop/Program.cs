@@ -3,7 +3,11 @@ using System.Configuration;
 using System.Windows.Forms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StudentManagement.Application.Interfaces;
+using StudentManagement.Application.Services;
 using StudentManagement.Desktop.Forms;
+using StudentManagement.Desktop.Helpers;
+using StudentManagement.Desktop.Offline;
 using StudentManagement.Infrastructure;
 using StudentManagement.Infrastructure.Data;
 
@@ -25,14 +29,35 @@ namespace StudentManagement.Desktop
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-            // Prefer App.config connection string (your SSMS / existing naming).
+            // OfflineMode = true → no SQL Server (UI / theme design).
+            // Set to false later when you want the real backend.
+            bool offline =
+                string.Equals(configuration["App:OfflineMode"], "true", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(ConfigurationManager.AppSettings["OfflineMode"], "true", StringComparison.OrdinalIgnoreCase);
+
+            AppSession.OfflineMode = offline;
+            AppSession.InstitutionName = configuration["App:InstitutionName"] ?? AppSession.InstitutionName;
+
             var appConfigCs =
                 ConfigurationManager.ConnectionStrings["StudentManagementDb"]?.ConnectionString
                 ?? ConfigurationManager.ConnectionStrings["StudentManagementSDB"]?.ConnectionString;
 
             var services = new ServiceCollection();
             services.AddSingleton<IConfiguration>(configuration);
-            services.AddInfrastructure(configuration, appConfigCs);
+
+            if (offline)
+            {
+                services.AddSingleton<IUnitOfWork, OfflineUnitOfWork>();
+                services.AddScoped<StudentService>();
+                services.AddScoped<FeeService>();
+                services.AddScoped<AuthService>();
+                services.AddScoped<ExamService>();
+            }
+            else
+            {
+                services.AddInfrastructure(configuration, appConfigCs);
+            }
+
             services.AddTransient<frmLogin>();
             services.AddTransient<frmMainMenu>();
             services.AddTransient<frmStudentAdmission>();
@@ -46,24 +71,23 @@ namespace StudentManagement.Desktop
 
             Services = services.BuildServiceProvider();
 
-            try
+            if (!offline)
             {
-                using var scope = Services.CreateScope();
-                var db = scope.ServiceProvider.GetRequiredService<StudentManagementDbContext>();
-                DatabaseBootstrapper.InitializeAsync(db).GetAwaiter().GetResult();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    ex.Message +
-                    "\n\nApp.config server: NGBC-IT-168\\MSSQLSERVER1" +
-                    "\nDatabase: StudentManagementSDB" +
-                    "\n\nIf the database does not exist yet, run as SQL admin:" +
-                    "\n  database\\CreateDatabaseAndGrantAccess.sql" +
-                    "\nThen restart the app.",
-                    "Database Setup Required",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                try
+                {
+                    using var scope = Services.CreateScope();
+                    var db = scope.ServiceProvider.GetRequiredService<StudentManagementDbContext>();
+                    DatabaseBootstrapper.InitializeAsync(db).GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        ex.Message +
+                        "\n\nOr set App:OfflineMode=true in appsettings.json to design the UI without SQL Server.",
+                        "Database Setup Required",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
             }
 
             using var login = Services.GetRequiredService<frmLogin>();
