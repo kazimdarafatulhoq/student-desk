@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ using StudentManagement.Domain.Enums;
 
 namespace StudentManagement.Desktop.Forms
 {
+    [DesignerCategory("Form")]
     public partial class frmMainMenu : Form
     {
         private IServiceScope? _scope;

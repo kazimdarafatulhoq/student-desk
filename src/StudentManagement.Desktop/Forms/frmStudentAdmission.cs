@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -14,6 +15,7 @@ using StudentManagement.Domain.Enums;
 
 namespace StudentManagement.Desktop.Forms
 {
+    [DesignerCategory("Form")]
     public partial class frmStudentAdmission : Form
     {
         private StudentService? _students;

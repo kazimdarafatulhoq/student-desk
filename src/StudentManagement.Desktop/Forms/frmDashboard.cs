@@ -5,12 +5,14 @@ using StudentManagement.Desktop.Theme;
 using StudentManagement.Domain.Enums;
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StudentManagement.Desktop.Forms
 {
+    [DesignerCategory("Form")]
     public partial class frmDashboard : Form
     {
         private StudentService? _students;

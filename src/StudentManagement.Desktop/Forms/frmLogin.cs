@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using StudentManagement.Application.DTOs;
@@ -9,6 +10,7 @@ using StudentManagement.Domain.Enums;
 
 namespace StudentManagement.Desktop.Forms
 {
+    [DesignerCategory("Form")]
     public partial class frmLogin : Form
     {
         private AuthService? _auth;
