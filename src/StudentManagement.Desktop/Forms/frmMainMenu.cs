@@ -21,13 +21,15 @@ namespace StudentManagement.Desktop.Forms
         public frmMainMenu()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmMainMenu(IServiceProvider services) : this()
         {
             _scope = services.CreateScope();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             _clockTimer = new System.Windows.Forms.Timer();
             _clockTimer.Interval = 1000;
             _clockTimer.Tick += ClockTimer_Tick;

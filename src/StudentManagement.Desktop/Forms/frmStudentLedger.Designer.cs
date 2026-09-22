@@ -5,6 +5,7 @@ namespace StudentManagement.Desktop.Forms
 {
     partial class frmStudentLedger
     {
+        private System.ComponentModel.IContainer components = null;
         private Label lblTitle;
         private Label lblSelect;
         private ComboBox cboStudent;
@@ -24,8 +25,19 @@ namespace StudentManagement.Desktop.Forms
         private Button btnPrint;
         private Button btnExport;
 
+        
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblSelect = new System.Windows.Forms.Label();
             this.cboStudent = new System.Windows.Forms.ComboBox();

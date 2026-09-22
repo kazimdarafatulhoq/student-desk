@@ -26,14 +26,16 @@ namespace StudentManagement.Desktop.Forms
         public frmStudentLedger()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmStudentLedger(StudentService students, FeeService fees) : this()
         {
             _students = students;
             _fees = fees;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             Load += async (s, e) => await LoadStudentsAsync();
             dgvLedger.CellFormatting += dgvLedger_CellFormatting;
         }

@@ -25,14 +25,16 @@ namespace StudentManagement.Desktop.Forms
         public frmExamClearance()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmExamClearance(StudentService students, ExamService exams) : this()
         {
             _students = students;
             _exams = exams;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             Load += async (s, e) => await LoadDataAsync();
         }
 

@@ -17,13 +17,15 @@ namespace StudentManagement.Desktop.Forms
         public frmLogin()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmLogin(AuthService auth) : this()
         {
             _auth = auth;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             AcceptButton = btnLogin;
             if (AppSession.OfflineMode)
             {

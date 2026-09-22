@@ -1,16 +1,12 @@
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
+
 namespace StudentManagement.Desktop.Forms
 {
     partial class frmFeeCollection
     {
+        private IContainer components = null;
         private Label lblTitle;
         private Panel pnlSearch;
         private TextBox txtSearch;
@@ -22,79 +18,326 @@ namespace StudentManagement.Desktop.Forms
         private Label lblBioDue;
         private Label lblBioPhone;
         private Panel pnlMatrix;
+        private Label lblMonths;
         private FlowLayoutPanel flpMonths;
+        private Panel pnlPay;
+        private Label lblUnitTuition;
         private TextBox txtTuitionUnit;
+        private Label lblFine;
         private TextBox txtFine;
+        private Label lblWaiver;
         private TextBox txtWaiver;
+        private Label lblPayMethod;
         private ComboBox cboPaymentMethod;
+        private Label lblTxnRef;
         private TextBox txtTxnRef;
+        private Label lblRemarks;
         private TextBox txtRemarks;
         private Label lblTuitionTotal;
         private Label lblNetPayable;
         private Button btnCollect;
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
         private void InitializeComponent()
         {
-            SuspendLayout();
-            Text = "Fee Collection";
-            AutoScroll = true;
-            BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
-
-            lblTitle = new Label { Text = "Fee Collection Counter", Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold), ForeColor = System.Drawing.Color.White, Location = new Point(16, 12), AutoSize = true };
-
-            pnlSearch = new Panel { Tag = "card", BackColor = System.Drawing.Color.FromArgb(13, 20, 48), Location = new Point(16, 50), Size = new Size(960, 60) };
-            txtSearch = new TextBox { Location = new Point(16, 16), Width = 360, PlaceholderText = "Reg ID or Mobile" };
-            btnFind = new Button { Text = "Quick Search", Location = new Point(400, 12), Size = new Size(130, 34) };
-            btnFind.Click += btnFind_Click;
-            pnlSearch.Controls.AddRange(new Control[] { txtSearch, btnFind });
-
-            pnlBio = new Panel { Tag = "card", BackColor = System.Drawing.Color.FromArgb(13, 20, 48), Location = new Point(16, 124), Size = new Size(960, 100) };
-            lblBioName = new Label { Text = "—", Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold), Location = new Point(16, 12), AutoSize = true, ForeColor = System.Drawing.Color.White };
-            lblBioReg = new Label { Text = "—", Location = new Point(16, 48), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
-            lblBioClass = new Label { Text = "—", Location = new Point(220, 48), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
-            lblBioPhone = new Label { Text = "—", Location = new Point(520, 48), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
-            lblBioDue = new Label { Text = "—", Location = new Point(720, 20), AutoSize = true, Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold), ForeColor = System.Drawing.Color.FromArgb(244, 63, 94) };
-            pnlBio.Controls.AddRange(new Control[] { lblBioName, lblBioReg, lblBioClass, lblBioPhone, lblBioDue });
-
-            pnlMatrix = new Panel { Tag = "card", BackColor = System.Drawing.Color.FromArgb(13, 20, 48), Location = new Point(16, 240), Size = new Size(960, 140) };
-            var lblMonths = new Label { Text = "Tuition Fee Months", Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold), Location = new Point(16, 10), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
-            flpMonths = new FlowLayoutPanel { Location = new Point(8, 36), Size = new Size(940, 90), BackColor = System.Drawing.Color.FromArgb(13, 20, 48) };
-            pnlMatrix.Controls.AddRange(new Control[] { lblMonths, flpMonths });
-
-            var pnlPay = new Panel { Tag = "card", BackColor = System.Drawing.Color.FromArgb(13, 20, 48), Location = new Point(16, 396), Size = new Size(960, 180) };
-            LabelAt(pnlPay, "Unit Tuition (৳)", 16, 16); txtTuitionUnit = Tb(pnlPay, 16, 36, 120); txtTuitionUnit.Text = "0";
-            LabelAt(pnlPay, "Fine (৳)", 160, 16); txtFine = Tb(pnlPay, 160, 36, 100); txtFine.Text = "0";
-            LabelAt(pnlPay, "Waiver (৳)", 280, 16); txtWaiver = Tb(pnlPay, 280, 36, 100); txtWaiver.Text = "0";
-            LabelAt(pnlPay, "Payment Method", 400, 16);
-            cboPaymentMethod = new ComboBox { Location = new Point(400, 36), Width = 160, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
-            pnlPay.Controls.Add(cboPaymentMethod);
-            LabelAt(pnlPay, "Txn Ref", 580, 16); txtTxnRef = Tb(pnlPay, 580, 36, 160);
-            LabelAt(pnlPay, "Remarks", 16, 80); txtRemarks = Tb(pnlPay, 16, 100, 400);
-            lblTuitionTotal = new Label { Text = "Tuition: ৳ 0.00", Location = new Point(450, 100), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
-            lblNetPayable = new Label { Text = "৳ 0.00", Location = new Point(650, 90), AutoSize = true, Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold), ForeColor = System.Drawing.Color.FromArgb(16, 185, 129) };
-            btnCollect = new Button { Text = "Collect & Print Receipt", Location = new Point(750, 130), Size = new Size(180, 36), Tag = "success" };
-            btnCollect.Click += btnCollect_Click;
-            pnlPay.Controls.AddRange(new Control[] { lblTuitionTotal, lblNetPayable, btnCollect });
-
-            Controls.AddRange(new Control[] { lblTitle, pnlSearch, pnlBio, pnlMatrix, pnlPay });
-            ResumeLayout(false);
-        }
-
-        private static void LabelAt(Control p, string t, int x, int y)
-        {
-            Label lbl = new Label();
-            lbl.Text = t;
-            lbl.Location = new Point(x, y);
-            lbl.AutoSize = true;
-            lbl.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
-            p.Controls.Add(lbl);
-        }
-
-        private static TextBox Tb(Control p, int x, int y, int w)
-        {
-            var tb = new TextBox { Location = new Point(x, y), Width = w, BackColor = System.Drawing.Color.FromArgb(17, 24, 39), ForeColor = System.Drawing.Color.White, BorderStyle = BorderStyle.FixedSingle };
-            p.Controls.Add(tb);
-            return tb;
+            this.components = new System.ComponentModel.Container();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.pnlSearch = new System.Windows.Forms.Panel();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.btnFind = new System.Windows.Forms.Button();
+            this.pnlBio = new System.Windows.Forms.Panel();
+            this.lblBioName = new System.Windows.Forms.Label();
+            this.lblBioReg = new System.Windows.Forms.Label();
+            this.lblBioClass = new System.Windows.Forms.Label();
+            this.lblBioPhone = new System.Windows.Forms.Label();
+            this.lblBioDue = new System.Windows.Forms.Label();
+            this.pnlMatrix = new System.Windows.Forms.Panel();
+            this.lblMonths = new System.Windows.Forms.Label();
+            this.flpMonths = new System.Windows.Forms.FlowLayoutPanel();
+            this.pnlPay = new System.Windows.Forms.Panel();
+            this.lblUnitTuition = new System.Windows.Forms.Label();
+            this.txtTuitionUnit = new System.Windows.Forms.TextBox();
+            this.lblFine = new System.Windows.Forms.Label();
+            this.txtFine = new System.Windows.Forms.TextBox();
+            this.lblWaiver = new System.Windows.Forms.Label();
+            this.txtWaiver = new System.Windows.Forms.TextBox();
+            this.lblPayMethod = new System.Windows.Forms.Label();
+            this.cboPaymentMethod = new System.Windows.Forms.ComboBox();
+            this.lblTxnRef = new System.Windows.Forms.Label();
+            this.txtTxnRef = new System.Windows.Forms.TextBox();
+            this.lblRemarks = new System.Windows.Forms.Label();
+            this.txtRemarks = new System.Windows.Forms.TextBox();
+            this.lblTuitionTotal = new System.Windows.Forms.Label();
+            this.lblNetPayable = new System.Windows.Forms.Label();
+            this.btnCollect = new System.Windows.Forms.Button();
+            this.pnlSearch.SuspendLayout();
+            this.pnlBio.SuspendLayout();
+            this.pnlMatrix.SuspendLayout();
+            this.pnlPay.SuspendLayout();
+            this.SuspendLayout();
+            // lblTitle
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.White;
+            this.lblTitle.Location = new System.Drawing.Point(16, 12);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(200, 25);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "Fee Collection Counter";
+            // pnlSearch
+            this.pnlSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlSearch.Controls.Add(this.txtSearch);
+            this.pnlSearch.Controls.Add(this.btnFind);
+            this.pnlSearch.Location = new System.Drawing.Point(16, 50);
+            this.pnlSearch.Name = "pnlSearch";
+            this.pnlSearch.Size = new System.Drawing.Size(960, 60);
+            this.pnlSearch.TabIndex = 1;
+            this.pnlSearch.Tag = "card";
+            // txtSearch
+            this.txtSearch.Location = new System.Drawing.Point(16, 16);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(360, 23);
+            this.txtSearch.TabIndex = 0;
+            // btnFind
+            this.btnFind.Location = new System.Drawing.Point(400, 12);
+            this.btnFind.Name = "btnFind";
+            this.btnFind.Size = new System.Drawing.Size(130, 34);
+            this.btnFind.TabIndex = 1;
+            this.btnFind.Text = "Quick Search";
+            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
+            // pnlBio
+            this.pnlBio.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlBio.Controls.Add(this.lblBioName);
+            this.pnlBio.Controls.Add(this.lblBioReg);
+            this.pnlBio.Controls.Add(this.lblBioClass);
+            this.pnlBio.Controls.Add(this.lblBioPhone);
+            this.pnlBio.Controls.Add(this.lblBioDue);
+            this.pnlBio.Location = new System.Drawing.Point(16, 124);
+            this.pnlBio.Name = "pnlBio";
+            this.pnlBio.Size = new System.Drawing.Size(960, 100);
+            this.pnlBio.TabIndex = 2;
+            this.pnlBio.Tag = "card";
+            // labels bio
+            this.lblBioName.AutoSize = true;
+            this.lblBioName.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblBioName.ForeColor = System.Drawing.Color.White;
+            this.lblBioName.Location = new System.Drawing.Point(16, 12);
+            this.lblBioName.Name = "lblBioName";
+            this.lblBioName.Size = new System.Drawing.Size(20, 25);
+            this.lblBioName.TabIndex = 0;
+            this.lblBioName.Text = "-";
+            this.lblBioReg.AutoSize = true;
+            this.lblBioReg.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblBioReg.Location = new System.Drawing.Point(16, 48);
+            this.lblBioReg.Name = "lblBioReg";
+            this.lblBioReg.Size = new System.Drawing.Size(12, 15);
+            this.lblBioReg.TabIndex = 1;
+            this.lblBioReg.Text = "-";
+            this.lblBioClass.AutoSize = true;
+            this.lblBioClass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblBioClass.Location = new System.Drawing.Point(220, 48);
+            this.lblBioClass.Name = "lblBioClass";
+            this.lblBioClass.Size = new System.Drawing.Size(12, 15);
+            this.lblBioClass.TabIndex = 2;
+            this.lblBioClass.Text = "-";
+            this.lblBioPhone.AutoSize = true;
+            this.lblBioPhone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblBioPhone.Location = new System.Drawing.Point(520, 48);
+            this.lblBioPhone.Name = "lblBioPhone";
+            this.lblBioPhone.Size = new System.Drawing.Size(12, 15);
+            this.lblBioPhone.TabIndex = 3;
+            this.lblBioPhone.Text = "-";
+            this.lblBioDue.AutoSize = true;
+            this.lblBioDue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblBioDue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(63)))), ((int)(((byte)(94)))));
+            this.lblBioDue.Location = new System.Drawing.Point(720, 20);
+            this.lblBioDue.Name = "lblBioDue";
+            this.lblBioDue.Size = new System.Drawing.Size(12, 19);
+            this.lblBioDue.TabIndex = 4;
+            this.lblBioDue.Text = "-";
+            // pnlMatrix
+            this.pnlMatrix.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlMatrix.Controls.Add(this.lblMonths);
+            this.pnlMatrix.Controls.Add(this.flpMonths);
+            this.pnlMatrix.Location = new System.Drawing.Point(16, 240);
+            this.pnlMatrix.Name = "pnlMatrix";
+            this.pnlMatrix.Size = new System.Drawing.Size(960, 140);
+            this.pnlMatrix.TabIndex = 3;
+            this.pnlMatrix.Tag = "card";
+            this.lblMonths.AutoSize = true;
+            this.lblMonths.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblMonths.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblMonths.Location = new System.Drawing.Point(16, 10);
+            this.lblMonths.Name = "lblMonths";
+            this.lblMonths.Size = new System.Drawing.Size(120, 19);
+            this.lblMonths.TabIndex = 0;
+            this.lblMonths.Text = "Tuition Fee Months";
+            this.flpMonths.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.flpMonths.Location = new System.Drawing.Point(8, 36);
+            this.flpMonths.Name = "flpMonths";
+            this.flpMonths.Size = new System.Drawing.Size(940, 90);
+            this.flpMonths.TabIndex = 1;
+            // pnlPay
+            this.pnlPay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlPay.Controls.Add(this.lblUnitTuition);
+            this.pnlPay.Controls.Add(this.txtTuitionUnit);
+            this.pnlPay.Controls.Add(this.lblFine);
+            this.pnlPay.Controls.Add(this.txtFine);
+            this.pnlPay.Controls.Add(this.lblWaiver);
+            this.pnlPay.Controls.Add(this.txtWaiver);
+            this.pnlPay.Controls.Add(this.lblPayMethod);
+            this.pnlPay.Controls.Add(this.cboPaymentMethod);
+            this.pnlPay.Controls.Add(this.lblTxnRef);
+            this.pnlPay.Controls.Add(this.txtTxnRef);
+            this.pnlPay.Controls.Add(this.lblRemarks);
+            this.pnlPay.Controls.Add(this.txtRemarks);
+            this.pnlPay.Controls.Add(this.lblTuitionTotal);
+            this.pnlPay.Controls.Add(this.lblNetPayable);
+            this.pnlPay.Controls.Add(this.btnCollect);
+            this.pnlPay.Location = new System.Drawing.Point(16, 396);
+            this.pnlPay.Name = "pnlPay";
+            this.pnlPay.Size = new System.Drawing.Size(960, 180);
+            this.pnlPay.TabIndex = 4;
+            this.pnlPay.Tag = "card";
+            this.lblUnitTuition.AutoSize = true;
+            this.lblUnitTuition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblUnitTuition.Location = new System.Drawing.Point(16, 16);
+            this.lblUnitTuition.Name = "lblUnitTuition";
+            this.lblUnitTuition.Size = new System.Drawing.Size(90, 15);
+            this.lblUnitTuition.TabIndex = 0;
+            this.lblUnitTuition.Text = "Unit Tuition";
+            this.txtTuitionUnit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtTuitionUnit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTuitionUnit.ForeColor = System.Drawing.Color.White;
+            this.txtTuitionUnit.Location = new System.Drawing.Point(16, 36);
+            this.txtTuitionUnit.Name = "txtTuitionUnit";
+            this.txtTuitionUnit.Size = new System.Drawing.Size(120, 23);
+            this.txtTuitionUnit.TabIndex = 1;
+            this.txtTuitionUnit.Text = "0";
+            this.lblFine.AutoSize = true;
+            this.lblFine.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblFine.Location = new System.Drawing.Point(160, 16);
+            this.lblFine.Name = "lblFine";
+            this.lblFine.Size = new System.Drawing.Size(30, 15);
+            this.lblFine.TabIndex = 2;
+            this.lblFine.Text = "Fine";
+            this.txtFine.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtFine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFine.ForeColor = System.Drawing.Color.White;
+            this.txtFine.Location = new System.Drawing.Point(160, 36);
+            this.txtFine.Name = "txtFine";
+            this.txtFine.Size = new System.Drawing.Size(100, 23);
+            this.txtFine.TabIndex = 3;
+            this.txtFine.Text = "0";
+            this.lblWaiver.AutoSize = true;
+            this.lblWaiver.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblWaiver.Location = new System.Drawing.Point(280, 16);
+            this.lblWaiver.Name = "lblWaiver";
+            this.lblWaiver.Size = new System.Drawing.Size(45, 15);
+            this.lblWaiver.TabIndex = 4;
+            this.lblWaiver.Text = "Waiver";
+            this.txtWaiver.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtWaiver.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtWaiver.ForeColor = System.Drawing.Color.White;
+            this.txtWaiver.Location = new System.Drawing.Point(280, 36);
+            this.txtWaiver.Name = "txtWaiver";
+            this.txtWaiver.Size = new System.Drawing.Size(100, 23);
+            this.txtWaiver.TabIndex = 5;
+            this.txtWaiver.Text = "0";
+            this.lblPayMethod.AutoSize = true;
+            this.lblPayMethod.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblPayMethod.Location = new System.Drawing.Point(400, 16);
+            this.lblPayMethod.Name = "lblPayMethod";
+            this.lblPayMethod.Size = new System.Drawing.Size(100, 15);
+            this.lblPayMethod.TabIndex = 6;
+            this.lblPayMethod.Text = "Payment Method";
+            this.cboPaymentMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboPaymentMethod.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cboPaymentMethod.Location = new System.Drawing.Point(400, 36);
+            this.cboPaymentMethod.Name = "cboPaymentMethod";
+            this.cboPaymentMethod.Size = new System.Drawing.Size(160, 23);
+            this.cboPaymentMethod.TabIndex = 7;
+            this.lblTxnRef.AutoSize = true;
+            this.lblTxnRef.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblTxnRef.Location = new System.Drawing.Point(580, 16);
+            this.lblTxnRef.Name = "lblTxnRef";
+            this.lblTxnRef.Size = new System.Drawing.Size(50, 15);
+            this.lblTxnRef.TabIndex = 8;
+            this.lblTxnRef.Text = "Txn Ref";
+            this.txtTxnRef.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtTxnRef.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTxnRef.ForeColor = System.Drawing.Color.White;
+            this.txtTxnRef.Location = new System.Drawing.Point(580, 36);
+            this.txtTxnRef.Name = "txtTxnRef";
+            this.txtTxnRef.Size = new System.Drawing.Size(160, 23);
+            this.txtTxnRef.TabIndex = 9;
+            this.lblRemarks.AutoSize = true;
+            this.lblRemarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblRemarks.Location = new System.Drawing.Point(16, 80);
+            this.lblRemarks.Name = "lblRemarks";
+            this.lblRemarks.Size = new System.Drawing.Size(55, 15);
+            this.lblRemarks.TabIndex = 10;
+            this.lblRemarks.Text = "Remarks";
+            this.txtRemarks.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtRemarks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtRemarks.ForeColor = System.Drawing.Color.White;
+            this.txtRemarks.Location = new System.Drawing.Point(16, 100);
+            this.txtRemarks.Name = "txtRemarks";
+            this.txtRemarks.Size = new System.Drawing.Size(400, 23);
+            this.txtRemarks.TabIndex = 11;
+            this.lblTuitionTotal.AutoSize = true;
+            this.lblTuitionTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblTuitionTotal.Location = new System.Drawing.Point(450, 100);
+            this.lblTuitionTotal.Name = "lblTuitionTotal";
+            this.lblTuitionTotal.Size = new System.Drawing.Size(80, 15);
+            this.lblTuitionTotal.TabIndex = 12;
+            this.lblTuitionTotal.Text = "Tuition: 0.00";
+            this.lblNetPayable.AutoSize = true;
+            this.lblNetPayable.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblNetPayable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
+            this.lblNetPayable.Location = new System.Drawing.Point(650, 90);
+            this.lblNetPayable.Name = "lblNetPayable";
+            this.lblNetPayable.Size = new System.Drawing.Size(70, 32);
+            this.lblNetPayable.TabIndex = 13;
+            this.lblNetPayable.Text = "0.00";
+            this.btnCollect.Location = new System.Drawing.Point(750, 130);
+            this.btnCollect.Name = "btnCollect";
+            this.btnCollect.Size = new System.Drawing.Size(180, 36);
+            this.btnCollect.TabIndex = 14;
+            this.btnCollect.Tag = "success";
+            this.btnCollect.Text = "Collect & Print Receipt";
+            this.btnCollect.Click += new System.EventHandler(this.btnCollect_Click);
+            // form
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
+            this.ClientSize = new System.Drawing.Size(1000, 620);
+            this.Controls.Add(this.lblTitle);
+            this.Controls.Add(this.pnlSearch);
+            this.Controls.Add(this.pnlBio);
+            this.Controls.Add(this.pnlMatrix);
+            this.Controls.Add(this.pnlPay);
+            this.Name = "frmFeeCollection";
+            this.Text = "Fee Collection";
+            this.pnlSearch.ResumeLayout(false);
+            this.pnlSearch.PerformLayout();
+            this.pnlBio.ResumeLayout(false);
+            this.pnlBio.PerformLayout();
+            this.pnlMatrix.ResumeLayout(false);
+            this.pnlMatrix.PerformLayout();
+            this.pnlPay.ResumeLayout(false);
+            this.pnlPay.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
     }
 }

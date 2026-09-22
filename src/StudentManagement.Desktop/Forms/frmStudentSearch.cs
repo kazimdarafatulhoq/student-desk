@@ -1,5 +1,6 @@
 using StudentManagement.Application.DTOs;
 using StudentManagement.Application.Services;
+using StudentManagement.Desktop.Helpers;
 using StudentManagement.Desktop.Theme;
 using StudentManagement.Domain.Enums;
 
@@ -26,13 +27,15 @@ namespace StudentManagement.Desktop.Forms
         public frmStudentSearch()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmStudentSearch(StudentService students) : this()
         {
             _students = students;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             Load += async (s, e) =>
             {
                 await LoadLookupsAsync();

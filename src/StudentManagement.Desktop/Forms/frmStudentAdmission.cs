@@ -23,16 +23,17 @@ namespace StudentManagement.Desktop.Forms
         public frmStudentAdmission()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmStudentAdmission(StudentService students) : this()
         {
             _students = students;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             Load += async (s, e) => await LoadLookupsAsync();
             dtpDateOfBirth.ValueChanged += (s, e) => UpdateAge();
-            chkSameAddress.CheckedChanged += chkSameAddress_CheckedChanged;
         }
 
         private async Task LoadLookupsAsync()

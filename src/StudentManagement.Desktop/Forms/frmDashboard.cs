@@ -1,5 +1,6 @@
 using StudentManagement.Application.DTOs;
 using StudentManagement.Application.Services;
+using StudentManagement.Desktop.Helpers;
 using StudentManagement.Desktop.Theme;
 using StudentManagement.Domain.Enums;
 
@@ -19,14 +20,16 @@ namespace StudentManagement.Desktop.Forms
         public frmDashboard()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmDashboard(StudentService students, FeeService fees) : this()
         {
             _students = students;
             _fees = fees;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             Load += async (s, e) => await LoadStatsAsync();
         }
 

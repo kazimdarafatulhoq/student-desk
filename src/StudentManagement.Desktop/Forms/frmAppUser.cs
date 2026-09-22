@@ -22,13 +22,15 @@ namespace StudentManagement.Desktop.Forms
         public frmAppUser()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmAppUser(AuthService auth) : this()
         {
             _auth = auth;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             cboRole.DataSource = System.Enum.GetValues(typeof(StudentManagement.Domain.Enums.UserRole));
             Load += async (s, e) => await RefreshUsersAsync();
         }

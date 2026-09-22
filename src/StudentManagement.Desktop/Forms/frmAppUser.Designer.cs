@@ -1,70 +1,222 @@
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
+
 namespace StudentManagement.Desktop.Forms
 {
     partial class frmAppUser
     {
+        private IContainer components = null;
         private Label lblTitle;
         private Panel pnlCreate;
+        private Label lblUsername;
         private TextBox txtUsername;
+        private Label lblFullName;
         private TextBox txtFullName;
+        private Label lblPassword;
         private TextBox txtPassword;
+        private Label lblEmail;
         private TextBox txtEmail;
+        private Label lblPhone;
         private TextBox txtPhone;
+        private Label lblRole;
         private ComboBox cboRole;
         private Button btnCreate;
         private DataGridView dgvUsers;
         private Button btnToggle;
 
-        private void InitializeComponent()
+        protected override void Dispose(bool disposing)
         {
-            SuspendLayout();
-            Text = "User Management";
-            BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
-
-            lblTitle = new Label { Text = "User Access & Security (RBAC)", Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold), ForeColor = System.Drawing.Color.White, Location = new Point(16, 12), AutoSize = true };
-
-            pnlCreate = new Panel { Tag = "card", BackColor = System.Drawing.Color.FromArgb(13, 20, 48), Location = new Point(16, 55), Size = new Size(960, 140) };
-            txtUsername = Field(pnlCreate, "Username", 16, 16, 150);
-            txtFullName = Field(pnlCreate, "Full Name", 180, 16, 200);
-            txtPassword = Field(pnlCreate, "Password", 400, 16, 160);
-            txtPassword.UseSystemPasswordChar = true;
-            txtEmail = Field(pnlCreate, "Email", 580, 16, 180);
-            txtPhone = Field(pnlCreate, "Phone", 780, 16, 140);
-            var lblRole = new Label { Text = "Role", Location = new Point(16, 75), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) };
-            cboRole = new ComboBox { Location = new Point(16, 95), Width = 200, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
-            btnCreate = new Button { Text = "Create User", Location = new Point(240, 92), Size = new Size(140, 34) };
-            btnCreate.Click += btnCreate_Click;
-            pnlCreate.Controls.AddRange(new Control[] { lblRole, cboRole, btnCreate });
-
-            dgvUsers = new DataGridView { Location = new Point(16, 215), Size = new Size(960, 300), ReadOnly = true };
-            dgvUsers.Columns.Add("Id", "ID");
-            dgvUsers.Columns.Add("Username", "Username");
-            dgvUsers.Columns.Add("Name", "Full Name");
-            dgvUsers.Columns.Add("Role", "Role");
-            dgvUsers.Columns.Add("Status", "Status");
-            dgvUsers.Columns.Add("LastLogin", "Last Login");
-
-            btnToggle = new Button { Text = "Enable / Disable Selected", Location = new Point(16, 530), Size = new Size(200, 36), Tag = "ghost" };
-            btnToggle.Click += btnToggle_Click;
-
-            Controls.AddRange(new Control[] { lblTitle, pnlCreate, dgvUsers, btnToggle });
-            ResumeLayout(false);
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
-        private static TextBox Field(Control parent, string label, int x, int y, int width)
+        private void InitializeComponent()
         {
-            parent.Controls.Add(new Label { Text = label, Location = new Point(x, y), AutoSize = true, ForeColor = System.Drawing.Color.FromArgb(138, 147, 166) });
-            var tb = new TextBox { Location = new Point(x, y + 20), Width = width, BackColor = System.Drawing.Color.FromArgb(17, 24, 39), ForeColor = System.Drawing.Color.White, BorderStyle = BorderStyle.FixedSingle };
-            parent.Controls.Add(tb);
-            return tb;
+            this.components = new System.ComponentModel.Container();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.pnlCreate = new System.Windows.Forms.Panel();
+            this.lblUsername = new System.Windows.Forms.Label();
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.lblFullName = new System.Windows.Forms.Label();
+            this.txtFullName = new System.Windows.Forms.TextBox();
+            this.lblPassword = new System.Windows.Forms.Label();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.lblEmail = new System.Windows.Forms.Label();
+            this.txtEmail = new System.Windows.Forms.TextBox();
+            this.lblPhone = new System.Windows.Forms.Label();
+            this.txtPhone = new System.Windows.Forms.TextBox();
+            this.lblRole = new System.Windows.Forms.Label();
+            this.cboRole = new System.Windows.Forms.ComboBox();
+            this.btnCreate = new System.Windows.Forms.Button();
+            this.dgvUsers = new System.Windows.Forms.DataGridView();
+            this.btnToggle = new System.Windows.Forms.Button();
+            this.pnlCreate.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsers)).BeginInit();
+            this.SuspendLayout();
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.White;
+            this.lblTitle.Location = new System.Drawing.Point(16, 12);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(280, 25);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "User Access & Security (RBAC)";
+            this.pnlCreate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlCreate.Controls.Add(this.lblUsername);
+            this.pnlCreate.Controls.Add(this.txtUsername);
+            this.pnlCreate.Controls.Add(this.lblFullName);
+            this.pnlCreate.Controls.Add(this.txtFullName);
+            this.pnlCreate.Controls.Add(this.lblPassword);
+            this.pnlCreate.Controls.Add(this.txtPassword);
+            this.pnlCreate.Controls.Add(this.lblEmail);
+            this.pnlCreate.Controls.Add(this.txtEmail);
+            this.pnlCreate.Controls.Add(this.lblPhone);
+            this.pnlCreate.Controls.Add(this.txtPhone);
+            this.pnlCreate.Controls.Add(this.lblRole);
+            this.pnlCreate.Controls.Add(this.cboRole);
+            this.pnlCreate.Controls.Add(this.btnCreate);
+            this.pnlCreate.Location = new System.Drawing.Point(16, 55);
+            this.pnlCreate.Name = "pnlCreate";
+            this.pnlCreate.Size = new System.Drawing.Size(960, 140);
+            this.pnlCreate.TabIndex = 1;
+            this.pnlCreate.Tag = "card";
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblUsername.Location = new System.Drawing.Point(16, 16);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(60, 15);
+            this.lblUsername.TabIndex = 0;
+            this.lblUsername.Text = "Username";
+            this.txtUsername.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtUsername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtUsername.ForeColor = System.Drawing.Color.White;
+            this.txtUsername.Location = new System.Drawing.Point(16, 36);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(150, 23);
+            this.txtUsername.TabIndex = 1;
+            this.lblFullName.AutoSize = true;
+            this.lblFullName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblFullName.Location = new System.Drawing.Point(180, 16);
+            this.lblFullName.Name = "lblFullName";
+            this.lblFullName.Size = new System.Drawing.Size(60, 15);
+            this.lblFullName.TabIndex = 2;
+            this.lblFullName.Text = "Full Name";
+            this.txtFullName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtFullName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFullName.ForeColor = System.Drawing.Color.White;
+            this.txtFullName.Location = new System.Drawing.Point(180, 36);
+            this.txtFullName.Name = "txtFullName";
+            this.txtFullName.Size = new System.Drawing.Size(200, 23);
+            this.txtFullName.TabIndex = 3;
+            this.lblPassword.AutoSize = true;
+            this.lblPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblPassword.Location = new System.Drawing.Point(400, 16);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(57, 15);
+            this.lblPassword.TabIndex = 4;
+            this.lblPassword.Text = "Password";
+            this.txtPassword.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPassword.ForeColor = System.Drawing.Color.White;
+            this.txtPassword.Location = new System.Drawing.Point(400, 36);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(160, 23);
+            this.txtPassword.TabIndex = 5;
+            this.txtPassword.UseSystemPasswordChar = true;
+            this.lblEmail.AutoSize = true;
+            this.lblEmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblEmail.Location = new System.Drawing.Point(580, 16);
+            this.lblEmail.Name = "lblEmail";
+            this.lblEmail.Size = new System.Drawing.Size(36, 15);
+            this.lblEmail.TabIndex = 6;
+            this.lblEmail.Text = "Email";
+            this.txtEmail.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtEmail.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtEmail.ForeColor = System.Drawing.Color.White;
+            this.txtEmail.Location = new System.Drawing.Point(580, 36);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(180, 23);
+            this.txtEmail.TabIndex = 7;
+            this.lblPhone.AutoSize = true;
+            this.lblPhone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblPhone.Location = new System.Drawing.Point(780, 16);
+            this.lblPhone.Name = "lblPhone";
+            this.lblPhone.Size = new System.Drawing.Size(41, 15);
+            this.lblPhone.TabIndex = 8;
+            this.lblPhone.Text = "Phone";
+            this.txtPhone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtPhone.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPhone.ForeColor = System.Drawing.Color.White;
+            this.txtPhone.Location = new System.Drawing.Point(780, 36);
+            this.txtPhone.Name = "txtPhone";
+            this.txtPhone.Size = new System.Drawing.Size(140, 23);
+            this.txtPhone.TabIndex = 9;
+            this.lblRole.AutoSize = true;
+            this.lblRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblRole.Location = new System.Drawing.Point(16, 75);
+            this.lblRole.Name = "lblRole";
+            this.lblRole.Size = new System.Drawing.Size(30, 15);
+            this.lblRole.TabIndex = 10;
+            this.lblRole.Text = "Role";
+            this.cboRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboRole.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cboRole.Location = new System.Drawing.Point(16, 95);
+            this.cboRole.Name = "cboRole";
+            this.cboRole.Size = new System.Drawing.Size(200, 23);
+            this.cboRole.TabIndex = 11;
+            this.btnCreate.Location = new System.Drawing.Point(240, 92);
+            this.btnCreate.Name = "btnCreate";
+            this.btnCreate.Size = new System.Drawing.Size(140, 34);
+            this.btnCreate.TabIndex = 12;
+            this.btnCreate.Text = "Create User";
+            this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
+            this.dgvUsers.AllowUserToAddRows = false;
+            this.dgvUsers.AllowUserToDeleteRows = false;
+            this.dgvUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUsers.Location = new System.Drawing.Point(16, 215);
+            this.dgvUsers.Name = "dgvUsers";
+            this.dgvUsers.ReadOnly = true;
+            this.dgvUsers.Size = new System.Drawing.Size(960, 300);
+            this.dgvUsers.TabIndex = 2;
+            this.btnToggle.Location = new System.Drawing.Point(16, 530);
+            this.btnToggle.Name = "btnToggle";
+            this.btnToggle.Size = new System.Drawing.Size(200, 36);
+            this.btnToggle.TabIndex = 3;
+            this.btnToggle.Tag = "ghost";
+            this.btnToggle.Text = "Enable / Disable Selected";
+            this.btnToggle.Click += new System.EventHandler(this.btnToggle_Click);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
+            this.ClientSize = new System.Drawing.Size(1000, 600);
+            this.Controls.Add(this.lblTitle);
+            this.Controls.Add(this.pnlCreate);
+            this.Controls.Add(this.dgvUsers);
+            this.Controls.Add(this.btnToggle);
+            this.Name = "frmAppUser";
+            this.Text = "User Management";
+            this.Load += new System.EventHandler(this.frmAppUser_LoadColumns);
+            this.pnlCreate.ResumeLayout(false);
+            this.pnlCreate.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsers)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+
+        private void frmAppUser_LoadColumns(object sender, System.EventArgs e)
+        {
+            if (this.dgvUsers.Columns.Count > 0)
+                return;
+            this.dgvUsers.Columns.Add("Id", "ID");
+            this.dgvUsers.Columns.Add("Username", "Username");
+            this.dgvUsers.Columns.Add("Name", "Full Name");
+            this.dgvUsers.Columns.Add("Role", "Role");
+            this.dgvUsers.Columns.Add("Status", "Status");
+            this.dgvUsers.Columns.Add("LastLogin", "Last Login");
         }
     }
 }

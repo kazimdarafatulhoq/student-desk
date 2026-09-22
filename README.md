@@ -91,6 +91,19 @@ PDF/CSV files are written to:
 
 `%USERPROFILE%\Documents\StudentManagement\Reports`
 
+
+## WinForms designer (Visual Studio)
+
+All `*.Designer.cs` files use classic Visual Studio–compatible `InitializeComponent` code (no helper methods, no object initializers). Theme styling (`UITheme.ApplyForm`) runs only at runtime, not at design time.
+
+If a form designer still fails to load after pull:
+
+1. Close all designer tabs
+2. **Build → Clean Solution**, then **Rebuild Solution**
+3. Open the form again (right-click → View Designer)
+
+Requires the **.NET desktop development** workload. For .NET 5 WinForms, Visual Studio 2019 16.8+ or Visual Studio 2022 is recommended.
+
 ## Architecture notes
 
 - Repositories + `IUnitOfWork` isolate SQL Server access  

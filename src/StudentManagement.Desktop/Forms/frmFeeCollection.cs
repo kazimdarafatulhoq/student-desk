@@ -26,14 +26,16 @@ namespace StudentManagement.Desktop.Forms
         public frmFeeCollection()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmFeeCollection(StudentService students, FeeService fees) : this()
         {
             _students = students;
             _fees = fees;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             cboPaymentMethod.DataSource = System.Enum.GetValues(typeof(StudentManagement.Domain.Enums.PaymentMethod));
             BuildMonthMatrix();
             txtFine.TextChanged += (s, e) => Recalc();

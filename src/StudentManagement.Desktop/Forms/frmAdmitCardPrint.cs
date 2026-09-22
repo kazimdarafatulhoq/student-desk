@@ -27,14 +27,16 @@ namespace StudentManagement.Desktop.Forms
         public frmAdmitCardPrint()
         {
             InitializeComponent();
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
         }
 
         public frmAdmitCardPrint(StudentService students, ExamService exams) : this()
         {
             _students = students;
             _exams = exams;
-            UITheme.ApplyForm(this);
+            if (!DesignTime.IsActive)
+                UITheme.ApplyForm(this);
             Load += async (s, e) => await LoadDataAsync();
         }
 
