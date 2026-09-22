@@ -88,7 +88,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // pnlSidebar
             //
-            this.pnlSidebar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(7)))), ((int)(((byte)(11)))), ((int)(((byte)(24)))));
+            this.pnlSidebar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlSidebar.Controls.Add(this.navFlow);
             this.pnlSidebar.Controls.Add(this.pnlProfile);
             this.pnlSidebar.Dock = System.Windows.Forms.DockStyle.Left;
@@ -100,7 +100,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // pnlProfile
             //
-            this.pnlProfile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(7)))), ((int)(((byte)(11)))), ((int)(((byte)(24)))));
+            this.pnlProfile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlProfile.Controls.Add(this.lblAvatar);
             this.pnlProfile.Controls.Add(this.lblProfileName);
             this.pnlProfile.Controls.Add(this.lblProfileStatus);
@@ -356,7 +356,7 @@ namespace StudentManagement.Desktop.Forms
             // navFlow
             //
             this.navFlow.AutoScroll = true;
-            this.navFlow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(7)))), ((int)(((byte)(11)))), ((int)(((byte)(24)))));
+            this.navFlow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.navFlow.Controls.Add(this.btnToggleSidebar);
             this.navFlow.Controls.Add(this.lblSecOps);
             this.navFlow.Controls.Add(this.btnDashboard);
@@ -382,7 +382,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // pnlHeader
             //
-            this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
+            this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlHeader.Controls.Add(this.lblLogo);
             this.pnlHeader.Controls.Add(this.lblUserRole);
             this.pnlHeader.Controls.Add(this.lblSession);
@@ -444,7 +444,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // pnlContentContainer
             //
-            this.pnlContentContainer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
+            this.pnlContentContainer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.pnlContentContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContentContainer.Location = new System.Drawing.Point(260, 64);
             this.pnlContentContainer.Name = "pnlContentContainer";
@@ -454,7 +454,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // statusBar
             //
-            this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
+            this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.statusBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblDbStatus,
@@ -482,7 +482,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.ClientSize = new System.Drawing.Size(1100, 700);
             this.Controls.Add(this.pnlContentContainer);
             this.Controls.Add(this.pnlHeader);

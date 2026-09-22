@@ -5,19 +5,20 @@ using System.Windows.Forms;
 namespace StudentManagement.Desktop.Theme
 {
     /// <summary>
-    /// Ideal High School theme — navy canvas, sapphire primary, emerald/amber/rose status.
+    /// Ideal High School theme — near-black navbar/header, slate body canvas.
     /// Do NOT reference this class from InitializeComponent (breaks the VS WinForms designer).
     /// Call UITheme.ApplyForm(this) from the form constructor after InitializeComponent.
     /// </summary>
     public static class UITheme
     {
-        public static readonly Color Canvas = Color.FromArgb(9, 12, 23);
-        public static readonly Color Sidebar = Color.FromArgb(7, 11, 24);
+        // Shell surfaces (navbar / header / body) — aligned to IDEAL SMS BD mockups.
+        public static readonly Color Canvas = Color.FromArgb(17, 24, 39);      // #111827 body
+        public static readonly Color Sidebar = Color.FromArgb(11, 14, 20);     // #0B0E14 navbar
         public static readonly Color Card = Color.FromArgb(13, 20, 48);
         public static readonly Color InputBack = Color.FromArgb(17, 24, 39);
         public static readonly Color Border = Color.FromArgb(36, 48, 73);
         public static readonly Color GridAlt = Color.FromArgb(11, 18, 40);
-        public static readonly Color HeaderBack = Color.FromArgb(10, 16, 36);
+        public static readonly Color HeaderBack = Color.FromArgb(11, 14, 20);  // #0B0E14 header (matches navbar)
 
         public static readonly Color Primary = Color.FromArgb(37, 99, 235);
         public static readonly Color PrimaryHover = Color.FromArgb(29, 78, 216);
