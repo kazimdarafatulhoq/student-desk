@@ -10,6 +10,9 @@ namespace StudentManagement.Desktop.Theme
     {
         public const int Size = 20;
 
+        /// <summary>Transparent gap to the right of the glyph so text is not flush against the icon.</summary>
+        public const int RightPadding = 8;
+
         public static Image Toggle(Color color) => Draw(color, g =>
         {
             using (Pen p = Pen(color, 2f))
@@ -114,7 +117,8 @@ namespace StudentManagement.Desktop.Theme
 
         private static Image Draw(Color color, System.Action<Graphics> paint)
         {
-            Bitmap bmp = new Bitmap(Size, Size);
+            // Wider than the glyph so ImageBeforeText leaves a gap before the label.
+            Bitmap bmp = new Bitmap(Size + RightPadding, Size);
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
