@@ -323,7 +323,7 @@ namespace StudentManagement.Desktop.Forms
             this.cardBreakdown.Controls.Add(this.lblPctExam);
             this.cardBreakdown.Location = new System.Drawing.Point(16, 260);
             this.cardBreakdown.Name = "cardBreakdown";
-            this.cardBreakdown.Size = new System.Drawing.Size(900, 220);
+            this.cardBreakdown.Size = new System.Drawing.Size(900, 200);
             this.cardBreakdown.TabIndex = 7;
             this.cardBreakdown.Tag = "card";
             this.cardBreakdown.Paint += new System.Windows.Forms.PaintEventHandler(this.cardBreakdown_Paint);
@@ -343,7 +343,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblBarTuition.AutoSize = true;
             this.lblBarTuition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
-            this.lblBarTuition.Location = new System.Drawing.Point(20, 56);
+            this.lblBarTuition.Location = new System.Drawing.Point(20, 48);
             this.lblBarTuition.Name = "lblBarTuition";
             this.lblBarTuition.Size = new System.Drawing.Size(70, 15);
             this.lblBarTuition.TabIndex = 1;
@@ -354,7 +354,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.barTuition.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.barTuition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.barTuition.Location = new System.Drawing.Point(20, 80);
+            this.barTuition.Location = new System.Drawing.Point(20, 68);
             this.barTuition.Maximum = 100;
             this.barTuition.Name = "barTuition";
             this.barTuition.Size = new System.Drawing.Size(780, 16);
@@ -365,9 +365,9 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblPctTuition.AutoSize = true;
             this.lblPctTuition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblPctTuition.Location = new System.Drawing.Point(820, 78);
+            this.lblPctTuition.Location = new System.Drawing.Point(820, 66);
             this.lblPctTuition.Name = "lblPctTuition";
-            this.lblPctTuition.Size = new System.Drawing.Size(24, 15);
+            this.lblPctTuition.Size = new System.Drawing.Size(36, 15);
             this.lblPctTuition.TabIndex = 3;
             this.lblPctTuition.Text = "0%";
             //
@@ -375,7 +375,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblBarIct.AutoSize = true;
             this.lblBarIct.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
-            this.lblBarIct.Location = new System.Drawing.Point(20, 112);
+            this.lblBarIct.Location = new System.Drawing.Point(20, 98);
             this.lblBarIct.Name = "lblBarIct";
             this.lblBarIct.Size = new System.Drawing.Size(140, 15);
             this.lblBarIct.TabIndex = 4;
@@ -386,7 +386,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.barIct.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.barIct.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.barIct.Location = new System.Drawing.Point(20, 136);
+            this.barIct.Location = new System.Drawing.Point(20, 118);
             this.barIct.Maximum = 100;
             this.barIct.Name = "barIct";
             this.barIct.Size = new System.Drawing.Size(780, 16);
@@ -397,9 +397,9 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblPctIct.AutoSize = true;
             this.lblPctIct.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.lblPctIct.Location = new System.Drawing.Point(820, 134);
+            this.lblPctIct.Location = new System.Drawing.Point(820, 116);
             this.lblPctIct.Name = "lblPctIct";
-            this.lblPctIct.Size = new System.Drawing.Size(24, 15);
+            this.lblPctIct.Size = new System.Drawing.Size(36, 15);
             this.lblPctIct.TabIndex = 6;
             this.lblPctIct.Text = "0%";
             //
@@ -407,7 +407,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblBarExam.AutoSize = true;
             this.lblBarExam.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
-            this.lblBarExam.Location = new System.Drawing.Point(20, 168);
+            this.lblBarExam.Location = new System.Drawing.Point(20, 148);
             this.lblBarExam.Name = "lblBarExam";
             this.lblBarExam.Size = new System.Drawing.Size(130, 15);
             this.lblBarExam.TabIndex = 7;
@@ -418,7 +418,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.barExam.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.barExam.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(139)))), ((int)(((byte)(92)))), ((int)(((byte)(246)))));
-            this.barExam.Location = new System.Drawing.Point(20, 192);
+            this.barExam.Location = new System.Drawing.Point(20, 168);
             this.barExam.Maximum = 100;
             this.barExam.Name = "barExam";
             this.barExam.Size = new System.Drawing.Size(780, 16);
@@ -429,9 +429,9 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblPctExam.AutoSize = true;
             this.lblPctExam.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(139)))), ((int)(((byte)(92)))), ((int)(((byte)(246)))));
-            this.lblPctExam.Location = new System.Drawing.Point(820, 190);
+            this.lblPctExam.Location = new System.Drawing.Point(820, 166);
             this.lblPctExam.Name = "lblPctExam";
-            this.lblPctExam.Size = new System.Drawing.Size(24, 15);
+            this.lblPctExam.Size = new System.Drawing.Size(36, 15);
             this.lblPctExam.TabIndex = 9;
             this.lblPctExam.Text = "0%";
             //
@@ -439,6 +439,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
             this.ClientSize = new System.Drawing.Size(1180, 520);
             this.Controls.Add(this.lblTitle);
@@ -531,25 +532,44 @@ namespace StudentManagement.Desktop.Forms
             this.cardEligible.Left = this.cardDues.Right + gap;
             this.cardEligible.Width = cardW;
 
+            // Keep breakdown fully visible (all 3 fee rows + percentages).
             this.cardBreakdown.Left = side;
+            this.cardBreakdown.Top = 250;
             this.cardBreakdown.Width = usable;
-            this.cardBreakdown.Height = 220;
+            this.cardBreakdown.Height = 200;
 
             int barLeft = 20;
-            int pctWidth = 48;
-            int barW = Math.Max(120, this.cardBreakdown.Width - barLeft - pctWidth - 24);
+            int pctWidth = 52;
+            int barW = Math.Max(120, this.cardBreakdown.Width - barLeft - pctWidth - 28);
             int pctLeft = barLeft + barW + 12;
 
-            this.barTuition.Left = barLeft;
-            this.barIct.Left = barLeft;
-            this.barExam.Left = barLeft;
+            this.lblBarTuition.Location = new System.Drawing.Point(barLeft, 48);
+            this.barTuition.Location = new System.Drawing.Point(barLeft, 68);
+            this.lblPctTuition.Location = new System.Drawing.Point(pctLeft, 66);
+
+            this.lblBarIct.Location = new System.Drawing.Point(barLeft, 98);
+            this.barIct.Location = new System.Drawing.Point(barLeft, 118);
+            this.lblPctIct.Location = new System.Drawing.Point(pctLeft, 116);
+
+            this.lblBarExam.Location = new System.Drawing.Point(barLeft, 148);
+            this.barExam.Location = new System.Drawing.Point(barLeft, 168);
+            this.lblPctExam.Location = new System.Drawing.Point(pctLeft, 166);
+
             this.barTuition.Width = barW;
             this.barIct.Width = barW;
             this.barExam.Width = barW;
+            this.barTuition.Height = 16;
+            this.barIct.Height = 16;
+            this.barExam.Height = 16;
 
-            this.lblPctTuition.Left = pctLeft;
-            this.lblPctIct.Left = pctLeft;
-            this.lblPctExam.Left = pctLeft;
+            this.lblPctTuition.Visible = true;
+            this.lblPctIct.Visible = true;
+            this.lblPctExam.Visible = true;
+            this.lblBarExam.Visible = true;
+            this.barExam.Visible = true;
+            this.lblPctExam.BringToFront();
+            this.barExam.BringToFront();
+            this.lblBarExam.BringToFront();
 
             this.cardBreakdown.Invalidate();
         }

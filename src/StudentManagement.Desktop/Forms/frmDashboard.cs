@@ -127,11 +127,25 @@ namespace StudentManagement.Desktop.Forms
         private static void SetBar(ProgressBar bar, Label pct, Label caption, string name, int value, System.Drawing.Color color)
         {
             int v = Math.Max(0, Math.Min(100, value));
-            bar.Value = v;
+            if (bar.Value != v)
+            {
+                // Avoid ProgressBar animation glitches when jumping values.
+                if (v > 0)
+                    bar.Value = v;
+                else
+                {
+                    bar.Value = 1;
+                    bar.Value = 0;
+                }
+            }
             bar.ForeColor = color;
-            pct.Text = v + "%";
-            pct.ForeColor = color;
+            bar.Visible = true;
             caption.Text = name;
+            caption.Visible = true;
+            pct.Text = v.ToString() + "%";
+            pct.ForeColor = color;
+            pct.Visible = true;
+            pct.BringToFront();
         }
     }
 }
