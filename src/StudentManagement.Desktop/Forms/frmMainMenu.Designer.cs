@@ -150,7 +150,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnToggleSidebar.BackColor = System.Drawing.Color.Transparent;
             this.btnToggleSidebar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnToggleSidebar.FlatAppearance.BorderSize = 0;
-            this.btnToggleSidebar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnToggleSidebar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnToggleSidebar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnToggleSidebar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnToggleSidebar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -167,7 +167,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnDashboard.BackColor = System.Drawing.Color.Transparent;
             this.btnDashboard.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDashboard.FlatAppearance.BorderSize = 0;
-            this.btnDashboard.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnDashboard.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnDashboard.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -184,7 +184,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnAdmission.BackColor = System.Drawing.Color.Transparent;
             this.btnAdmission.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAdmission.FlatAppearance.BorderSize = 0;
-            this.btnAdmission.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnAdmission.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnAdmission.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdmission.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnAdmission.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -201,7 +201,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnSearch.BackColor = System.Drawing.Color.Transparent;
             this.btnSearch.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSearch.FlatAppearance.BorderSize = 0;
-            this.btnSearch.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnSearch.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSearch.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -218,7 +218,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnFeeCollection.BackColor = System.Drawing.Color.Transparent;
             this.btnFeeCollection.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnFeeCollection.FlatAppearance.BorderSize = 0;
-            this.btnFeeCollection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnFeeCollection.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnFeeCollection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnFeeCollection.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnFeeCollection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -235,7 +235,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnLedger.BackColor = System.Drawing.Color.Transparent;
             this.btnLedger.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLedger.FlatAppearance.BorderSize = 0;
-            this.btnLedger.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnLedger.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnLedger.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLedger.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnLedger.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -252,7 +252,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnExamClearance.BackColor = System.Drawing.Color.Transparent;
             this.btnExamClearance.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnExamClearance.FlatAppearance.BorderSize = 0;
-            this.btnExamClearance.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnExamClearance.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnExamClearance.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExamClearance.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnExamClearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -269,7 +269,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnAdmitCard.BackColor = System.Drawing.Color.Transparent;
             this.btnAdmitCard.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAdmitCard.FlatAppearance.BorderSize = 0;
-            this.btnAdmitCard.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnAdmitCard.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnAdmitCard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdmitCard.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnAdmitCard.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -286,7 +286,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnUsers.BackColor = System.Drawing.Color.Transparent;
             this.btnUsers.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnUsers.FlatAppearance.BorderSize = 0;
-            this.btnUsers.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnUsers.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnUsers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUsers.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnUsers.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -303,7 +303,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnLogout.BackColor = System.Drawing.Color.Transparent;
             this.btnLogout.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLogout.FlatAppearance.BorderSize = 0;
-            this.btnLogout.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.btnLogout.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(27)))), ((int)(((byte)(38)))));
             this.btnLogout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLogout.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular);
             this.btnLogout.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -444,7 +444,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // pnlContentContainer
             //
-            this.pnlContentContainer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.pnlContentContainer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlContentContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContentContainer.Location = new System.Drawing.Point(260, 64);
             this.pnlContentContainer.Name = "pnlContentContainer";
@@ -482,7 +482,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(1100, 700);
             this.Controls.Add(this.pnlContentContainer);
             this.Controls.Add(this.pnlHeader);

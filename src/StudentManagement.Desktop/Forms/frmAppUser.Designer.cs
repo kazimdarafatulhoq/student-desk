@@ -77,7 +77,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblTitle.Size = new System.Drawing.Size(280, 25);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "User Access & Security (RBAC)";
-            this.pnlCreate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlCreate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlCreate.Controls.Add(this.lblUsername);
             this.pnlCreate.Controls.Add(this.txtUsername);
             this.pnlCreate.Controls.Add(this.lblFullName);
@@ -190,7 +190,7 @@ namespace StudentManagement.Desktop.Forms
             this.dgvUsers.AllowUserToDeleteRows = false;
             this.dgvUsers.AllowUserToResizeRows = false;
             this.dgvUsers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvUsers.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.dgvUsers.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.dgvUsers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.dgvUsers.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvUsers.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -207,7 +207,7 @@ namespace StudentManagement.Desktop.Forms
             this.dgvUsers.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
             this.dgvUsers.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
             this.dgvUsers.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
-            this.dgvUsers.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.dgvUsers.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.dgvUsers.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
             this.dgvUsers.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(78)))), ((int)(((byte)(216)))));
             this.dgvUsers.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
@@ -258,7 +258,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnToggle.Click += new System.EventHandler(this.btnToggle_Click);
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(1000, 600);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlCreate);

@@ -45,7 +45,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // pnlCard
             //
-            this.pnlCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlCard.Controls.Add(this.lblBrand);
             this.pnlCard.Controls.Add(this.lblTitle);
             this.pnlCard.Controls.Add(this.lblUser);
@@ -153,7 +153,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(460, 420);
             this.Controls.Add(this.pnlCard);
             this.Controls.Add(this.lblHint);

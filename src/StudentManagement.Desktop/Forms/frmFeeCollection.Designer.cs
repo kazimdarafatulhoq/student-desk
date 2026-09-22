@@ -93,7 +93,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Fee Collection Counter";
             // pnlSearch
-            this.pnlSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlSearch.Controls.Add(this.txtSearch);
             this.pnlSearch.Controls.Add(this.btnFind);
             this.pnlSearch.Location = new System.Drawing.Point(16, 50);
@@ -114,7 +114,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnFind.Text = "Quick Search";
             this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
             // pnlBio
-            this.pnlBio.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlBio.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlBio.Controls.Add(this.lblBioName);
             this.pnlBio.Controls.Add(this.lblBioReg);
             this.pnlBio.Controls.Add(this.lblBioClass);
@@ -164,7 +164,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblBioDue.TabIndex = 4;
             this.lblBioDue.Text = "-";
             // pnlMatrix
-            this.pnlMatrix.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlMatrix.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlMatrix.Controls.Add(this.lblMonths);
             this.pnlMatrix.Controls.Add(this.flpMonths);
             this.pnlMatrix.Location = new System.Drawing.Point(16, 240);
@@ -180,13 +180,13 @@ namespace StudentManagement.Desktop.Forms
             this.lblMonths.Size = new System.Drawing.Size(120, 19);
             this.lblMonths.TabIndex = 0;
             this.lblMonths.Text = "Tuition Fee Months";
-            this.flpMonths.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.flpMonths.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.flpMonths.Location = new System.Drawing.Point(8, 36);
             this.flpMonths.Name = "flpMonths";
             this.flpMonths.Size = new System.Drawing.Size(940, 90);
             this.flpMonths.TabIndex = 1;
             // pnlPay
-            this.pnlPay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlPay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.pnlPay.Controls.Add(this.lblUnitTuition);
             this.pnlPay.Controls.Add(this.txtTuitionUnit);
             this.pnlPay.Controls.Add(this.lblFine);
@@ -319,7 +319,7 @@ namespace StudentManagement.Desktop.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(1000, 620);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlSearch);
