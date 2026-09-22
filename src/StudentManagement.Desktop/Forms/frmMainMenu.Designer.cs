@@ -231,7 +231,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnFeeCollection.Text = "Fee Collection Counter";
             this.btnFeeCollection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnFeeCollection.Click += new System.EventHandler(this.btnFeeCollection_Click);
-            this.btnLedger.AccessibleName = "Payment History";
+            this.btnLedger.AccessibleName = "Student Ledger";
             this.btnLedger.BackColor = System.Drawing.Color.Transparent;
             this.btnLedger.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLedger.FlatAppearance.BorderSize = 0;
@@ -245,7 +245,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnLedger.Size = new System.Drawing.Size(232, 50);
             this.btnLedger.TabIndex = 5;
             this.btnLedger.Tag = "nav";
-            this.btnLedger.Text = "Payment History";
+            this.btnLedger.Text = "Student Ledger";
             this.btnLedger.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLedger.Click += new System.EventHandler(this.btnLedger_Click);
             this.btnExamClearance.AccessibleName = "Exam Fee Eligibility";

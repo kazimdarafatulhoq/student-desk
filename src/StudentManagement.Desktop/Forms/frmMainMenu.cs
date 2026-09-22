@@ -102,6 +102,9 @@ namespace StudentManagement.Desktop.Forms
             UserRole role = AppSession.Current.Role;
             btnAdmission.Visible = AuthService.CanAccess(role, "Admission");
             btnFeeCollection.Visible = AuthService.CanAccess(role, "FeeCollection");
+            btnLedger.Visible = AuthService.CanAccess(role, "Ledger");
+            btnExamClearance.Visible = AuthService.CanAccess(role, "ExamClearance");
+            btnAdmitCard.Visible = AuthService.CanAccess(role, "AdmitCard");
             btnUsers.Visible = AuthService.CanAccess(role, "Users");
         }
 
@@ -250,7 +253,7 @@ namespace StudentManagement.Desktop.Forms
             AssignNav(btnAdmission, NavIcons.Admission(mute), "Student Registration");
             AssignNav(btnSearch, NavIcons.Search(mute), "Student Directory");
             AssignNav(btnFeeCollection, NavIcons.Fee(mute), "Fee Collection Counter");
-            AssignNav(btnLedger, NavIcons.Ledger(mute), "Payment History");
+            AssignNav(btnLedger, NavIcons.Ledger(mute), "Student Ledger");
             AssignNav(btnExamClearance, NavIcons.Exam(mute), "Exam Fee Eligibility");
             AssignNav(btnAdmitCard, NavIcons.AdmitCard(mute), "Admit Card Printing");
             AssignNav(btnUsers, NavIcons.Users(mute), "User Access & Security");
