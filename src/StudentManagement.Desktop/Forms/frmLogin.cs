@@ -20,14 +20,21 @@ namespace StudentManagement.Desktop.Forms
         {
             InitializeComponent();
             if (!DesignTime.IsActive)
+            {
                 UITheme.ApplyForm(this);
+                // Login card matches the form body (no elevated card fill).
+                pnlCard.BackColor = UITheme.Canvas;
+            }
         }
 
         public frmLogin(AuthService auth) : this()
         {
             _auth = auth;
             if (!DesignTime.IsActive)
+            {
                 UITheme.ApplyForm(this);
+                pnlCard.BackColor = UITheme.Canvas;
+            }
             AcceptButton = btnLogin;
             if (AppSession.OfflineMode)
             {
