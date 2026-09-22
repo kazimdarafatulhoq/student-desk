@@ -112,8 +112,8 @@ namespace StudentManagement.Desktop.Forms
             //
             // btnQuickFee
             //
-            this.btnQuickFee.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnQuickFee.Location = new System.Drawing.Point(680, 24);
+            this.btnQuickFee.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnQuickFee.Location = new System.Drawing.Point(960, 20);
             this.btnQuickFee.Name = "btnQuickFee";
             this.btnQuickFee.Size = new System.Drawing.Size(200, 36);
             this.btnQuickFee.TabIndex = 2;
@@ -128,7 +128,7 @@ namespace StudentManagement.Desktop.Forms
             this.cardStudents.Controls.Add(this.lblPaidHint);
             this.cardStudents.Location = new System.Drawing.Point(16, 90);
             this.cardStudents.Name = "cardStudents";
-            this.cardStudents.Size = new System.Drawing.Size(260, 140);
+            this.cardStudents.Size = new System.Drawing.Size(260, 168);
             this.cardStudents.TabIndex = 3;
             this.cardStudents.Tag = "card";
             this.cardStudents.Paint += new System.Windows.Forms.PaintEventHandler(this.cardStudents_Paint);
@@ -154,13 +154,14 @@ namespace StudentManagement.Desktop.Forms
             this.lblStudents.Name = "lblStudents";
             this.lblStudents.Size = new System.Drawing.Size(40, 41);
             this.lblStudents.TabIndex = 1;
+            this.lblStudents.Tag = "metric";
             this.lblStudents.Text = "...";
             //
             // lblPaidHint
             //
             this.lblPaidHint.AutoSize = true;
             this.lblPaidHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblPaidHint.Location = new System.Drawing.Point(20, 100);
+            this.lblPaidHint.Location = new System.Drawing.Point(20, 118);
             this.lblPaidHint.Name = "lblPaidHint";
             this.lblPaidHint.Size = new System.Drawing.Size(0, 15);
             this.lblPaidHint.TabIndex = 2;
@@ -174,7 +175,7 @@ namespace StudentManagement.Desktop.Forms
             this.cardCollection.Controls.Add(this.lblCollectionHint);
             this.cardCollection.Location = new System.Drawing.Point(300, 90);
             this.cardCollection.Name = "cardCollection";
-            this.cardCollection.Size = new System.Drawing.Size(260, 140);
+            this.cardCollection.Size = new System.Drawing.Size(260, 168);
             this.cardCollection.TabIndex = 4;
             this.cardCollection.Tag = "card";
             this.cardCollection.Paint += new System.Windows.Forms.PaintEventHandler(this.cardCollection_Paint);
@@ -207,7 +208,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblCollectionHint.AutoSize = true;
             this.lblCollectionHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
-            this.lblCollectionHint.Location = new System.Drawing.Point(20, 100);
+            this.lblCollectionHint.Location = new System.Drawing.Point(20, 118);
             this.lblCollectionHint.Name = "lblCollectionHint";
             this.lblCollectionHint.Size = new System.Drawing.Size(0, 15);
             this.lblCollectionHint.TabIndex = 2;
@@ -221,7 +222,7 @@ namespace StudentManagement.Desktop.Forms
             this.cardDues.Controls.Add(this.lblDueHint);
             this.cardDues.Location = new System.Drawing.Point(584, 90);
             this.cardDues.Name = "cardDues";
-            this.cardDues.Size = new System.Drawing.Size(260, 140);
+            this.cardDues.Size = new System.Drawing.Size(260, 168);
             this.cardDues.TabIndex = 5;
             this.cardDues.Tag = "card";
             this.cardDues.Paint += new System.Windows.Forms.PaintEventHandler(this.cardDues_Paint);
@@ -254,7 +255,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblDueHint.AutoSize = true;
             this.lblDueHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(63)))), ((int)(((byte)(94)))));
-            this.lblDueHint.Location = new System.Drawing.Point(20, 100);
+            this.lblDueHint.Location = new System.Drawing.Point(20, 118);
             this.lblDueHint.Name = "lblDueHint";
             this.lblDueHint.Size = new System.Drawing.Size(0, 15);
             this.lblDueHint.TabIndex = 2;
@@ -268,7 +269,7 @@ namespace StudentManagement.Desktop.Forms
             this.cardEligible.Controls.Add(this.lblEligibleHint);
             this.cardEligible.Location = new System.Drawing.Point(868, 90);
             this.cardEligible.Name = "cardEligible";
-            this.cardEligible.Size = new System.Drawing.Size(260, 140);
+            this.cardEligible.Size = new System.Drawing.Size(260, 168);
             this.cardEligible.TabIndex = 6;
             this.cardEligible.Tag = "card";
             this.cardEligible.Paint += new System.Windows.Forms.PaintEventHandler(this.cardEligible_Paint);
@@ -301,7 +302,7 @@ namespace StudentManagement.Desktop.Forms
             //
             this.lblEligibleHint.AutoSize = true;
             this.lblEligibleHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(63)))), ((int)(((byte)(94)))));
-            this.lblEligibleHint.Location = new System.Drawing.Point(20, 100);
+            this.lblEligibleHint.Location = new System.Drawing.Point(20, 118);
             this.lblEligibleHint.Name = "lblEligibleHint";
             this.lblEligibleHint.Size = new System.Drawing.Size(0, 15);
             this.lblEligibleHint.TabIndex = 2;
@@ -321,7 +322,7 @@ namespace StudentManagement.Desktop.Forms
             this.cardBreakdown.Controls.Add(this.lblBarExam);
             this.cardBreakdown.Controls.Add(this.barExam);
             this.cardBreakdown.Controls.Add(this.lblPctExam);
-            this.cardBreakdown.Location = new System.Drawing.Point(16, 260);
+            this.cardBreakdown.Location = new System.Drawing.Point(16, 286);
             this.cardBreakdown.Name = "cardBreakdown";
             this.cardBreakdown.Size = new System.Drawing.Size(900, 220);
             this.cardBreakdown.TabIndex = 7;
@@ -348,7 +349,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblBarTuition.Size = new System.Drawing.Size(70, 15);
             this.lblBarTuition.TabIndex = 1;
             this.lblBarTuition.Tag = "muted";
-            this.lblBarTuition.Text = "Tuition Fees";
+            this.lblBarTuition.Text = "1. Tuition Fees";
             //
             // barTuition
             //
@@ -380,7 +381,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblBarIct.Size = new System.Drawing.Size(140, 15);
             this.lblBarIct.TabIndex = 4;
             this.lblBarIct.Tag = "muted";
-            this.lblBarIct.Text = "ICT & Computer Lab Fees";
+            this.lblBarIct.Text = "2. ICT & Computer Lab Fees";
             //
             // barIct
             //
@@ -412,7 +413,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblBarExam.Size = new System.Drawing.Size(130, 15);
             this.lblBarExam.TabIndex = 7;
             this.lblBarExam.Tag = "muted";
-            this.lblBarExam.Text = "Term Examination Fees";
+            this.lblBarExam.Text = "3. Term Examination Fees";
             //
             // barExam
             //
@@ -441,7 +442,7 @@ namespace StudentManagement.Desktop.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
-            this.ClientSize = new System.Drawing.Size(1180, 520);
+            this.ClientSize = new System.Drawing.Size(1180, 560);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.lblSubtitle);
             this.Controls.Add(this.btnQuickFee);
@@ -516,16 +517,28 @@ namespace StudentManagement.Desktop.Forms
             if (areaW < 100)
                 return;
 
+            // Keep Quick Fee on the right without Right-anchor fighting the title.
+            this.btnQuickFee.Anchor = AnchorStyles.Top;
+            this.btnQuickFee.Top = 18;
             this.btnQuickFee.Left = Math.Max(16, areaW - this.btnQuickFee.Width - 24);
+
+            // Title must stop before the button so it never paints underneath.
+            int titleMaxW = Math.Max(120, this.btnQuickFee.Left - this.lblTitle.Left - 16);
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.AutoEllipsis = true;
+            this.lblTitle.Size = new System.Drawing.Size(titleMaxW, 28);
+            this.lblSubtitle.AutoSize = false;
+            this.lblSubtitle.AutoEllipsis = true;
+            this.lblSubtitle.Size = new System.Drawing.Size(titleMaxW, 20);
 
             int gap = 16;
             int side = 16;
             int usable = Math.Max(400, areaW - side * 2);
             int cardW = Math.Max(180, (usable - gap * 3) / 4);
 
-            // Metric cards row
+            // Taller metric cards so footer hints are never clipped (DPI / AutoScale).
             int metricsTop = 90;
-            int metricsHeight = 140;
+            int metricsHeight = 168;
             this.cardStudents.Top = metricsTop;
             this.cardStudents.Left = side;
             this.cardStudents.Size = new System.Drawing.Size(cardW, metricsHeight);
@@ -538,6 +551,11 @@ namespace StudentManagement.Desktop.Forms
             this.cardEligible.Top = metricsTop;
             this.cardEligible.Left = this.cardDues.Right + gap;
             this.cardEligible.Size = new System.Drawing.Size(cardW, metricsHeight);
+
+            LayoutMetricCard(this.cardStudents, this.lblStudentsTitle, this.lblStudents, this.lblPaidHint);
+            LayoutMetricCard(this.cardCollection, this.lblCollectionTitle, this.lblCollection, this.lblCollectionHint);
+            LayoutMetricCard(this.cardDues, this.lblDuesTitle, this.lblDues, this.lblDueHint);
+            LayoutMetricCard(this.cardEligible, this.lblEligibleTitle, this.lblEligible, this.lblEligibleHint);
 
             // Breakdown sits clearly below the metric cards (no overlap).
             int breakdownTop = this.cardStudents.Bottom + 24;
@@ -589,6 +607,22 @@ namespace StudentManagement.Desktop.Forms
             this.cardBreakdown.BringToFront();
 
             this.cardBreakdown.Invalidate();
+        }
+
+        private static void LayoutMetricCard(Panel card, Label title, Label value, Label hint)
+        {
+            if (card == null || title == null || value == null || hint == null)
+                return;
+
+            int pad = 16;
+            title.Location = new System.Drawing.Point(pad, 14);
+            value.Location = new System.Drawing.Point(pad, 44);
+
+            // Pin footer hint above the bottom edge with breathing room for DPI/font growth.
+            int hintTop = Math.Max(value.Bottom + 8, card.Height - hint.PreferredHeight - 18);
+            hint.Location = new System.Drawing.Point(pad, hintTop);
+            hint.MaximumSize = new System.Drawing.Size(Math.Max(60, card.Width - pad * 2), 0);
+            hint.BringToFront();
         }
 
         private void btnQuickFee_Click(object sender, EventArgs e)

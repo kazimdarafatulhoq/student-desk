@@ -103,9 +103,9 @@ namespace StudentManagement.Desktop.Forms
                 lblEligible.Text = clear.ToString("N0") + " / " + total.ToString("N0");
                 lblEligibleHint.Text = withDues + " Students Dues Pending";
 
-                SetBar(barTuition, lblPctTuition, lblBarTuition, "Tuition Fees", Math.Max(rate, 70), UITheme.Success);
-                SetBar(barIct, lblPctIct, lblBarIct, "ICT & Computer Lab Fees", Math.Max(rate - 2, 65), UITheme.AccentCyan);
-                SetBar(barExam, lblPctExam, lblBarExam, "Term Examination Fees", Math.Max(rate + 4, 75), UITheme.AccentPurple);
+                SetBar(barTuition, lblPctTuition, lblBarTuition, "1. Tuition Fees", Math.Max(rate, 70), UITheme.Success);
+                SetBar(barIct, lblPctIct, lblBarIct, "2. ICT & Computer Lab Fees", Math.Max(rate - 2, 65), UITheme.AccentCyan);
+                SetBar(barExam, lblPctExam, lblBarExam, "3. Term Examination Fees", Math.Max(rate + 4, 75), UITheme.AccentPurple);
                 LayoutDashboard();
             }
             catch (Exception ex)
