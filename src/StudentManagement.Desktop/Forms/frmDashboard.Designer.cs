@@ -323,7 +323,7 @@ namespace StudentManagement.Desktop.Forms
             this.cardBreakdown.Controls.Add(this.lblPctExam);
             this.cardBreakdown.Location = new System.Drawing.Point(16, 260);
             this.cardBreakdown.Name = "cardBreakdown";
-            this.cardBreakdown.Size = new System.Drawing.Size(900, 200);
+            this.cardBreakdown.Size = new System.Drawing.Size(900, 220);
             this.cardBreakdown.TabIndex = 7;
             this.cardBreakdown.Tag = "card";
             this.cardBreakdown.Paint += new System.Windows.Forms.PaintEventHandler(this.cardBreakdown_Paint);
@@ -523,53 +523,70 @@ namespace StudentManagement.Desktop.Forms
             int usable = Math.Max(400, areaW - side * 2);
             int cardW = Math.Max(180, (usable - gap * 3) / 4);
 
+            // Metric cards row
+            int metricsTop = 90;
+            int metricsHeight = 140;
+            this.cardStudents.Top = metricsTop;
             this.cardStudents.Left = side;
-            this.cardStudents.Width = cardW;
+            this.cardStudents.Size = new System.Drawing.Size(cardW, metricsHeight);
+            this.cardCollection.Top = metricsTop;
             this.cardCollection.Left = this.cardStudents.Right + gap;
-            this.cardCollection.Width = cardW;
+            this.cardCollection.Size = new System.Drawing.Size(cardW, metricsHeight);
+            this.cardDues.Top = metricsTop;
             this.cardDues.Left = this.cardCollection.Right + gap;
-            this.cardDues.Width = cardW;
+            this.cardDues.Size = new System.Drawing.Size(cardW, metricsHeight);
+            this.cardEligible.Top = metricsTop;
             this.cardEligible.Left = this.cardDues.Right + gap;
-            this.cardEligible.Width = cardW;
+            this.cardEligible.Size = new System.Drawing.Size(cardW, metricsHeight);
 
-            // Keep breakdown fully visible (all 3 fee rows + percentages).
+            // Breakdown sits clearly below the metric cards (no overlap).
+            int breakdownTop = this.cardStudents.Bottom + 24;
             this.cardBreakdown.Left = side;
-            this.cardBreakdown.Top = 250;
+            this.cardBreakdown.Top = breakdownTop;
             this.cardBreakdown.Width = usable;
-            this.cardBreakdown.Height = 200;
+            this.cardBreakdown.Height = 220;
 
             int barLeft = 20;
-            int pctWidth = 52;
+            int pctWidth = 56;
             int barW = Math.Max(120, this.cardBreakdown.Width - barLeft - pctWidth - 28);
             int pctLeft = barLeft + barW + 12;
 
-            this.lblBarTuition.Location = new System.Drawing.Point(barLeft, 48);
-            this.barTuition.Location = new System.Drawing.Point(barLeft, 68);
-            this.lblPctTuition.Location = new System.Drawing.Point(pctLeft, 66);
+            this.lblBreakdownTitle.Location = new System.Drawing.Point(barLeft, 16);
+            this.lblBreakdownTitle.Visible = true;
+            this.lblBreakdownTitle.BringToFront();
 
-            this.lblBarIct.Location = new System.Drawing.Point(barLeft, 98);
-            this.barIct.Location = new System.Drawing.Point(barLeft, 118);
-            this.lblPctIct.Location = new System.Drawing.Point(pctLeft, 116);
+            this.lblBarTuition.Location = new System.Drawing.Point(barLeft, 52);
+            this.barTuition.Location = new System.Drawing.Point(barLeft, 74);
+            this.lblPctTuition.Location = new System.Drawing.Point(pctLeft, 72);
 
-            this.lblBarExam.Location = new System.Drawing.Point(barLeft, 148);
-            this.barExam.Location = new System.Drawing.Point(barLeft, 168);
-            this.lblPctExam.Location = new System.Drawing.Point(pctLeft, 166);
+            this.lblBarIct.Location = new System.Drawing.Point(barLeft, 104);
+            this.barIct.Location = new System.Drawing.Point(barLeft, 126);
+            this.lblPctIct.Location = new System.Drawing.Point(pctLeft, 124);
 
-            this.barTuition.Width = barW;
-            this.barIct.Width = barW;
-            this.barExam.Width = barW;
-            this.barTuition.Height = 16;
-            this.barIct.Height = 16;
-            this.barExam.Height = 16;
+            this.lblBarExam.Location = new System.Drawing.Point(barLeft, 156);
+            this.barExam.Location = new System.Drawing.Point(barLeft, 178);
+            this.lblPctExam.Location = new System.Drawing.Point(pctLeft, 176);
 
+            this.barTuition.Size = new System.Drawing.Size(barW, 16);
+            this.barIct.Size = new System.Drawing.Size(barW, 16);
+            this.barExam.Size = new System.Drawing.Size(barW, 16);
+
+            this.lblBarTuition.Visible = true;
+            this.lblBarIct.Visible = true;
+            this.lblBarExam.Visible = true;
+            this.barTuition.Visible = true;
+            this.barIct.Visible = true;
+            this.barExam.Visible = true;
             this.lblPctTuition.Visible = true;
             this.lblPctIct.Visible = true;
             this.lblPctExam.Visible = true;
-            this.lblBarExam.Visible = true;
-            this.barExam.Visible = true;
-            this.lblPctExam.BringToFront();
-            this.barExam.BringToFront();
-            this.lblBarExam.BringToFront();
+
+            // Keep metric cards above the breakdown in z-order.
+            this.cardStudents.BringToFront();
+            this.cardCollection.BringToFront();
+            this.cardDues.BringToFront();
+            this.cardEligible.BringToFront();
+            this.cardBreakdown.BringToFront();
 
             this.cardBreakdown.Invalidate();
         }

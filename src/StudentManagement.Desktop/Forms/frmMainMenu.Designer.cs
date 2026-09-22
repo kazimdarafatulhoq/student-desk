@@ -231,7 +231,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnFeeCollection.Text = "Fee Collection Counter";
             this.btnFeeCollection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnFeeCollection.Click += new System.EventHandler(this.btnFeeCollection_Click);
-            this.btnLedger.AccessibleName = "Payment History & Ledger";
+            this.btnLedger.AccessibleName = "Payment History";
             this.btnLedger.BackColor = System.Drawing.Color.Transparent;
             this.btnLedger.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLedger.FlatAppearance.BorderSize = 0;
@@ -245,10 +245,10 @@ namespace StudentManagement.Desktop.Forms
             this.btnLedger.Size = new System.Drawing.Size(232, 50);
             this.btnLedger.TabIndex = 5;
             this.btnLedger.Tag = "nav";
-            this.btnLedger.Text = "Payment History & Ledger";
+            this.btnLedger.Text = "Payment History";
             this.btnLedger.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLedger.Click += new System.EventHandler(this.btnLedger_Click);
-            this.btnExamClearance.AccessibleName = "4-Month Fee Eligibility";
+            this.btnExamClearance.AccessibleName = "Exam Fee Eligibility";
             this.btnExamClearance.BackColor = System.Drawing.Color.Transparent;
             this.btnExamClearance.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnExamClearance.FlatAppearance.BorderSize = 0;
@@ -262,7 +262,7 @@ namespace StudentManagement.Desktop.Forms
             this.btnExamClearance.Size = new System.Drawing.Size(232, 50);
             this.btnExamClearance.TabIndex = 6;
             this.btnExamClearance.Tag = "nav";
-            this.btnExamClearance.Text = "4-Month Fee Eligibility";
+            this.btnExamClearance.Text = "Exam Fee Eligibility";
             this.btnExamClearance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnExamClearance.Click += new System.EventHandler(this.btnExamClearance_Click);
             this.btnAdmitCard.AccessibleName = "Admit Card Printing";

@@ -250,8 +250,8 @@ namespace StudentManagement.Desktop.Forms
             AssignNav(btnAdmission, NavIcons.Admission(mute), "Student Registration");
             AssignNav(btnSearch, NavIcons.Search(mute), "Student Directory");
             AssignNav(btnFeeCollection, NavIcons.Fee(mute), "Fee Collection Counter");
-            AssignNav(btnLedger, NavIcons.Ledger(mute), "Payment History & Ledger");
-            AssignNav(btnExamClearance, NavIcons.Exam(mute), "4-Month Fee Eligibility");
+            AssignNav(btnLedger, NavIcons.Ledger(mute), "Payment History");
+            AssignNav(btnExamClearance, NavIcons.Exam(mute), "Exam Fee Eligibility");
             AssignNav(btnAdmitCard, NavIcons.AdmitCard(mute), "Admit Card Printing");
             AssignNav(btnUsers, NavIcons.Users(mute), "User Access & Security");
 
