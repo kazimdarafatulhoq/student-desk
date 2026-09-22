@@ -44,6 +44,7 @@ namespace StudentManagement.Application.Services
                 AdmissionDate = DateTime.Today,
                 Status = StudentStatus.Active,
                 AcademicSession = request.AcademicSession,
+                PhotoPath = request.PhotoPath,
                 CreatedBy = request.CreatedBy
             };
 
@@ -210,7 +211,8 @@ namespace StudentManagement.Application.Services
                 AdmissionDate = s.AdmissionDate,
                 Status = s.Status,
                 AcademicSession = s.AcademicSession,
-                NetDue = summary.NetDue
+                NetDue = summary.NetDue,
+                PhotoPath = s.PhotoPath
             };
         }
 

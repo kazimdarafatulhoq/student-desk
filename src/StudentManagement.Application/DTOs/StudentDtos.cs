@@ -32,6 +32,7 @@ namespace StudentManagement.Application.DTOs
         public StudentStatus Status { get; set; }
         public string AcademicSession { get; set; } = "2025-2026";
         public decimal NetDue { get; set; }
+        public string? PhotoPath { get; set; }
     }
 
     public class StudentAdmissionRequest
@@ -51,6 +52,7 @@ namespace StudentManagement.Application.DTOs
         public decimal MonthlyTuitionFee { get; set; }
         public string AcademicSession { get; set; } = "2025-2026";
         public string? CreatedBy { get; set; }
+        public string? PhotoPath { get; set; }
     }
 
     public class StudentSearchFilter
