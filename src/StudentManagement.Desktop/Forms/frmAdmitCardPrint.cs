@@ -17,8 +17,8 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmAdmitCardPrint : Form
     {
-        private StudentService _students;
-        private ExamService _exams;
+        private StudentService? _students;
+        private ExamService? _exams;
         private List<StudentDto> _lookup = new();
         private List<ExamTerm> _terms = new();
         private List<ClassDto> _classes = new();
@@ -40,6 +40,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task LoadDataAsync()
         {
+            if (_students == null || _exams == null)
+                return;
+
             _lookup = (await _students.GetLookupAsync()).ToList();
             cboStudent.DisplayMember = "Display";
             cboStudent.ValueMember = "StudentId";
@@ -59,6 +62,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async void btnIssue_Click(object? sender, EventArgs e)
         {
+            if (_exams == null)
+                return;
+
             try
             {
                 if (cboStudent.SelectedValue is not int studentId || cboTerm.SelectedValue is not int termId)
@@ -85,6 +91,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async void btnBatch_Click(object? sender, EventArgs e)
         {
+            if (_students == null || _exams == null)
+                return;
+
             try
             {
                 if (cboTerm.SelectedValue is not int termId)

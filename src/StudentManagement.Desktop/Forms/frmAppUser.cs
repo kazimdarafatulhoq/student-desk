@@ -16,7 +16,7 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmAppUser : Form
     {
-        private AuthService _auth;
+        private AuthService? _auth;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmAppUser()
@@ -35,6 +35,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task RefreshUsersAsync()
         {
+            if (_auth == null)
+                return;
+
             var users = await _auth.GetUsersAsync();
             dgvUsers.Rows.Clear();
             foreach (var u in users)
@@ -46,6 +49,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async void btnCreate_Click(object? sender, EventArgs e)
         {
+            if (_auth == null)
+                return;
+
             try
             {
                 await _auth.CreateUserAsync(new CreateUserRequest
@@ -74,7 +80,8 @@ namespace StudentManagement.Desktop.Forms
 
         private async void btnToggle_Click(object? sender, EventArgs e)
         {
-            if (dgvUsers.CurrentRow is null) return;
+            if (_auth == null || dgvUsers.CurrentRow is null)
+                return;
             var userId = Convert.ToInt32(dgvUsers.CurrentRow.Cells[0].Value);
             var active = dgvUsers.CurrentRow.Cells[4].Value?.ToString() == "Active";
             await _auth.SetActiveAsync(userId, !active);

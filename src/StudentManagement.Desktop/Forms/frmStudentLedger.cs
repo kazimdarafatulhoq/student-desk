@@ -16,8 +16,8 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmStudentLedger : Form
     {
-        private StudentService _students;
-        private FeeService _fees;
+        private StudentService? _students;
+        private FeeService? _fees;
         private List<StudentDto> _lookup = new();
         private LedgerSummaryDto? _summary;
         private IReadOnlyList<LedgerEntryDto> _entries = Array.Empty<LedgerEntryDto>();
@@ -40,6 +40,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task LoadStudentsAsync()
         {
+            if (_students == null)
+                return;
+
             _lookup = (await _students.GetLookupAsync()).ToList();
             cboStudent.DisplayMember = "Display";
             cboStudent.ValueMember = nameof(StudentDto.StudentId);
@@ -59,6 +62,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task LoadLedgerAsync(int studentId)
         {
+            if (_fees == null)
+                return;
+
             _summary = await _fees.GetSummaryAsync(studentId);
             _entries = await _fees.GetLedgerDetailedAsync(studentId);
 

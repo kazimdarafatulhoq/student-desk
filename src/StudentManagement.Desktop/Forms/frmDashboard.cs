@@ -12,8 +12,8 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmDashboard : Form
     {
-        private StudentService _students;
-        private FeeService _fees;
+        private StudentService? _students;
+        private FeeService? _fees;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmDashboard()
@@ -32,6 +32,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task LoadStatsAsync()
         {
+            if (_students == null)
+                return;
+
             try
             {
                 var list = await _students.SearchAsync(new StudentSearchFilter { Status = StudentStatus.Active });

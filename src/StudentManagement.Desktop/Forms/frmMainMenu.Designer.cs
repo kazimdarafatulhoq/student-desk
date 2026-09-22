@@ -242,7 +242,7 @@ namespace StudentManagement.Desktop.Forms
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             using (var brush = new SolidBrush(System.Drawing.Color.FromArgb(37, 99, 235)))
                 e.Graphics.FillEllipse(brush, 0, 0, lblAvatar.Width - 1, lblAvatar.Height - 1);
-            string initials = lblAvatar.Tag != null ? lblAvatar.Tag.ToString() : "AD";
+            string initials = Convert.ToString(lblAvatar.Tag) ?? "AD";
             TextRenderer.DrawText(
                 e.Graphics,
                 initials,

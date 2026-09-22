@@ -118,7 +118,7 @@ namespace StudentManagement.Desktop.Theme
 
         private static void ApplyPanel(Panel panel)
         {
-            string tag = panel.Tag != null ? panel.Tag.ToString() : string.Empty;
+            string? tag = panel.Tag != null ? panel.Tag.ToString() : string.Empty;
             if (tag == "card")
                 panel.BackColor = Card;
             else if (tag == "sidebar")
@@ -131,7 +131,7 @@ namespace StudentManagement.Desktop.Theme
 
         private static void ApplyLabel(Label label)
         {
-            string tag = label.Tag != null ? label.Tag.ToString() : string.Empty;
+            string? tag = label.Tag != null ? label.Tag.ToString() : string.Empty;
             if (string.IsNullOrEmpty(tag))
                 return;
 
@@ -190,7 +190,7 @@ namespace StudentManagement.Desktop.Theme
             if (button.Height < 36)
                 button.Height = 36;
 
-            string tag = button.Tag != null ? button.Tag.ToString() : string.Empty;
+            string? tag = button.Tag != null ? button.Tag.ToString() : string.Empty;
 
             if (tag == "danger")
             {

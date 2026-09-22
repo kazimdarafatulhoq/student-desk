@@ -16,8 +16,8 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmStudentAdmission : Form
     {
-        private StudentService _students;
-        private string _selectedPhotoPath;
+        private StudentService? _students;
+        private string? _selectedPhotoPath;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmStudentAdmission()
@@ -37,6 +37,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task LoadLookupsAsync()
         {
+            if (_students == null)
+                return;
+
             cboBloodGroup.DataSource = Enum.GetValues(typeof(BloodGroup));
             cboGender.DataSource = Enum.GetValues(typeof(Gender));
             IReadOnlyList<ClassDto> classes = await _students.GetClassesAsync();
@@ -51,6 +54,8 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task LoadSectionsAsync()
         {
+            if (_students == null)
+                return;
             if (!(cboClass.SelectedValue is int classId))
                 return;
             IReadOnlyList<SectionDto> sections = await _students.GetSectionsAsync(classId);
@@ -64,7 +69,7 @@ namespace StudentManagement.Desktop.Forms
             txtAge.Text = AgeCalculator.Format(dtpDateOfBirth.Value.Date);
         }
 
-        private void chkSameAddress_CheckedChanged(object sender, EventArgs e)
+        private void chkSameAddress_CheckedChanged(object? sender, EventArgs e)
         {
             if (chkSameAddress.Checked)
             {
@@ -77,7 +82,7 @@ namespace StudentManagement.Desktop.Forms
             }
         }
 
-        private void btnBrowsePhoto_Click(object sender, EventArgs e)
+        private void btnBrowsePhoto_Click(object? sender, EventArgs e)
         {
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
@@ -114,7 +119,7 @@ namespace StudentManagement.Desktop.Forms
             }
         }
 
-        private void btnClearPhoto_Click(object sender, EventArgs e)
+        private void btnClearPhoto_Click(object? sender, EventArgs e)
         {
             ClearPhoto();
         }
@@ -132,7 +137,7 @@ namespace StudentManagement.Desktop.Forms
             lblPhotoHint.ForeColor = UITheme.TextMuted;
         }
 
-        private string SavePhotoForStudent(string registrationNo)
+        private string? SavePhotoForStudent(string registrationNo)
         {
             if (string.IsNullOrWhiteSpace(_selectedPhotoPath) || !File.Exists(_selectedPhotoPath))
                 return null;
@@ -152,8 +157,11 @@ namespace StudentManagement.Desktop.Forms
             return dest;
         }
 
-        private async void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object? sender, EventArgs e)
         {
+            if (_students == null)
+                return;
+
             try
             {
                 btnSave.Enabled = false;
@@ -165,14 +173,14 @@ namespace StudentManagement.Desktop.Forms
                     FullName = txtFullName.Text,
                     FatherName = txtFatherName.Text,
                     MotherName = txtMotherName.Text,
-                    BloodGroup = (BloodGroup)cboBloodGroup.SelectedItem,
-                    Gender = (Gender)cboGender.SelectedItem,
+                    BloodGroup = (BloodGroup)cboBloodGroup.SelectedItem!,
+                    Gender = (Gender)cboGender.SelectedItem!,
                     DateOfBirth = dtpDateOfBirth.Value.Date,
                     GuardianPhone = txtGuardianPhone.Text,
                     PresentAddress = txtPresentAddress.Text,
                     PermanentAddress = txtPermanentAddress.Text,
-                    ClassId = (int)cboClass.SelectedValue,
-                    SectionId = (int)cboSection.SelectedValue,
+                    ClassId = (int)cboClass.SelectedValue!,
+                    SectionId = (int)cboSection.SelectedValue!,
                     RollNumber = txtRollNumber.Text,
                     MonthlyTuitionFee = decimal.Parse(txtTuitionFee.Text.Trim()),
                     AcademicSession = AppSession.Current != null ? AppSession.Current.AcademicSession : "2025-2026",
@@ -181,7 +189,7 @@ namespace StudentManagement.Desktop.Forms
                 });
 
                 // Copy selected image into app Photos folder using registration ID.
-                string savedPhoto = SavePhotoForStudent(result.RegistrationNo);
+                string? savedPhoto = SavePhotoForStudent(result.RegistrationNo);
                 if (!string.IsNullOrEmpty(savedPhoto))
                 {
                     result.PhotoPath = savedPhoto;
@@ -215,7 +223,7 @@ namespace StudentManagement.Desktop.Forms
             }
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
+        private void btnReset_Click(object? sender, EventArgs e)
         {
             txtFullName.Clear();
             txtFatherName.Clear();

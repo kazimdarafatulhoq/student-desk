@@ -17,8 +17,8 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmFeeCollection : Form
     {
-        private StudentService _students;
-        private FeeService _fees;
+        private StudentService? _students;
+        private FeeService? _fees;
         private StudentDto? _student;
         private List<CheckBox> _monthChecks = new();
 
@@ -61,6 +61,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async void btnFind_Click(object? sender, EventArgs e)
         {
+            if (_students == null)
+                return;
+
             try
             {
                 _student = await _students.FindQuickAsync(txtSearch.Text);
@@ -122,6 +125,9 @@ namespace StudentManagement.Desktop.Forms
                 MessageBox.Show("Find a student first.", "Fee Collection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (_fees == null || _students == null)
+                return;
 
             try
             {

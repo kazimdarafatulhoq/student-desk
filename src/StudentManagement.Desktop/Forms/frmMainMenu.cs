@@ -12,10 +12,10 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmMainMenu : Form
     {
-        private IServiceScope _scope;
-        private Form _activeChild;
+        private IServiceScope? _scope;
+        private Form? _activeChild;
         private bool _sidebarExpanded = true;
-        private System.Windows.Forms.Timer _clockTimer;
+        private System.Windows.Forms.Timer? _clockTimer;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmMainMenu()
@@ -36,12 +36,12 @@ namespace StudentManagement.Desktop.Forms
             FormClosed += frmMainMenu_FormClosed;
         }
 
-        private void ClockTimer_Tick(object sender, EventArgs e)
+        private void ClockTimer_Tick(object? sender, EventArgs e)
         {
             lblClock.Text = DateTime.Now.ToString("dd-MMM-yyyy  HH:mm:ss");
         }
 
-        private void frmMainMenu_FormClosed(object sender, FormClosedEventArgs e)
+        private void frmMainMenu_FormClosed(object? sender, FormClosedEventArgs e)
         {
             if (_clockTimer != null)
             {
@@ -52,7 +52,7 @@ namespace StudentManagement.Desktop.Forms
                 _scope.Dispose();
         }
 
-        private async void frmMainMenu_Load(object sender, EventArgs e)
+        private async void frmMainMenu_Load(object? sender, EventArgs e)
         {
             if (AppSession.Current == null)
             {
@@ -105,6 +105,9 @@ namespace StudentManagement.Desktop.Forms
                     return;
                 }
 
+                if (_scope == null)
+                    return;
+
                 IUnitOfWork uow = _scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 bool ok = await uow.TestConnectionAsync();
                 lblDbStatus.Text = ok ? "Database: Connected" : "Database: Offline";
@@ -120,6 +123,9 @@ namespace StudentManagement.Desktop.Forms
 
         private void OpenChild<T>() where T : Form
         {
+            if (_scope == null)
+                return;
+
             if (_activeChild != null)
             {
                 pnlContentContainer.Controls.Remove(_activeChild);
@@ -144,16 +150,16 @@ namespace StudentManagement.Desktop.Forms
             {
                 foreach (Control c in GetAllButtons(host))
                 {
-                    Button b = c as Button;
+                    Button? b = c as Button;
                     if (b == null)
                         continue;
-                    string tag = b.Tag != null ? b.Tag.ToString() : string.Empty;
+                    string tag = b.Tag?.ToString() ?? string.Empty;
                     if (tag == "nav" || tag == "nav-active")
                         UITheme.SetNavActive(b, false);
                 }
             }
 
-            Button active = null;
+            Button? active = null;
             if (formName == nameof(frmDashboard)) active = btnDashboard;
             else if (formName == nameof(frmStudentAdmission)) active = btnAdmission;
             else if (formName == nameof(frmStudentSearch)) active = btnSearch;
@@ -177,7 +183,7 @@ namespace StudentManagement.Desktop.Forms
             }
         }
 
-        private void btnToggleSidebar_Click(object sender, EventArgs e)
+        private void btnToggleSidebar_Click(object? sender, EventArgs e)
         {
             _sidebarExpanded = !_sidebarExpanded;
             pnlSidebar.Width = _sidebarExpanded ? 260 : 72;
@@ -186,38 +192,38 @@ namespace StudentManagement.Desktop.Forms
             {
                 foreach (Control c in GetAllButtons(host))
                 {
-                    Button b = c as Button;
+                    Button? b = c as Button;
                     if (b == null)
                         continue;
-                    string tag = b.Tag != null ? b.Tag.ToString() : string.Empty;
+                    string tag = b.Tag?.ToString() ?? string.Empty;
                     if (b != btnToggleSidebar && (tag == "nav" || tag == "nav-active"))
                         b.Text = _sidebarExpanded ? (b.AccessibleName ?? b.Text) : string.Empty;
                 }
                 foreach (Control child in host.Controls)
                 {
-                    Label section = child as Label;
-                    if (section != null && section.Tag != null && section.Tag.ToString() == "muted")
+                    Label? section = child as Label;
+                    if (section != null && (section.Tag?.ToString() ?? string.Empty) == "muted")
                         section.Visible = _sidebarExpanded;
                 }
             }
             btnToggleSidebar.Text = _sidebarExpanded ? "☰  Collapse" : "☰";
         }
 
-        private void btnDashboard_Click(object sender, EventArgs e) { OpenChild<frmDashboard>(); }
-        private void btnAdmission_Click(object sender, EventArgs e) { OpenChild<frmStudentAdmission>(); }
-        private void btnSearch_Click(object sender, EventArgs e) { OpenChild<frmStudentSearch>(); }
-        private void btnFeeCollection_Click(object sender, EventArgs e) { OpenChild<frmFeeCollection>(); }
-        private void btnLedger_Click(object sender, EventArgs e) { OpenChild<frmStudentLedger>(); }
-        private void btnExamClearance_Click(object sender, EventArgs e) { OpenChild<frmExamClearance>(); }
-        private void btnAdmitCard_Click(object sender, EventArgs e) { OpenChild<frmAdmitCardPrint>(); }
-        private void btnUsers_Click(object sender, EventArgs e) { OpenChild<frmAppUser>(); }
+        private void btnDashboard_Click(object? sender, EventArgs e) { OpenChild<frmDashboard>(); }
+        private void btnAdmission_Click(object? sender, EventArgs e) { OpenChild<frmStudentAdmission>(); }
+        private void btnSearch_Click(object? sender, EventArgs e) { OpenChild<frmStudentSearch>(); }
+        private void btnFeeCollection_Click(object? sender, EventArgs e) { OpenChild<frmFeeCollection>(); }
+        private void btnLedger_Click(object? sender, EventArgs e) { OpenChild<frmStudentLedger>(); }
+        private void btnExamClearance_Click(object? sender, EventArgs e) { OpenChild<frmExamClearance>(); }
+        private void btnAdmitCard_Click(object? sender, EventArgs e) { OpenChild<frmAdmitCardPrint>(); }
+        private void btnUsers_Click(object? sender, EventArgs e) { OpenChild<frmAppUser>(); }
 
         public void OpenFeeCollectionFromDashboard()
         {
             OpenChild<frmFeeCollection>();
         }
 
-        private void btnLogout_Click(object sender, EventArgs e)
+        private void btnLogout_Click(object? sender, EventArgs e)
         {
             AppSession.Clear();
             System.Windows.Forms.Application.Restart();

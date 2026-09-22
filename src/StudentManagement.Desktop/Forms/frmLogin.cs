@@ -11,7 +11,7 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmLogin : Form
     {
-        private AuthService _auth;
+        private AuthService? _auth;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmLogin()
@@ -33,7 +33,7 @@ namespace StudentManagement.Desktop.Forms
             }
         }
 
-        private async void btnLogin_Click(object sender, EventArgs e)
+        private async void btnLogin_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -62,6 +62,9 @@ namespace StudentManagement.Desktop.Forms
                 }
                 else
                 {
+                    if (_auth == null)
+                        throw new InvalidOperationException("Authentication service is not available.");
+
                     session = await _auth.LoginAsync(new LoginRequest
                     {
                         Username = user,

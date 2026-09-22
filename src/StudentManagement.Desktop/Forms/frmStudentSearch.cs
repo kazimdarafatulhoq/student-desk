@@ -15,7 +15,7 @@ namespace StudentManagement.Desktop.Forms
 {
     public partial class frmStudentSearch : Form
     {
-        private StudentService _students;
+        private StudentService? _students;
         private List<StudentDto> _rows = new();
 
         public event Action<StudentDto>? OpenLedgerRequested;
@@ -42,6 +42,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task LoadLookupsAsync()
         {
+            if (_students == null)
+                return;
+
             var classes = (await _students.GetClassesAsync()).ToList();
             classes.Insert(0, new ClassDto { ClassId = 0, ClassName = "All Classes" });
             cboClass.DisplayMember = nameof(ClassDto.ClassName);
@@ -53,6 +56,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task LoadSectionsAsync()
         {
+            if (_students == null)
+                return;
+
             var classId = cboClass.SelectedValue is int id ? id : 0;
             var sections = classId > 0
                 ? (await _students.GetSectionsAsync(classId)).ToList()
@@ -67,6 +73,9 @@ namespace StudentManagement.Desktop.Forms
 
         private async Task SearchAsync()
         {
+            if (_students == null)
+                return;
+
             var filter = new StudentSearchFilter
             {
                 Query = txtQuery.Text.Trim(),
