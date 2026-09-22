@@ -24,14 +24,22 @@ namespace StudentManagement.Desktop.Forms
         {
             InitializeComponent();
             if (!DesignTime.IsActive)
+            {
                 UITheme.ApplyForm(this);
+                ApplyNavIcons();
+                ApplySidebarLayout(true);
+            }
         }
 
         public frmMainMenu(IServiceProvider services) : this()
         {
             _scope = services.CreateScope();
             if (!DesignTime.IsActive)
+            {
                 UITheme.ApplyForm(this);
+                ApplyNavIcons();
+                ApplySidebarLayout(true);
+            }
             _clockTimer = new System.Windows.Forms.Timer();
             _clockTimer.Interval = 1000;
             _clockTimer.Tick += ClockTimer_Tick;
@@ -175,6 +183,51 @@ namespace StudentManagement.Desktop.Forms
 
             if (active != null)
                 UITheme.SetNavActive(active, true);
+
+            RefreshNavIconColors();
+        }
+
+        private void RefreshNavIconColors()
+        {
+            RecolorNav(btnToggleSidebar, UITheme.TextMuted);
+            RecolorNav(btnDashboard, IsActive(btnDashboard) ? Color.White : UITheme.TextMuted);
+            RecolorNav(btnAdmission, IsActive(btnAdmission) ? Color.White : UITheme.TextMuted);
+            RecolorNav(btnSearch, IsActive(btnSearch) ? Color.White : UITheme.TextMuted);
+            RecolorNav(btnFeeCollection, IsActive(btnFeeCollection) ? Color.White : UITheme.TextMuted);
+            RecolorNav(btnLedger, IsActive(btnLedger) ? Color.White : UITheme.TextMuted);
+            RecolorNav(btnExamClearance, IsActive(btnExamClearance) ? Color.White : UITheme.TextMuted);
+            RecolorNav(btnAdmitCard, IsActive(btnAdmitCard) ? Color.White : UITheme.TextMuted);
+            RecolorNav(btnUsers, IsActive(btnUsers) ? Color.White : UITheme.TextMuted);
+            RecolorNav(btnLogout, Color.White);
+        }
+
+        private static bool IsActive(Button button)
+        {
+            return (button.Tag?.ToString() ?? string.Empty) == "nav-active";
+        }
+
+        private void RecolorNav(Button button, Color color)
+        {
+            Image icon;
+            if (button == btnToggleSidebar) icon = NavIcons.Toggle(color);
+            else if (button == btnDashboard) icon = NavIcons.Dashboard(color);
+            else if (button == btnAdmission) icon = NavIcons.Admission(color);
+            else if (button == btnSearch) icon = NavIcons.Search(color);
+            else if (button == btnFeeCollection) icon = NavIcons.Fee(color);
+            else if (button == btnLedger) icon = NavIcons.Ledger(color);
+            else if (button == btnExamClearance) icon = NavIcons.Exam(color);
+            else if (button == btnAdmitCard) icon = NavIcons.AdmitCard(color);
+            else if (button == btnUsers) icon = NavIcons.Users(color);
+            else if (button == btnLogout) icon = NavIcons.Logout(color);
+            else return;
+
+            if (button.Image != null)
+            {
+                Image old = button.Image;
+                button.Image = null;
+                old.Dispose();
+            }
+            button.Image = icon;
         }
 
         private System.Collections.Generic.IEnumerable<Control> GetAllButtons(Control root)
@@ -187,11 +240,97 @@ namespace StudentManagement.Desktop.Forms
             }
         }
 
-        private void btnToggleSidebar_Click(object? sender, EventArgs e)
+        private void ApplyNavIcons()
         {
-            _sidebarExpanded = !_sidebarExpanded;
-            pnlSidebar.Width = _sidebarExpanded ? 260 : 72;
-            pnlProfile.Visible = _sidebarExpanded;
+            Color mute = UITheme.TextMuted;
+            Color white = Color.White;
+
+            AssignNav(btnToggleSidebar, NavIcons.Toggle(mute), "Collapse");
+            AssignNav(btnDashboard, NavIcons.Dashboard(mute), "Dashboard");
+            AssignNav(btnAdmission, NavIcons.Admission(mute), "Student Registration");
+            AssignNav(btnSearch, NavIcons.Search(mute), "Student Directory");
+            AssignNav(btnFeeCollection, NavIcons.Fee(mute), "Fee Collection Counter");
+            AssignNav(btnLedger, NavIcons.Ledger(mute), "Payment History & Ledger");
+            AssignNav(btnExamClearance, NavIcons.Exam(mute), "4-Month Fee Eligibility");
+            AssignNav(btnAdmitCard, NavIcons.AdmitCard(mute), "Admit Card Printing");
+            AssignNav(btnUsers, NavIcons.Users(mute), "User Access & Security");
+
+            btnLogout.Tag = "nav-danger";
+            AssignNav(btnLogout, NavIcons.Logout(white), "Sign Out");
+            UITheme.StyleButton(btnLogout);
+        }
+
+        private static void AssignNav(Button button, Image icon, string label)
+        {
+            if (button.Image != null)
+            {
+                Image old = button.Image;
+                button.Image = null;
+                old.Dispose();
+            }
+
+            button.Image = icon;
+            button.AccessibleName = label;
+            button.Text = label;
+            button.TextImageRelation = TextImageRelation.ImageBeforeText;
+            button.ImageAlign = ContentAlignment.MiddleLeft;
+            button.TextAlign = ContentAlignment.MiddleLeft;
+            button.Height = 50;
+            button.UseCompatibleTextRendering = true;
+        }
+
+        private void ApplySidebarLayout(bool expanded)
+        {
+            _sidebarExpanded = expanded;
+            pnlSidebar.Width = expanded ? 260 : 72;
+            pnlProfile.Visible = expanded;
+
+            foreach (Control host in pnlSidebar.Controls)
+            {
+                foreach (Control c in GetAllButtons(host))
+                {
+                    Button? b = c as Button;
+                    if (b == null)
+                        continue;
+
+                    string tag = b.Tag?.ToString() ?? string.Empty;
+                    bool isNav = tag == "nav" || tag == "nav-active" || tag == "nav-danger";
+                    if (!isNav && b != btnToggleSidebar)
+                        continue;
+
+                    string label = b.AccessibleName ?? string.Empty;
+                    if (expanded)
+                    {
+                        b.Width = 232;
+                        b.Text = label;
+                        b.TextAlign = ContentAlignment.MiddleLeft;
+                        b.ImageAlign = ContentAlignment.MiddleLeft;
+                        b.Padding = new Padding(12, 10, 8, 10);
+                        b.TextImageRelation = TextImageRelation.ImageBeforeText;
+                    }
+                    else
+                    {
+                        // Icons stay visible; labels hide.
+                        b.Width = 52;
+                        b.Text = string.Empty;
+                        b.TextAlign = ContentAlignment.MiddleCenter;
+                        b.ImageAlign = ContentAlignment.MiddleCenter;
+                        b.Padding = new Padding(0);
+                        b.TextImageRelation = TextImageRelation.Overlay;
+                    }
+
+                    b.Height = 50;
+                }
+
+                foreach (Control child in host.Controls)
+                {
+                    Label? section = child as Label;
+                    if (section != null && (section.Tag?.ToString() ?? string.Empty) == "muted")
+                        section.Visible = expanded;
+                }
+            }
+
+            // Refresh active/danger colors after layout Padding changes.
             foreach (Control host in pnlSidebar.Controls)
             {
                 foreach (Control c in GetAllButtons(host))
@@ -200,17 +339,38 @@ namespace StudentManagement.Desktop.Forms
                     if (b == null)
                         continue;
                     string tag = b.Tag?.ToString() ?? string.Empty;
-                    if (b != btnToggleSidebar && (tag == "nav" || tag == "nav-active"))
-                        b.Text = _sidebarExpanded ? (b.AccessibleName ?? b.Text) : string.Empty;
-                }
-                foreach (Control child in host.Controls)
-                {
-                    Label? section = child as Label;
-                    if (section != null && (section.Tag?.ToString() ?? string.Empty) == "muted")
-                        section.Visible = _sidebarExpanded;
+                    if (tag == "nav" || tag == "nav-active" || tag == "nav-danger")
+                        UITheme.StyleButton(b);
                 }
             }
-            btnToggleSidebar.Text = _sidebarExpanded ? "☰  Collapse" : "☰";
+
+            // Keep collapsed icon-only alignment after StyleButton resets padding.
+            if (!expanded)
+            {
+                foreach (Control host in pnlSidebar.Controls)
+                {
+                    foreach (Control c in GetAllButtons(host))
+                    {
+                        Button? b = c as Button;
+                        if (b == null)
+                            continue;
+                        string tag = b.Tag?.ToString() ?? string.Empty;
+                        if (tag != "nav" && tag != "nav-active" && tag != "nav-danger")
+                            continue;
+                        b.Text = string.Empty;
+                        b.Width = 52;
+                        b.Padding = new Padding(0);
+                        b.ImageAlign = ContentAlignment.MiddleCenter;
+                        b.TextAlign = ContentAlignment.MiddleCenter;
+                        b.TextImageRelation = TextImageRelation.Overlay;
+                    }
+                }
+            }
+        }
+
+        private void btnToggleSidebar_Click(object? sender, EventArgs e)
+        {
+            ApplySidebarLayout(!_sidebarExpanded);
         }
 
         private void btnDashboard_Click(object? sender, EventArgs e) { OpenChild<frmDashboard>(); }

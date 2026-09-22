@@ -186,16 +186,36 @@ namespace StudentManagement.Desktop.Theme
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
             button.Cursor = Cursors.Hand;
-            button.Font = FontSubtitle;
-            if (button.Height < 36)
-                button.Height = 36;
 
             string? tag = button.Tag != null ? button.Tag.ToString() : string.Empty;
+            bool isNav = tag == "nav" || tag == "nav-active" || tag == "nav-danger";
 
-            if (tag == "danger")
+            if (isNav)
+            {
+                // Regular weight + taller row so descenders (g/y/p) are not clipped.
+                button.Font = FontNav;
+                button.Height = 50;
+                button.TextImageRelation = TextImageRelation.ImageBeforeText;
+                button.UseCompatibleTextRendering = true;
+            }
+            else
+            {
+                button.Font = FontSubtitle;
+                if (button.Height < 36)
+                    button.Height = 36;
+            }
+
+            if (tag == "danger" || tag == "nav-danger")
             {
                 button.BackColor = Danger;
                 button.ForeColor = Color.White;
+                if (tag == "nav-danger")
+                {
+                    button.TextAlign = ContentAlignment.MiddleLeft;
+                    button.ImageAlign = ContentAlignment.MiddleLeft;
+                    button.Padding = new Padding(12, 10, 8, 10);
+                    button.FlatAppearance.MouseOverBackColor = Color.FromArgb(225, 29, 72);
+                }
             }
             else if (tag == "success")
             {
@@ -219,18 +239,18 @@ namespace StudentManagement.Desktop.Theme
                 button.BackColor = Color.Transparent;
                 button.ForeColor = TextMuted;
                 button.TextAlign = ContentAlignment.MiddleLeft;
+                button.ImageAlign = ContentAlignment.MiddleLeft;
                 button.FlatAppearance.MouseOverBackColor = Card;
-                button.Padding = new Padding(16, 8, 8, 8);
-                button.Height = 42;
+                button.Padding = new Padding(12, 10, 8, 10);
             }
             else if (tag == "nav-active")
             {
                 button.BackColor = Primary;
                 button.ForeColor = Color.White;
                 button.TextAlign = ContentAlignment.MiddleLeft;
+                button.ImageAlign = ContentAlignment.MiddleLeft;
                 button.FlatAppearance.MouseOverBackColor = PrimaryHover;
-                button.Padding = new Padding(16, 8, 8, 8);
-                button.Height = 42;
+                button.Padding = new Padding(12, 10, 8, 10);
             }
             else
             {
@@ -243,6 +263,9 @@ namespace StudentManagement.Desktop.Theme
         public static void SetNavActive(Button button, bool active)
         {
             if (button == null)
+                return;
+            string? current = button.Tag != null ? button.Tag.ToString() : string.Empty;
+            if (current == "nav-danger" || current == "danger")
                 return;
             button.Tag = active ? "nav-active" : "nav";
             StyleButton(button);
