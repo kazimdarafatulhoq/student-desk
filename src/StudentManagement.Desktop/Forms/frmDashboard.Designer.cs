@@ -309,7 +309,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // cardBreakdown
             //
-            this.cardBreakdown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.cardBreakdown.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
             this.cardBreakdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.cardBreakdown.Controls.Add(this.lblBreakdownTitle);
             this.cardBreakdown.Controls.Add(this.lblBarTuition);
@@ -323,7 +323,7 @@ namespace StudentManagement.Desktop.Forms
             this.cardBreakdown.Controls.Add(this.lblPctExam);
             this.cardBreakdown.Location = new System.Drawing.Point(16, 260);
             this.cardBreakdown.Name = "cardBreakdown";
-            this.cardBreakdown.Size = new System.Drawing.Size(1132, 220);
+            this.cardBreakdown.Size = new System.Drawing.Size(900, 220);
             this.cardBreakdown.TabIndex = 7;
             this.cardBreakdown.Tag = "card";
             this.cardBreakdown.Paint += new System.Windows.Forms.PaintEventHandler(this.cardBreakdown_Paint);
@@ -357,16 +357,15 @@ namespace StudentManagement.Desktop.Forms
             this.barTuition.Location = new System.Drawing.Point(20, 80);
             this.barTuition.Maximum = 100;
             this.barTuition.Name = "barTuition";
-            this.barTuition.Size = new System.Drawing.Size(1000, 14);
+            this.barTuition.Size = new System.Drawing.Size(780, 16);
             this.barTuition.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.barTuition.TabIndex = 2;
             //
             // lblPctTuition
             //
-            this.lblPctTuition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPctTuition.AutoSize = true;
             this.lblPctTuition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
-            this.lblPctTuition.Location = new System.Drawing.Point(1060, 78);
+            this.lblPctTuition.Location = new System.Drawing.Point(820, 78);
             this.lblPctTuition.Name = "lblPctTuition";
             this.lblPctTuition.Size = new System.Drawing.Size(24, 15);
             this.lblPctTuition.TabIndex = 3;
@@ -390,16 +389,15 @@ namespace StudentManagement.Desktop.Forms
             this.barIct.Location = new System.Drawing.Point(20, 136);
             this.barIct.Maximum = 100;
             this.barIct.Name = "barIct";
-            this.barIct.Size = new System.Drawing.Size(1000, 14);
+            this.barIct.Size = new System.Drawing.Size(780, 16);
             this.barIct.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.barIct.TabIndex = 5;
             //
             // lblPctIct
             //
-            this.lblPctIct.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPctIct.AutoSize = true;
             this.lblPctIct.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.lblPctIct.Location = new System.Drawing.Point(1060, 134);
+            this.lblPctIct.Location = new System.Drawing.Point(820, 134);
             this.lblPctIct.Name = "lblPctIct";
             this.lblPctIct.Size = new System.Drawing.Size(24, 15);
             this.lblPctIct.TabIndex = 6;
@@ -423,16 +421,15 @@ namespace StudentManagement.Desktop.Forms
             this.barExam.Location = new System.Drawing.Point(20, 192);
             this.barExam.Maximum = 100;
             this.barExam.Name = "barExam";
-            this.barExam.Size = new System.Drawing.Size(1000, 14);
+            this.barExam.Size = new System.Drawing.Size(780, 16);
             this.barExam.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.barExam.TabIndex = 8;
             //
             // lblPctExam
             //
-            this.lblPctExam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPctExam.AutoSize = true;
             this.lblPctExam.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(139)))), ((int)(((byte)(92)))), ((int)(((byte)(246)))));
-            this.lblPctExam.Location = new System.Drawing.Point(1060, 190);
+            this.lblPctExam.Location = new System.Drawing.Point(820, 190);
             this.lblPctExam.Name = "lblPctExam";
             this.lblPctExam.Size = new System.Drawing.Size(24, 15);
             this.lblPctExam.TabIndex = 9;
@@ -509,24 +506,52 @@ namespace StudentManagement.Desktop.Forms
 
         private void frmDashboard_Resize(object sender, EventArgs e)
         {
-            this.btnQuickFee.Left = this.Width - this.btnQuickFee.Width - 24;
+            this.LayoutDashboard();
+        }
+
+        private void LayoutDashboard()
+        {
+            int areaW = this.ClientSize.Width;
+            if (areaW < 100)
+                return;
+
+            this.btnQuickFee.Left = Math.Max(16, areaW - this.btnQuickFee.Width - 24);
+
             int gap = 16;
-            int cardW = Math.Max(200, (this.Width - 48 - gap * 3) / 4);
+            int side = 16;
+            int usable = Math.Max(400, areaW - side * 2);
+            int cardW = Math.Max(180, (usable - gap * 3) / 4);
+
+            this.cardStudents.Left = side;
             this.cardStudents.Width = cardW;
-            this.cardCollection.Width = cardW;
             this.cardCollection.Left = this.cardStudents.Right + gap;
-            this.cardDues.Width = cardW;
+            this.cardCollection.Width = cardW;
             this.cardDues.Left = this.cardCollection.Right + gap;
-            this.cardEligible.Width = cardW;
+            this.cardDues.Width = cardW;
             this.cardEligible.Left = this.cardDues.Right + gap;
-            this.cardBreakdown.Width = Math.Max(400, this.Width - 40);
-            int barW = Math.Max(200, this.cardBreakdown.Width - 120);
+            this.cardEligible.Width = cardW;
+
+            this.cardBreakdown.Left = side;
+            this.cardBreakdown.Width = usable;
+            this.cardBreakdown.Height = 220;
+
+            int barLeft = 20;
+            int pctWidth = 48;
+            int barW = Math.Max(120, this.cardBreakdown.Width - barLeft - pctWidth - 24);
+            int pctLeft = barLeft + barW + 12;
+
+            this.barTuition.Left = barLeft;
+            this.barIct.Left = barLeft;
+            this.barExam.Left = barLeft;
             this.barTuition.Width = barW;
             this.barIct.Width = barW;
             this.barExam.Width = barW;
-            this.lblPctTuition.Left = this.cardBreakdown.Width - 60;
-            this.lblPctIct.Left = this.cardBreakdown.Width - 60;
-            this.lblPctExam.Left = this.cardBreakdown.Width - 60;
+
+            this.lblPctTuition.Left = pctLeft;
+            this.lblPctIct.Left = pctLeft;
+            this.lblPctExam.Left = pctLeft;
+
+            this.cardBreakdown.Invalidate();
         }
 
         private void btnQuickFee_Click(object sender, EventArgs e)

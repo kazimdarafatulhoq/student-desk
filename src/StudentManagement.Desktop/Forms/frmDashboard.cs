@@ -24,6 +24,7 @@ namespace StudentManagement.Desktop.Forms
             InitializeComponent();
             if (!DesignTime.IsActive)
                 UITheme.ApplyForm(this);
+            Load += frmDashboard_LoadLayout;
         }
 
         public frmDashboard(StudentService students, FeeService fees) : this()
@@ -33,6 +34,44 @@ namespace StudentManagement.Desktop.Forms
             if (!DesignTime.IsActive)
                 UITheme.ApplyForm(this);
             Load += async (s, e) => await LoadStatsAsync();
+        }
+
+        private void frmDashboard_LoadLayout(object? sender, EventArgs e)
+        {
+            PrepareProgressBars();
+            LayoutDashboard();
+        }
+
+        private void PrepareProgressBars()
+        {
+            // WinForms ProgressBar ignores ForeColor when visual styles are on.
+            TryDisableVisualStyles(barTuition);
+            TryDisableVisualStyles(barIct);
+            TryDisableVisualStyles(barExam);
+            barTuition.Height = 16;
+            barIct.Height = 16;
+            barExam.Height = 16;
+        }
+
+        private static void TryDisableVisualStyles(ProgressBar bar)
+        {
+            try
+            {
+                if (bar.IsHandleCreated)
+                    NativeMethods.SetWindowTheme(bar.Handle, string.Empty, string.Empty);
+                else
+                    bar.HandleCreated += (s, e) => NativeMethods.SetWindowTheme(bar.Handle, string.Empty, string.Empty);
+            }
+            catch
+            {
+                // Designer / unsupported platforms — ignore.
+            }
+        }
+
+        private static class NativeMethods
+        {
+            [System.Runtime.InteropServices.DllImport("uxtheme.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+            public static extern int SetWindowTheme(System.IntPtr hWnd, string appName, string idList);
         }
 
         private async Task LoadStatsAsync()
@@ -67,6 +106,7 @@ namespace StudentManagement.Desktop.Forms
                 SetBar(barTuition, lblPctTuition, lblBarTuition, "Tuition Fees", Math.Max(rate, 70), UITheme.Success);
                 SetBar(barIct, lblPctIct, lblBarIct, "ICT & Computer Lab Fees", Math.Max(rate - 2, 65), UITheme.AccentCyan);
                 SetBar(barExam, lblPctExam, lblBarExam, "Term Examination Fees", Math.Max(rate + 4, 75), UITheme.AccentPurple);
+                LayoutDashboard();
             }
             catch (Exception ex)
             {
@@ -76,6 +116,12 @@ namespace StudentManagement.Desktop.Forms
                 lblEligible.Text = "—";
                 lblPaidHint.Text = ex.Message;
             }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            LayoutDashboard();
         }
 
         private static void SetBar(ProgressBar bar, Label pct, Label caption, string name, int value, System.Drawing.Color color)
