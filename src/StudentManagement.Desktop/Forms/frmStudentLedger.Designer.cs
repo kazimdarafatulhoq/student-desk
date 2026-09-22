@@ -112,7 +112,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             // cardInvoiced
             // 
-            this.cardInvoiced.BackColor = System.Drawing.Color.FromArgb(11, 14, 20);
+            this.cardInvoiced.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             this.cardInvoiced.Controls.Add(this.lblInvoicedTitle);
             this.cardInvoiced.Controls.Add(this.lblInvoiced);
             this.cardInvoiced.Location = new System.Drawing.Point(16, 95);
@@ -144,7 +144,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             // cardPaid
             // 
-            this.cardPaid.BackColor = System.Drawing.Color.FromArgb(11, 14, 20);
+            this.cardPaid.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             this.cardPaid.Controls.Add(this.lblPaidTitle);
             this.cardPaid.Controls.Add(this.lblPaid);
             this.cardPaid.Location = new System.Drawing.Point(250, 95);
@@ -176,7 +176,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             // cardAdvance
             // 
-            this.cardAdvance.BackColor = System.Drawing.Color.FromArgb(11, 14, 20);
+            this.cardAdvance.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             this.cardAdvance.Controls.Add(this.lblAdvanceTitle);
             this.cardAdvance.Controls.Add(this.lblAdvance);
             this.cardAdvance.Location = new System.Drawing.Point(484, 95);
@@ -208,7 +208,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             // cardDue
             // 
-            this.cardDue.BackColor = System.Drawing.Color.FromArgb(11, 14, 20);
+            this.cardDue.BackColor = System.Drawing.Color.FromArgb(13, 20, 48);
             this.cardDue.Controls.Add(this.lblDueTitle);
             this.cardDue.Controls.Add(this.lblDue);
             this.cardDue.Location = new System.Drawing.Point(718, 95);
@@ -244,7 +244,7 @@ namespace StudentManagement.Desktop.Forms
             this.dgvLedger.AllowUserToDeleteRows = false;
             this.dgvLedger.AllowUserToResizeRows = false;
             this.dgvLedger.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvLedger.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.dgvLedger.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.dgvLedger.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.dgvLedger.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvLedger.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -261,7 +261,7 @@ namespace StudentManagement.Desktop.Forms
             this.dgvLedger.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
             this.dgvLedger.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
             this.dgvLedger.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
-            this.dgvLedger.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.dgvLedger.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.dgvLedger.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
             this.dgvLedger.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(78)))), ((int)(((byte)(216)))));
             this.dgvLedger.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
@@ -336,7 +336,7 @@ namespace StudentManagement.Desktop.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(11, 14, 20);
+            this.BackColor = System.Drawing.Color.FromArgb(9, 12, 23);
             this.ClientSize = new System.Drawing.Size(1000, 620);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.lblSelect);

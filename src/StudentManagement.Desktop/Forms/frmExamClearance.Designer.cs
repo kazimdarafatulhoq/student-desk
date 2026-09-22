@@ -50,7 +50,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblTitle.Size = new System.Drawing.Size(250, 25);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Exam Clearance Verification";
-            this.pnlCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.pnlCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.pnlCard.Controls.Add(this.lblStudent);
             this.pnlCard.Controls.Add(this.cboStudent);
             this.pnlCard.Controls.Add(this.lblTerm);
@@ -117,7 +117,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblResult.Text = "Select a student and term, then verify clearance. Dues will block admit cards unless overridden.";
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
             this.ClientSize = new System.Drawing.Size(760, 450);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlCard);

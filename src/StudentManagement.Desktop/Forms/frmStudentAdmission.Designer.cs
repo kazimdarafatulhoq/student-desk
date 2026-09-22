@@ -134,7 +134,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // grpPhoto
             //
-            this.grpPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.grpPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.grpPhoto.Controls.Add(this.picStudent);
             this.grpPhoto.Controls.Add(this.lblPhotoHint);
             this.grpPhoto.Controls.Add(this.btnBrowsePhoto);
@@ -191,7 +191,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // grpPersonal
             //
-            this.grpPersonal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.grpPersonal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.grpPersonal.Controls.Add(this.lblFullName);
             this.grpPersonal.Controls.Add(this.txtFullName);
             this.grpPersonal.Controls.Add(this.lblFatherName);
@@ -381,7 +381,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // grpAddress
             //
-            this.grpAddress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.grpAddress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.grpAddress.Controls.Add(this.lblPresentAddress);
             this.grpAddress.Controls.Add(this.txtPresentAddress);
             this.grpAddress.Controls.Add(this.lblPermanentAddress);
@@ -453,7 +453,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // grpAcademic
             //
-            this.grpAcademic.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.grpAcademic.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.grpAcademic.Controls.Add(this.lblClass);
             this.grpAcademic.Controls.Add(this.cboClass);
             this.grpAcademic.Controls.Add(this.lblSection);
@@ -578,7 +578,7 @@ namespace StudentManagement.Desktop.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
             this.ClientSize = new System.Drawing.Size(1100, 720);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.lblCap);

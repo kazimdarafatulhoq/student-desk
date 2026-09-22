@@ -56,7 +56,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblTitle.Size = new System.Drawing.Size(260, 25);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Admit Card Designer & Print";
-            this.pnlCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.pnlCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.pnlCard.Controls.Add(this.lblTerm);
             this.pnlCard.Controls.Add(this.cboTerm);
             this.pnlCard.Controls.Add(this.lblStudent);
@@ -146,7 +146,7 @@ namespace StudentManagement.Desktop.Forms
             this.lblStatus.Text = "Institutional header, timetable, and barcode are embedded in the PDF admit card.";
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
             this.ClientSize = new System.Drawing.Size(820, 480);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlCard);

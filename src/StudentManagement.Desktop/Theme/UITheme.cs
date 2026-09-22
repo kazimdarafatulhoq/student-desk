@@ -5,21 +5,20 @@ using System.Windows.Forms;
 namespace StudentManagement.Desktop.Theme
 {
     /// <summary>
-    /// Ideal High School theme — unified near-black shell (navbar / header / body / cards).
+    /// Ideal High School theme — near-black navbar/header, slate body canvas.
     /// Do NOT reference this class from InitializeComponent (breaks the VS WinForms designer).
     /// Call UITheme.ApplyForm(this) from the form constructor after InitializeComponent.
     /// </summary>
     public static class UITheme
     {
-        // Shell surfaces — body and cards match the navbar (#0B0E14).
-        public static readonly Color Canvas = Color.FromArgb(11, 14, 20);      // #0B0E14 body
+        // Shell surfaces (navbar / header / body) — aligned to IDEAL SMS BD mockups.
+        public static readonly Color Canvas = Color.FromArgb(17, 24, 39);      // #111827 body
         public static readonly Color Sidebar = Color.FromArgb(11, 14, 20);     // #0B0E14 navbar
-        public static readonly Color Card = Color.FromArgb(11, 14, 20);        // #0B0E14 cards / group boxes
-        public static readonly Color InputBack = Color.FromArgb(17, 24, 39);   // slightly lifted inputs
+        public static readonly Color Card = Color.FromArgb(13, 20, 48);
+        public static readonly Color InputBack = Color.FromArgb(17, 24, 39);
         public static readonly Color Border = Color.FromArgb(36, 48, 73);
-        public static readonly Color GridAlt = Color.FromArgb(16, 20, 30);
-        public static readonly Color HeaderBack = Color.FromArgb(11, 14, 20);  // #0B0E14 header
-        public static readonly Color SurfaceHover = Color.FromArgb(22, 27, 38); // nav / ghost hover
+        public static readonly Color GridAlt = Color.FromArgb(11, 18, 40);
+        public static readonly Color HeaderBack = Color.FromArgb(11, 14, 20);  // #0B0E14 header (matches navbar)
 
         public static readonly Color Primary = Color.FromArgb(37, 99, 235);
         public static readonly Color PrimaryHover = Color.FromArgb(29, 78, 216);
@@ -242,7 +241,7 @@ namespace StudentManagement.Desktop.Theme
                 button.ForeColor = TextMuted;
                 button.TextAlign = ContentAlignment.MiddleLeft;
                 button.ImageAlign = ContentAlignment.MiddleLeft;
-                button.FlatAppearance.MouseOverBackColor = SurfaceHover;
+                button.FlatAppearance.MouseOverBackColor = Card;
                 button.Padding = new Padding(12, 10, 8, 10);
             }
             else if (tag == "nav-active")

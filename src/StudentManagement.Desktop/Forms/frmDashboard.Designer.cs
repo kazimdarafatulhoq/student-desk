@@ -122,7 +122,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // cardStudents
             //
-            this.cardStudents.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.cardStudents.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.cardStudents.Controls.Add(this.lblStudentsTitle);
             this.cardStudents.Controls.Add(this.lblStudents);
             this.cardStudents.Controls.Add(this.lblPaidHint);
@@ -169,7 +169,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // cardCollection
             //
-            this.cardCollection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.cardCollection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.cardCollection.Controls.Add(this.lblCollectionTitle);
             this.cardCollection.Controls.Add(this.lblCollection);
             this.cardCollection.Controls.Add(this.lblCollectionHint);
@@ -216,7 +216,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // cardDues
             //
-            this.cardDues.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.cardDues.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.cardDues.Controls.Add(this.lblDuesTitle);
             this.cardDues.Controls.Add(this.lblDues);
             this.cardDues.Controls.Add(this.lblDueHint);
@@ -263,7 +263,7 @@ namespace StudentManagement.Desktop.Forms
             //
             // cardEligible
             //
-            this.cardEligible.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.cardEligible.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.cardEligible.Controls.Add(this.lblEligibleTitle);
             this.cardEligible.Controls.Add(this.lblEligible);
             this.cardEligible.Controls.Add(this.lblEligibleHint);
@@ -311,7 +311,7 @@ namespace StudentManagement.Desktop.Forms
             // cardBreakdown
             //
             this.cardBreakdown.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
-            this.cardBreakdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.cardBreakdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.cardBreakdown.Controls.Add(this.lblBreakdownTitle);
             this.cardBreakdown.Controls.Add(this.lblBarTuition);
             this.cardBreakdown.Controls.Add(this.barTuition);
@@ -441,7 +441,7 @@ namespace StudentManagement.Desktop.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(14)))), ((int)(((byte)(20)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
             this.ClientSize = new System.Drawing.Size(1180, 560);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.lblSubtitle);
