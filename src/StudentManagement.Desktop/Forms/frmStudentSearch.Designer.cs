@@ -14,6 +14,14 @@ namespace StudentManagement.Desktop.Forms
         private TextBox txtQuery;
         private Button btnSearch;
         private DataGridView dgvStudents;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colAvatar;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRegId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colClass;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRoll;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMobile;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colAdmDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStatus;
         private Label lblCount;
         private Button btnEdit;
         private Button btnLedger;
@@ -39,6 +47,14 @@ namespace StudentManagement.Desktop.Forms
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.dgvStudents = new System.Windows.Forms.DataGridView();
+            this.colAvatar = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRegId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colClass = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRoll = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMobile = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colAdmDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblCount = new System.Windows.Forms.Label();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnLedger = new System.Windows.Forms.Button();
@@ -89,12 +105,77 @@ namespace StudentManagement.Desktop.Forms
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             this.dgvStudents.AllowUserToAddRows = false;
             this.dgvStudents.AllowUserToDeleteRows = false;
-            this.dgvStudents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvStudents.AllowUserToResizeRows = false;
+            this.dgvStudents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvStudents.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.dgvStudents.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.dgvStudents.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvStudents.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dgvStudents.ColumnHeadersHeight = 36;
+            this.dgvStudents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvStudents.EnableHeadersVisualStyles = false;
+            this.dgvStudents.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(48)))), ((int)(((byte)(73)))));
+            this.dgvStudents.MultiSelect = false;
+            this.dgvStudents.ReadOnly = true;
+            this.dgvStudents.RowHeadersVisible = false;
+            this.dgvStudents.RowTemplate.Height = 28;
+            this.dgvStudents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvStudents.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
+            this.dgvStudents.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.dgvStudents.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
+            this.dgvStudents.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.dgvStudents.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.dgvStudents.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            this.dgvStudents.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(78)))), ((int)(((byte)(216)))));
+            this.dgvStudents.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
+            this.dgvStudents.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(18)))), ((int)(((byte)(40)))));
+            this.dgvStudents.AlternatingRowsDefaultCellStyle.ForeColor = System.Drawing.Color.White;
             this.dgvStudents.Location = new System.Drawing.Point(16, 140);
             this.dgvStudents.Name = "dgvStudents";
-            this.dgvStudents.ReadOnly = true;
             this.dgvStudents.Size = new System.Drawing.Size(960, 360);
             this.dgvStudents.TabIndex = 2;
+            this.colAvatar.HeaderText = "";
+            this.colAvatar.Name = "colAvatar";
+            this.colAvatar.ReadOnly = true;
+            this.colAvatar.Width = 40;
+            this.colAvatar.FillWeight = 20F;
+            this.colRegId.HeaderText = "Reg ID";
+            this.colRegId.Name = "colRegId";
+            this.colRegId.ReadOnly = true;
+            this.colRegId.FillWeight = 70F;
+            this.colName.HeaderText = "Full Name";
+            this.colName.Name = "colName";
+            this.colName.ReadOnly = true;
+            this.colName.FillWeight = 140F;
+            this.colClass.HeaderText = "Class";
+            this.colClass.Name = "colClass";
+            this.colClass.ReadOnly = true;
+            this.colClass.FillWeight = 60F;
+            this.colRoll.HeaderText = "Roll";
+            this.colRoll.Name = "colRoll";
+            this.colRoll.ReadOnly = true;
+            this.colRoll.FillWeight = 40F;
+            this.colMobile.HeaderText = "Guardian Mobile";
+            this.colMobile.Name = "colMobile";
+            this.colMobile.ReadOnly = true;
+            this.colMobile.FillWeight = 90F;
+            this.colAdmDate.HeaderText = "Admission Date";
+            this.colAdmDate.Name = "colAdmDate";
+            this.colAdmDate.ReadOnly = true;
+            this.colAdmDate.FillWeight = 80F;
+            this.colStatus.HeaderText = "Status";
+            this.colStatus.Name = "colStatus";
+            this.colStatus.ReadOnly = true;
+            this.colStatus.FillWeight = 60F;
+            this.dgvStudents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colAvatar,
+            this.colRegId,
+            this.colName,
+            this.colClass,
+            this.colRoll,
+            this.colMobile,
+            this.colAdmDate,
+            this.colStatus});
             this.lblCount.AutoSize = true;
             this.lblCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
             this.lblCount.Location = new System.Drawing.Point(16, 515);
@@ -143,27 +224,11 @@ namespace StudentManagement.Desktop.Forms
             this.Controls.Add(this.btnAdmit);
             this.Name = "frmStudentSearch";
             this.Text = "Student Search";
-            this.Load += new System.EventHandler(this.frmStudentSearch_LoadColumns);
             this.pnlFilter.ResumeLayout(false);
             this.pnlFilter.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudents)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-        }
-
-        private void frmStudentSearch_LoadColumns(object sender, System.EventArgs e)
-        {
-            if (this.dgvStudents.Columns.Count > 0)
-                return;
-            this.dgvStudents.Columns.Add("Avatar", "");
-            this.dgvStudents.Columns.Add("RegId", "Reg ID");
-            this.dgvStudents.Columns.Add("Name", "Full Name");
-            this.dgvStudents.Columns.Add("Class", "Class");
-            this.dgvStudents.Columns.Add("Roll", "Roll");
-            this.dgvStudents.Columns.Add("Mobile", "Guardian Mobile");
-            this.dgvStudents.Columns.Add("AdmDate", "Admission Date");
-            this.dgvStudents.Columns.Add("Status", "Status");
-            this.dgvStudents.Columns[0].Width = 40;
         }
     }
 }

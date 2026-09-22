@@ -23,6 +23,12 @@ namespace StudentManagement.Desktop.Forms
         private ComboBox cboRole;
         private Button btnCreate;
         private DataGridView dgvUsers;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUserId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUsername;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUserFullName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUserRole;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUserStatus;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLastLogin;
         private Button btnToggle;
 
         protected override void Dispose(bool disposing)
@@ -53,6 +59,12 @@ namespace StudentManagement.Desktop.Forms
             this.cboRole = new System.Windows.Forms.ComboBox();
             this.btnCreate = new System.Windows.Forms.Button();
             this.dgvUsers = new System.Windows.Forms.DataGridView();
+            this.colUserId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colUsername = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colUserFullName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colUserRole = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colUserStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLastLogin = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnToggle = new System.Windows.Forms.Button();
             this.pnlCreate.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsers)).BeginInit();
@@ -176,12 +188,67 @@ namespace StudentManagement.Desktop.Forms
             this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
             this.dgvUsers.AllowUserToAddRows = false;
             this.dgvUsers.AllowUserToDeleteRows = false;
-            this.dgvUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUsers.AllowUserToResizeRows = false;
+            this.dgvUsers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvUsers.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.dgvUsers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.dgvUsers.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvUsers.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dgvUsers.ColumnHeadersHeight = 36;
+            this.dgvUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvUsers.EnableHeadersVisualStyles = false;
+            this.dgvUsers.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(48)))), ((int)(((byte)(73)))));
+            this.dgvUsers.MultiSelect = false;
+            this.dgvUsers.ReadOnly = true;
+            this.dgvUsers.RowHeadersVisible = false;
+            this.dgvUsers.RowTemplate.Height = 28;
+            this.dgvUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvUsers.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
+            this.dgvUsers.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.dgvUsers.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
+            this.dgvUsers.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.dgvUsers.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.dgvUsers.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            this.dgvUsers.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(78)))), ((int)(((byte)(216)))));
+            this.dgvUsers.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
+            this.dgvUsers.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(18)))), ((int)(((byte)(40)))));
+            this.dgvUsers.AlternatingRowsDefaultCellStyle.ForeColor = System.Drawing.Color.White;
             this.dgvUsers.Location = new System.Drawing.Point(16, 215);
             this.dgvUsers.Name = "dgvUsers";
-            this.dgvUsers.ReadOnly = true;
             this.dgvUsers.Size = new System.Drawing.Size(960, 300);
             this.dgvUsers.TabIndex = 2;
+            this.colUserId.HeaderText = "ID";
+            this.colUserId.Name = "colUserId";
+            this.colUserId.ReadOnly = true;
+            this.colUserId.Width = 60;
+            this.colUserId.FillWeight = 40F;
+            this.colUsername.HeaderText = "Username";
+            this.colUsername.Name = "colUsername";
+            this.colUsername.ReadOnly = true;
+            this.colUsername.FillWeight = 80F;
+            this.colUserFullName.HeaderText = "Full Name";
+            this.colUserFullName.Name = "colUserFullName";
+            this.colUserFullName.ReadOnly = true;
+            this.colUserFullName.FillWeight = 120F;
+            this.colUserRole.HeaderText = "Role";
+            this.colUserRole.Name = "colUserRole";
+            this.colUserRole.ReadOnly = true;
+            this.colUserRole.FillWeight = 80F;
+            this.colUserStatus.HeaderText = "Status";
+            this.colUserStatus.Name = "colUserStatus";
+            this.colUserStatus.ReadOnly = true;
+            this.colUserStatus.FillWeight = 60F;
+            this.colLastLogin.HeaderText = "Last Login";
+            this.colLastLogin.Name = "colLastLogin";
+            this.colLastLogin.ReadOnly = true;
+            this.colLastLogin.FillWeight = 100F;
+            this.dgvUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colUserId,
+            this.colUsername,
+            this.colUserFullName,
+            this.colUserRole,
+            this.colUserStatus,
+            this.colLastLogin});
             this.btnToggle.Location = new System.Drawing.Point(16, 530);
             this.btnToggle.Name = "btnToggle";
             this.btnToggle.Size = new System.Drawing.Size(200, 36);
@@ -199,24 +266,11 @@ namespace StudentManagement.Desktop.Forms
             this.Controls.Add(this.btnToggle);
             this.Name = "frmAppUser";
             this.Text = "User Management";
-            this.Load += new System.EventHandler(this.frmAppUser_LoadColumns);
             this.pnlCreate.ResumeLayout(false);
             this.pnlCreate.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsers)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-        }
-
-        private void frmAppUser_LoadColumns(object sender, System.EventArgs e)
-        {
-            if (this.dgvUsers.Columns.Count > 0)
-                return;
-            this.dgvUsers.Columns.Add("Id", "ID");
-            this.dgvUsers.Columns.Add("Username", "Username");
-            this.dgvUsers.Columns.Add("Name", "Full Name");
-            this.dgvUsers.Columns.Add("Role", "Role");
-            this.dgvUsers.Columns.Add("Status", "Status");
-            this.dgvUsers.Columns.Add("LastLogin", "Last Login");
         }
     }
 }

@@ -22,6 +22,14 @@ namespace StudentManagement.Desktop.Forms
         private Label lblAdvance;
         private Label lblDue;
         private DataGridView dgvLedger;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colVoucher;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colParticulars;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPeriod;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDebit;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCredit;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colBalance;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLedStatus;
         private Button btnPrint;
         private Button btnExport;
 
@@ -54,6 +62,14 @@ namespace StudentManagement.Desktop.Forms
             this.lblDueTitle = new System.Windows.Forms.Label();
             this.lblDue = new System.Windows.Forms.Label();
             this.dgvLedger = new System.Windows.Forms.DataGridView();
+            this.colDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colVoucher = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colParticulars = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPeriod = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDebit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCredit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLedStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.cardInvoiced.SuspendLayout();
@@ -226,13 +242,76 @@ namespace StudentManagement.Desktop.Forms
             // 
             this.dgvLedger.AllowUserToAddRows = false;
             this.dgvLedger.AllowUserToDeleteRows = false;
-            this.dgvLedger.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvLedger.AllowUserToResizeRows = false;
+            this.dgvLedger.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvLedger.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.dgvLedger.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.dgvLedger.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvLedger.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dgvLedger.ColumnHeadersHeight = 36;
+            this.dgvLedger.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvLedger.EnableHeadersVisualStyles = false;
+            this.dgvLedger.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(48)))), ((int)(((byte)(73)))));
+            this.dgvLedger.MultiSelect = false;
+            this.dgvLedger.ReadOnly = true;
+            this.dgvLedger.RowHeadersVisible = false;
+            this.dgvLedger.RowTemplate.Height = 28;
+            this.dgvLedger.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvLedger.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
+            this.dgvLedger.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.dgvLedger.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(16)))), ((int)(((byte)(36)))));
+            this.dgvLedger.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.dgvLedger.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.dgvLedger.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            this.dgvLedger.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(78)))), ((int)(((byte)(216)))));
+            this.dgvLedger.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
+            this.dgvLedger.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(18)))), ((int)(((byte)(40)))));
+            this.dgvLedger.AlternatingRowsDefaultCellStyle.ForeColor = System.Drawing.Color.White;
             this.dgvLedger.Location = new System.Drawing.Point(16, 220);
             this.dgvLedger.Name = "dgvLedger";
-            this.dgvLedger.ReadOnly = true;
-            this.dgvLedger.RowTemplate.Height = 25;
             this.dgvLedger.Size = new System.Drawing.Size(960, 320);
             this.dgvLedger.TabIndex = 7;
+            this.colDate.HeaderText = "Date";
+            this.colDate.Name = "colDate";
+            this.colDate.ReadOnly = true;
+            this.colDate.FillWeight = 70F;
+            this.colVoucher.HeaderText = "Voucher No";
+            this.colVoucher.Name = "colVoucher";
+            this.colVoucher.ReadOnly = true;
+            this.colVoucher.FillWeight = 80F;
+            this.colParticulars.HeaderText = "Particulars / Description";
+            this.colParticulars.Name = "colParticulars";
+            this.colParticulars.ReadOnly = true;
+            this.colParticulars.FillWeight = 160F;
+            this.colPeriod.HeaderText = "Fee Period";
+            this.colPeriod.Name = "colPeriod";
+            this.colPeriod.ReadOnly = true;
+            this.colPeriod.FillWeight = 70F;
+            this.colDebit.HeaderText = "Debit";
+            this.colDebit.Name = "colDebit";
+            this.colDebit.ReadOnly = true;
+            this.colDebit.FillWeight = 60F;
+            this.colCredit.HeaderText = "Credit";
+            this.colCredit.Name = "colCredit";
+            this.colCredit.ReadOnly = true;
+            this.colCredit.FillWeight = 60F;
+            this.colBalance.HeaderText = "Running Balance";
+            this.colBalance.Name = "colBalance";
+            this.colBalance.ReadOnly = true;
+            this.colBalance.FillWeight = 80F;
+            this.colLedStatus.HeaderText = "Status";
+            this.colLedStatus.Name = "colLedStatus";
+            this.colLedStatus.ReadOnly = true;
+            this.colLedStatus.FillWeight = 60F;
+            this.dgvLedger.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colDate,
+            this.colVoucher,
+            this.colParticulars,
+            this.colPeriod,
+            this.colDebit,
+            this.colCredit,
+            this.colBalance,
+            this.colLedStatus});
             // 
             // btnPrint
             // 
@@ -271,7 +350,6 @@ namespace StudentManagement.Desktop.Forms
             this.Controls.Add(this.btnExport);
             this.Name = "frmStudentLedger";
             this.Text = "Student Ledger";
-            this.Load += new System.EventHandler(this.frmStudentLedger_LoadColumns);
             this.cardInvoiced.ResumeLayout(false);
             this.cardInvoiced.PerformLayout();
             this.cardPaid.ResumeLayout(false);
@@ -294,20 +372,6 @@ namespace StudentManagement.Desktop.Forms
             {
                 e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
             }
-        }
-
-        private void frmStudentLedger_LoadColumns(object sender, System.EventArgs e)
-        {
-            if (this.dgvLedger.Columns.Count > 0)
-                return;
-            this.dgvLedger.Columns.Add("Date", "Date");
-            this.dgvLedger.Columns.Add("Voucher", "Voucher No");
-            this.dgvLedger.Columns.Add("Particulars", "Particulars / Description");
-            this.dgvLedger.Columns.Add("Period", "Fee Period");
-            this.dgvLedger.Columns.Add("Debit", "Debit (৳)");
-            this.dgvLedger.Columns.Add("Credit", "Credit (৳)");
-            this.dgvLedger.Columns.Add("Balance", "Running Balance (৳)");
-            this.dgvLedger.Columns.Add("Status", "Status");
         }
     }
 }
