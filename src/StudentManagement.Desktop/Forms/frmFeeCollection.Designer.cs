@@ -20,6 +20,9 @@ namespace StudentManagement.Desktop.Forms
         private Panel pnlMatrix;
         private Label lblMonths;
         private FlowLayoutPanel flpMonths;
+        private Panel pnlOtherFees;
+        private Label lblOtherFees;
+        private FlowLayoutPanel flpOtherFees;
         private Panel pnlPay;
         private Label lblUnitTuition;
         private TextBox txtTuitionUnit;
@@ -62,6 +65,9 @@ namespace StudentManagement.Desktop.Forms
             this.pnlMatrix = new System.Windows.Forms.Panel();
             this.lblMonths = new System.Windows.Forms.Label();
             this.flpMonths = new System.Windows.Forms.FlowLayoutPanel();
+            this.pnlOtherFees = new System.Windows.Forms.Panel();
+            this.lblOtherFees = new System.Windows.Forms.Label();
+            this.flpOtherFees = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlPay = new System.Windows.Forms.Panel();
             this.lblUnitTuition = new System.Windows.Forms.Label();
             this.txtTuitionUnit = new System.Windows.Forms.TextBox();
@@ -81,6 +87,7 @@ namespace StudentManagement.Desktop.Forms
             this.pnlSearch.SuspendLayout();
             this.pnlBio.SuspendLayout();
             this.pnlMatrix.SuspendLayout();
+            this.pnlOtherFees.SuspendLayout();
             this.pnlPay.SuspendLayout();
             this.SuspendLayout();
             // lblTitle
@@ -185,6 +192,28 @@ namespace StudentManagement.Desktop.Forms
             this.flpMonths.Name = "flpMonths";
             this.flpMonths.Size = new System.Drawing.Size(940, 90);
             this.flpMonths.TabIndex = 1;
+            // pnlOtherFees
+            this.pnlOtherFees.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.pnlOtherFees.Controls.Add(this.lblOtherFees);
+            this.pnlOtherFees.Controls.Add(this.flpOtherFees);
+            this.pnlOtherFees.Location = new System.Drawing.Point(16, 396);
+            this.pnlOtherFees.Name = "pnlOtherFees";
+            this.pnlOtherFees.Size = new System.Drawing.Size(960, 220);
+            this.pnlOtherFees.TabIndex = 4;
+            this.pnlOtherFees.Tag = "card";
+            this.lblOtherFees.AutoSize = true;
+            this.lblOtherFees.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblOtherFees.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblOtherFees.Location = new System.Drawing.Point(16, 10);
+            this.lblOtherFees.Name = "lblOtherFees";
+            this.lblOtherFees.Size = new System.Drawing.Size(280, 19);
+            this.lblOtherFees.TabIndex = 0;
+            this.lblOtherFees.Text = "Optional Fees (fill only if needed)";
+            this.flpOtherFees.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
+            this.flpOtherFees.Location = new System.Drawing.Point(8, 36);
+            this.flpOtherFees.Name = "flpOtherFees";
+            this.flpOtherFees.Size = new System.Drawing.Size(940, 170);
+            this.flpOtherFees.TabIndex = 1;
             // pnlPay
             this.pnlPay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(20)))), ((int)(((byte)(48)))));
             this.pnlPay.Controls.Add(this.lblUnitTuition);
@@ -202,10 +231,10 @@ namespace StudentManagement.Desktop.Forms
             this.pnlPay.Controls.Add(this.lblTuitionTotal);
             this.pnlPay.Controls.Add(this.lblNetPayable);
             this.pnlPay.Controls.Add(this.btnCollect);
-            this.pnlPay.Location = new System.Drawing.Point(16, 396);
+            this.pnlPay.Location = new System.Drawing.Point(16, 632);
             this.pnlPay.Name = "pnlPay";
             this.pnlPay.Size = new System.Drawing.Size(960, 180);
-            this.pnlPay.TabIndex = 4;
+            this.pnlPay.TabIndex = 5;
             this.pnlPay.Tag = "card";
             this.lblUnitTuition.AutoSize = true;
             this.lblUnitTuition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
@@ -320,11 +349,12 @@ namespace StudentManagement.Desktop.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(9)))), ((int)(((byte)(12)))), ((int)(((byte)(23)))));
-            this.ClientSize = new System.Drawing.Size(1000, 620);
+            this.ClientSize = new System.Drawing.Size(1000, 840);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlSearch);
             this.Controls.Add(this.pnlBio);
             this.Controls.Add(this.pnlMatrix);
+            this.Controls.Add(this.pnlOtherFees);
             this.Controls.Add(this.pnlPay);
             this.Name = "frmFeeCollection";
             this.Text = "Fee Collection";
@@ -334,6 +364,8 @@ namespace StudentManagement.Desktop.Forms
             this.pnlBio.PerformLayout();
             this.pnlMatrix.ResumeLayout(false);
             this.pnlMatrix.PerformLayout();
+            this.pnlOtherFees.ResumeLayout(false);
+            this.pnlOtherFees.PerformLayout();
             this.pnlPay.ResumeLayout(false);
             this.pnlPay.PerformLayout();
             this.ResumeLayout(false);

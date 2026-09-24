@@ -40,10 +40,20 @@ namespace StudentManagement.Application.DTOs
         public decimal TuitionAmount { get; set; }
         public decimal FineAmount { get; set; }
         public decimal WaiverAmount { get; set; }
+        /// <summary>Optional named charges (registration, transport, etc.). Zero amounts are ignored.</summary>
+        public List<NamedFeeAmount> OtherFees { get; set; } = new();
         public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.Cash;
         public string? TransactionRef { get; set; }
         public string? Remarks { get; set; }
         public int CollectedByUserId { get; set; }
+
+        public decimal OtherFeesTotal => OtherFees.Where(f => f.Amount > 0).Sum(f => f.Amount);
+    }
+
+    public class NamedFeeAmount
+    {
+        public string Name { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
     }
 
     public class FeeCollectionResult

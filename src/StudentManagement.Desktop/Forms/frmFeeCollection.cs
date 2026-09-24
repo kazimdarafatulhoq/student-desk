@@ -20,10 +20,23 @@ namespace StudentManagement.Desktop.Forms
     [DesignerCategory("Form")]
     public partial class frmFeeCollection : Form
     {
+        private static readonly (string Key, string Label)[] OptionalFeeDefinitions =
+        {
+            ("RegistrationFee", "Registration Fee"),
+            ("AdmissionFee", "New Admission / Re-admission"),
+            ("TransportFee", "Monthly Transport Fee"),
+            ("ExaminationFee", "Examination Fee (1st / 2nd Term / Annual / Test)"),
+            ("TranscriptFee", "Transcript / Testimonial / Certificate Fee"),
+            ("TransferCertificateFee", "Transfer Certificate / Certification Letter"),
+            ("HostelFoodCharges", "Hostel Food Charges"),
+            ("Miscellaneous", "Miscellaneous")
+        };
+
         private StudentService? _students;
         private FeeService? _fees;
         private StudentDto? _student;
         private List<CheckBox> _monthChecks = new();
+        private readonly Dictionary<string, TextBox> _optionalFeeBoxes = new();
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmFeeCollection()
@@ -41,8 +54,10 @@ namespace StudentManagement.Desktop.Forms
                 UITheme.ApplyForm(this);
             cboPaymentMethod.DataSource = System.Enum.GetValues(typeof(StudentManagement.Domain.Enums.PaymentMethod));
             BuildMonthMatrix();
+            BuildOptionalFeeFields();
             txtFine.TextChanged += (s, e) => Recalc();
             txtWaiver.TextChanged += (s, e) => Recalc();
+            txtTuitionUnit.TextChanged += (s, e) => Recalc();
         }
 
         private void BuildMonthMatrix()
@@ -62,6 +77,66 @@ namespace StudentManagement.Desktop.Forms
                 _monthChecks.Add(chk);
                 flpMonths.Controls.Add(chk);
             }
+        }
+
+        private void BuildOptionalFeeFields()
+        {
+            flpOtherFees.Controls.Clear();
+            _optionalFeeBoxes.Clear();
+            flpOtherFees.WrapContents = true;
+            flpOtherFees.FlowDirection = FlowDirection.LeftToRight;
+
+            foreach (var def in OptionalFeeDefinitions)
+            {
+                var cell = new Panel
+                {
+                    Width = 228,
+                    Height = 58,
+                    Margin = new Padding(4, 4, 4, 4),
+                    BackColor = Color.Transparent
+                };
+
+                var lbl = new Label
+                {
+                    AutoSize = false,
+                    Text = def.Label,
+                    ForeColor = UITheme.TextMuted,
+                    Location = new Point(0, 0),
+                    Size = new Size(220, 28),
+                    Font = UITheme.FontBody
+                };
+
+                var txt = new TextBox
+                {
+                    Name = "txt" + def.Key,
+                    Text = "0",
+                    Location = new Point(0, 30),
+                    Size = new Size(220, 23),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    BackColor = UITheme.InputBack,
+                    ForeColor = UITheme.TextPrimary
+                };
+                txt.TextChanged += (_, _) => Recalc();
+
+                cell.Controls.Add(lbl);
+                cell.Controls.Add(txt);
+                flpOtherFees.Controls.Add(cell);
+                _optionalFeeBoxes[def.Key] = txt;
+            }
+        }
+
+        private List<NamedFeeAmount> ReadOptionalFees()
+        {
+            var list = new List<NamedFeeAmount>();
+            foreach (var def in OptionalFeeDefinitions)
+            {
+                if (!_optionalFeeBoxes.TryGetValue(def.Key, out var box))
+                    continue;
+                if (!decimal.TryParse(box.Text, out var amount) || amount <= 0)
+                    continue;
+                list.Add(new NamedFeeAmount { Name = def.Label, Amount = amount });
+            }
+            return list;
         }
 
         private async void btnFind_Click(object? sender, EventArgs e)
@@ -109,6 +184,7 @@ namespace StudentManagement.Desktop.Forms
             if (_student is null)
             {
                 lblNetPayable.Text = "৳ 0.00";
+                lblTuitionTotal.Text = "Tuition: ৳ 0.00";
                 return;
             }
 
@@ -116,9 +192,13 @@ namespace StudentManagement.Desktop.Forms
             _ = decimal.TryParse(txtTuitionUnit.Text, out var unit);
             _ = decimal.TryParse(txtFine.Text, out var fine);
             _ = decimal.TryParse(txtWaiver.Text, out var waiver);
+            var otherFees = ReadOptionalFees();
+            var otherTotal = otherFees.Sum(f => f.Amount);
             var tuition = unit * months;
-            var net = FeeService.CalculateNetPayable(tuition, fine, waiver);
-            lblTuitionTotal.Text = $"Tuition: ৳ {tuition:N2}";
+            var net = FeeService.CalculateNetPayable(tuition, fine, waiver, otherTotal);
+            lblTuitionTotal.Text = otherTotal > 0
+                ? $"Tuition: ৳ {tuition:N2}  ·  Other: ৳ {otherTotal:N2}"
+                : $"Tuition: ৳ {tuition:N2}";
             lblNetPayable.Text = $"৳ {net:N2}";
             lblNetPayable.ForeColor = net > 0 ? UITheme.Success : UITheme.TextMuted;
         }
@@ -141,6 +221,7 @@ namespace StudentManagement.Desktop.Forms
                 _ = decimal.TryParse(txtTuitionUnit.Text, out var unit);
                 _ = decimal.TryParse(txtFine.Text, out var fine);
                 _ = decimal.TryParse(txtWaiver.Text, out var waiver);
+                var otherFees = ReadOptionalFees();
 
                 var result = await _fees.CollectAsync(new FeeCollectionRequest
                 {
@@ -149,6 +230,7 @@ namespace StudentManagement.Desktop.Forms
                     TuitionAmount = unit * periods.Count,
                     FineAmount = fine,
                     WaiverAmount = waiver,
+                    OtherFees = otherFees,
                     PaymentMethod = (PaymentMethod)cboPaymentMethod.SelectedItem!,
                     TransactionRef = txtTxnRef.Text.Trim(),
                     Remarks = txtRemarks.Text.Trim(),

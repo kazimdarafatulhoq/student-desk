@@ -21,10 +21,16 @@ namespace StudentManagement.Application.Services
         {
             if (request.StudentId <= 0)
                 throw new ArgumentException("Student is required.");
-            if (request.FeePeriods.Count == 0)
-                throw new ArgumentException("Select at least one fee period.");
 
-            var netPayable = request.TuitionAmount + request.FineAmount - request.WaiverAmount;
+            var otherFees = (request.OtherFees ?? new List<NamedFeeAmount>())
+                .Where(f => f != null && f.Amount > 0 && !string.IsNullOrWhiteSpace(f.Name))
+                .ToList();
+            var otherTotal = otherFees.Sum(f => f.Amount);
+
+            if (request.FeePeriods.Count == 0 && otherTotal <= 0)
+                throw new ArgumentException("Select at least one tuition month or enter an optional fee amount.");
+
+            var netPayable = request.TuitionAmount + request.FineAmount - request.WaiverAmount + otherTotal;
             if (netPayable <= 0)
                 throw new ArgumentException("Net payable amount must be greater than zero.");
 
@@ -35,10 +41,12 @@ namespace StudentManagement.Application.Services
             try
             {
                 var receiptNo = await _uow.Fees.GenerateReceiptNoAsync(ct);
-                var periods = string.Join(", ", request.FeePeriods);
+                var periods = request.FeePeriods.Count > 0
+                    ? string.Join(", ", request.FeePeriods)
+                    : "Other Charges";
                 var voucherNo = $"RCPT-{DateTime.Now:yyyyMMddHHmmss}";
 
-                if (request.TuitionAmount > 0)
+                if (request.TuitionAmount > 0 && request.FeePeriods.Count > 0)
                 {
                     await _uow.Fees.AddInvoiceAsync(new FeeInvoice
                     {
@@ -69,6 +77,35 @@ namespace StudentManagement.Application.Services
                     }, ct);
                 }
 
+                foreach (var fee in otherFees)
+                {
+                    await _uow.Fees.AddInvoiceAsync(new FeeInvoice
+                    {
+                        StudentId = request.StudentId,
+                        InvoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(ct),
+                        FeePeriod = periods,
+                        CategoryName = fee.Name,
+                        Amount = fee.Amount,
+                        InvoiceDate = DateTime.Today,
+                        Status = LedgerStatus.Paid,
+                        CreatedBy = request.CollectedByUserId.ToString()
+                    }, ct);
+
+                    await _uow.Ledger.AddAsync(new StudentLedger
+                    {
+                        StudentId = request.StudentId,
+                        TransactionDate = DateTime.Now,
+                        VoucherNo = $"INV-{voucherNo}-{fee.Name.GetHashCode():X4}",
+                        Particulars = fee.Name,
+                        FeePeriod = periods,
+                        DebitAmount = fee.Amount,
+                        CreditAmount = 0,
+                        EntryType = LedgerEntryType.Invoice,
+                        Status = LedgerStatus.Open,
+                        CreatedByUserId = request.CollectedByUserId
+                    }, ct);
+                }
+
                 if (request.WaiverAmount > 0)
                 {
                     await _uow.Ledger.AddAsync(new StudentLedger
@@ -85,6 +122,13 @@ namespace StudentManagement.Application.Services
                         CreatedByUserId = request.CollectedByUserId
                     }, ct);
                 }
+
+                var otherNote = otherFees.Count > 0
+                    ? " | " + string.Join(", ", otherFees.Select(f => $"{f.Name}: ৳{f.Amount:N2}"))
+                    : string.Empty;
+                var remarks = string.IsNullOrWhiteSpace(request.Remarks)
+                    ? otherNote.TrimStart(' ', '|')
+                    : request.Remarks.Trim() + otherNote;
 
                 var paymentLedger = await _uow.Ledger.AddAsync(new StudentLedger
                 {
@@ -112,7 +156,7 @@ namespace StudentManagement.Application.Services
                     PaymentMethod = request.PaymentMethod,
                     TransactionRef = request.TransactionRef,
                     FeePeriods = periods,
-                    Remarks = request.Remarks,
+                    Remarks = string.IsNullOrWhiteSpace(remarks) ? null : remarks,
                     LedgerId = paymentLedger.LedgerId,
                     CollectedByUserId = request.CollectedByUserId
                 }, ct);
@@ -145,8 +189,8 @@ namespace StudentManagement.Application.Services
         public Task<IReadOnlyList<LedgerEntryDto>> GetLedgerDetailedAsync(int studentId, CancellationToken ct = default)
             => _uow.Ledger.GetDetailedAsync(studentId, ct);
 
-        public static decimal CalculateNetPayable(decimal tuition, decimal fine, decimal waiver)
-            => Math.Max(0, tuition + fine - waiver);
+        public static decimal CalculateNetPayable(decimal tuition, decimal fine, decimal waiver, decimal otherFees = 0)
+            => Math.Max(0, tuition + fine + otherFees - waiver);
 
         public static IReadOnlyList<string> BuildMonthMatrix(int year, int startMonth = 1)
         {
