@@ -83,6 +83,15 @@
     <EmbeddedResource Update="Forms\frmFeeCollection.resx">
       <DependentUpon>frmFeeCollection.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Update="Forms\frmReceiptPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmReceiptPreview.Designer.cs">
+      <DependentUpon>frmReceiptPreview.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Forms\frmReceiptPreview.resx">
+      <DependentUpon>frmReceiptPreview.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Update="Forms\frmLogin.cs">
       <SubType>Form</SubType>
     </Compile>

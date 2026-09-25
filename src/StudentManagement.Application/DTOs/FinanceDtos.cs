@@ -56,6 +56,15 @@ namespace StudentManagement.Application.DTOs
         public decimal Amount { get; set; }
     }
 
+    /// <summary>One visible receipt row (amounts &lt;= 0 are never added).</summary>
+    public class ReceiptLineItemDto
+    {
+        public string Description { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        /// <summary>True for waiver / advance credits (green highlight on preview).</summary>
+        public bool IsCredit { get; set; }
+    }
+
     public class FeeCollectionResult
     {
         public long CollectionId { get; set; }
@@ -66,6 +75,9 @@ namespace StudentManagement.Application.DTOs
         public string RegistrationNo { get; set; } = string.Empty;
         public string FeePeriods { get; set; } = string.Empty;
         public PaymentMethod PaymentMethod { get; set; }
+        public string PaymentMethodDisplay { get; set; } = string.Empty;
+        /// <summary>Itemized lines shown on receipt preview/PDF (amounts &gt; 0 only).</summary>
+        public List<ReceiptLineItemDto> LineItems { get; set; } = new();
     }
 
     public class ClassDto

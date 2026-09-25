@@ -3,7 +3,6 @@ using StudentManagement.Application.Services;
 using StudentManagement.Desktop.Helpers;
 using StudentManagement.Desktop.Theme;
 using StudentManagement.Domain.Enums;
-using StudentManagement.Reporting.Generators;
 
 using System;
 using System.ComponentModel;
@@ -200,9 +199,14 @@ namespace StudentManagement.Desktop.Forms
                     CollectedByUserId = AppSession.Current?.UserId ?? 0
                 });
 
-                var pdf = ReceiptSpooler.GeneratePdf(result, AppSession.InstitutionName, AppSession.ReportsPath);
-                MessageBox.Show($"Payment recorded.\nReceipt: {result.ReceiptNo}\nPDF: {pdf}",
-                    "Collection Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Preview first (admit-card style), then Print Copy from the dialog.
+                using (var preview = new frmReceiptPreview(
+                    result,
+                    AppSession.InstitutionName,
+                    AppSession.InstitutionCampus))
+                {
+                    preview.ShowDialog(FindForm());
+                }
 
                 _student = await _students.GetByIdAsync(_student.StudentId);
                 if (_student is not null)

@@ -31,39 +31,113 @@ namespace StudentManagement.Reporting.Generators
 
     public static class ReceiptSpooler
     {
-        public static string GeneratePdf(FeeCollectionResult receipt, string institutionName, string outputDirectory)
+        public static string GeneratePdf(
+            FeeCollectionResult receipt,
+            string institutionName,
+            string outputDirectory,
+            string? campusAddress = null)
         {
             Directory.CreateDirectory(outputDirectory);
             var path = Path.Combine(outputDirectory, $"{receipt.ReceiptNo}.pdf");
+            var campus = string.IsNullOrWhiteSpace(campusAddress)
+                ? "Dhanmondi Campus, Dhaka-1205, Bangladesh"
+                : campusAddress!;
+            var lines = (receipt.LineItems ?? new List<ReceiptLineItemDto>())
+                .Where(l => l != null && l.Amount > 0 && !string.IsNullOrWhiteSpace(l.Description))
+                .ToList();
+            var method = string.IsNullOrWhiteSpace(receipt.PaymentMethodDisplay)
+                ? receipt.PaymentMethod.ToString()
+                : receipt.PaymentMethodDisplay;
 
             Document.Create(container =>
             {
                 container.Page(page =>
                 {
                     page.Size(PageSizes.A5);
-                    page.Margin(30);
+                    page.Margin(28);
                     page.DefaultTextStyle(PdfFonts.Body(10));
 
                     page.Header().Column(col =>
                     {
-                        col.Item().AlignCenter().Text(institutionName).Bold().FontSize(16).FontColor(Colors.Indigo.Darken2);
-                        col.Item().AlignCenter().Text("MONEY RECEIPT").Bold().FontSize(12);
-                        col.Item().PaddingTop(8).BorderBottom(1).BorderColor(Colors.Grey.Medium);
+                        col.Item().AlignCenter().Text(institutionName.ToUpperInvariant())
+                            .Bold().FontSize(14).FontColor(Colors.BlueGrey.Darken4);
+                        col.Item().AlignCenter().Text(campus)
+                            .FontSize(9).FontColor(Colors.Grey.Darken1);
+                        col.Item().PaddingTop(8).AlignCenter().Text("OFFICIAL MONEY RECEIPT")
+                            .Bold().FontSize(12).FontColor(Colors.Blue.Medium);
                     });
 
                     page.Content().PaddingVertical(12).Column(col =>
                     {
-                        col.Spacing(6);
-                        col.Item().Text($"Receipt No : {receipt.ReceiptNo}");
-                        col.Item().Text($"Date       : {receipt.PaymentDate:dd-MMM-yyyy hh:mm tt}");
-                        col.Item().Text($"Student    : {receipt.StudentName}");
-                        col.Item().Text($"Reg. ID    : {receipt.RegistrationNo}");
-                        col.Item().Text($"Fee Period : {receipt.FeePeriods}");
-                        col.Item().Text($"Method     : {receipt.PaymentMethod}");
-                        col.Item().PaddingTop(10).Text($"Amount Paid: ৳ {receipt.AmountPaid:N2}").Bold().FontSize(14).FontColor(Colors.Green.Darken2);
+                        col.Spacing(4);
+                        col.Item().Background(Colors.Grey.Lighten3).Padding(10).Column(info =>
+                        {
+                            info.Item().Text(t =>
+                            {
+                                t.Span("Receipt No: ").FontColor(Colors.Grey.Darken1);
+                                t.Span(receipt.ReceiptNo).Bold();
+                            });
+                            info.Item().Text(t =>
+                            {
+                                t.Span("Student Name: ").FontColor(Colors.Grey.Darken1);
+                                t.Span(receipt.StudentName).Bold();
+                            });
+                            info.Item().Text(t =>
+                            {
+                                t.Span("Registration No: ").FontColor(Colors.Grey.Darken1);
+                                t.Span(receipt.RegistrationNo).Bold();
+                            });
+                            info.Item().Text($"Date & Time: {receipt.PaymentDate:M/d/yyyy, h:mm:ss tt}")
+                                .FontColor(Colors.Grey.Darken1);
+                            info.Item().Text($"Payment Method: {method}")
+                                .FontColor(Colors.Grey.Darken1);
+                        });
+
+                        col.Item().PaddingTop(12).Table(table =>
+                        {
+                            table.ColumnsDefinition(c =>
+                            {
+                                c.RelativeColumn(3.2f);
+                                c.RelativeColumn(1.2f);
+                            });
+
+                            table.Header(h =>
+                            {
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(6)
+                                    .Text("DESCRIPTION").FontColor(Colors.White).Bold().FontSize(8);
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(6).AlignRight()
+                                    .Text("AMOUNT (৳)").FontColor(Colors.White).Bold().FontSize(8);
+                            });
+
+                            if (lines.Count == 0)
+                            {
+                                table.Cell().ColumnSpan(2).Padding(8)
+                                    .Text("No charge lines.").FontColor(Colors.Grey.Medium);
+                            }
+                            else
+                            {
+                                foreach (var item in lines)
+                                {
+                                    var bg = item.IsCredit ? Colors.Green.Lighten4 : Colors.White;
+                                    var fg = item.IsCredit ? Colors.Green.Darken3 : Colors.BlueGrey.Darken4;
+                                    table.Cell().Background(bg).BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2)
+                                        .Padding(6).Text(item.Description).FontColor(fg)
+                                        .Bold().FontSize(item.IsCredit ? 9 : 9);
+                                    table.Cell().Background(bg).BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2)
+                                        .Padding(6).AlignRight().Text($"৳ {item.Amount:N0}").FontColor(fg).Bold();
+                                }
+                            }
+
+                            table.Cell().BorderTop(1).BorderColor(Colors.BlueGrey.Darken2)
+                                .Padding(8).Text("Total Paid Amount").Bold();
+                            table.Cell().BorderTop(1).BorderColor(Colors.BlueGrey.Darken2)
+                                .Padding(8).AlignRight().Text($"৳ {receipt.AmountPaid:N0}").Bold().FontSize(11);
+                        });
                     });
 
-                    page.Footer().AlignCenter().Text("This is a computer-generated receipt.").FontSize(8).FontColor(Colors.Grey.Darken1);
+                    page.Footer().AlignCenter()
+                        .Text("This is a computer-generated official money receipt.")
+                        .FontSize(8).FontColor(Colors.Grey.Darken1);
                 });
             }).GeneratePdf(path);
 

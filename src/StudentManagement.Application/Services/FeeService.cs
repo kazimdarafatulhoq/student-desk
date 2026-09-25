@@ -164,6 +164,8 @@ namespace StudentManagement.Application.Services
                 await _uow.SaveChangesAsync(ct);
                 await _uow.CommitAsync(ct);
 
+                var lineItems = BuildReceiptLines(request, otherFees);
+
                 return new FeeCollectionResult
                 {
                     CollectionId = collection.CollectionId,
@@ -173,7 +175,9 @@ namespace StudentManagement.Application.Services
                     StudentName = student.FullName,
                     RegistrationNo = student.RegistrationNo,
                     FeePeriods = periods,
-                    PaymentMethod = request.PaymentMethod
+                    PaymentMethod = request.PaymentMethod,
+                    PaymentMethodDisplay = FormatPaymentMethod(request.PaymentMethod),
+                    LineItems = lineItems
                 };
             }
             catch
@@ -181,6 +185,84 @@ namespace StudentManagement.Application.Services
                 await _uow.RollbackAsync(ct);
                 throw;
             }
+        }
+
+        /// <summary>Builds preview/PDF rows — only positive amounts, one description per charge.</summary>
+        public static List<ReceiptLineItemDto> BuildReceiptLines(FeeCollectionRequest request, List<NamedFeeAmount>? otherFees = null)
+        {
+            var lines = new List<ReceiptLineItemDto>();
+            otherFees ??= (request.OtherFees ?? new List<NamedFeeAmount>())
+                .Where(f => f != null && f.Amount > 0 && !string.IsNullOrWhiteSpace(f.Name))
+                .ToList();
+
+            if (request.TuitionAmount > 0 && request.FeePeriods.Count > 0)
+            {
+                var unit = Math.Round(request.TuitionAmount / request.FeePeriods.Count, 2);
+                var remainder = request.TuitionAmount - (unit * request.FeePeriods.Count);
+                for (var i = 0; i < request.FeePeriods.Count; i++)
+                {
+                    var amount = unit + (i == request.FeePeriods.Count - 1 ? remainder : 0);
+                    if (amount <= 0) continue;
+                    lines.Add(new ReceiptLineItemDto
+                    {
+                        Description = $"Tuition Fee ({FormatFeePeriod(request.FeePeriods[i])})",
+                        Amount = amount
+                    });
+                }
+            }
+
+            foreach (var fee in otherFees)
+            {
+                lines.Add(new ReceiptLineItemDto
+                {
+                    Description = fee.Name.Trim(),
+                    Amount = fee.Amount
+                });
+            }
+
+            if (request.FineAmount > 0)
+            {
+                lines.Add(new ReceiptLineItemDto
+                {
+                    Description = "Late Fine / Penalty",
+                    Amount = request.FineAmount
+                });
+            }
+
+            if (request.WaiverAmount > 0)
+            {
+                lines.Add(new ReceiptLineItemDto
+                {
+                    Description = "Waiver / Discount",
+                    Amount = request.WaiverAmount,
+                    IsCredit = true
+                });
+            }
+
+            return lines;
+        }
+
+        public static string FormatPaymentMethod(PaymentMethod method) => method switch
+        {
+            PaymentMethod.Cash => "Cash Counter",
+            PaymentMethod.Bkash => "bKash",
+            PaymentMethod.Nagad => "Nagad",
+            PaymentMethod.BankTransfer => "Bank Transfer",
+            _ => method.ToString()
+        };
+
+        public static string FormatFeePeriod(string period)
+        {
+            if (string.IsNullOrWhiteSpace(period))
+                return period;
+
+            // "Jan-2026" / "MMM-yyyy" → "January 2026"
+            if (DateTime.TryParseExact(period.Trim(), "MMM-yyyy",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, out var dt))
+                return dt.ToString("MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+
+            return period.Trim();
         }
 
         public Task<LedgerSummaryDto> GetSummaryAsync(int studentId, CancellationToken ct = default)
