@@ -104,16 +104,86 @@ namespace StudentManagement.Desktop.Forms
 
         private void btnPrint_Click(object? sender, EventArgs e)
         {
-            if (_summary is null) return;
-            var path = LedgerStatementPrinter.GeneratePdf(_summary, _entries, AppSession.InstitutionName, AppSession.ReportsPath);
-            MessageBox.Show($"Statement saved:\n{path}", "Print Statement", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (_summary is null)
+            {
+                MessageBox.Show("Select a student first to print the ledger statement.",
+                    "Print Statement", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                btnPrint.Enabled = false;
+                var path = LedgerStatementPrinter.GeneratePdf(
+                    _summary,
+                    _entries,
+                    AppSession.InstitutionName,
+                    AppSession.ReportsPath);
+
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = path,
+                        UseShellExecute = true
+                    });
+                }
+                catch
+                {
+                    // PDF is saved even if the default viewer cannot open.
+                }
+
+                MessageBox.Show(
+                    $"Ledger statement ready.\n\nSaved to:\n{path}",
+                    "Print Statement",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Print Statement Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnPrint.Enabled = true;
+            }
         }
 
         private void btnExport_Click(object? sender, EventArgs e)
         {
-            if (_summary is null) return;
-            var path = LedgerStatementPrinter.ExportCsv(_entries, _summary.RegistrationNo, AppSession.ReportsPath);
-            MessageBox.Show($"Exported:\n{path}", "Export CSV / Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (_summary is null)
+            {
+                MessageBox.Show("Select a student first to export the ledger.",
+                    "Export CSV / Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                btnExport.Enabled = false;
+                var path = LedgerStatementPrinter.ExportCsv(_entries, _summary.RegistrationNo, AppSession.ReportsPath);
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = path,
+                        UseShellExecute = true
+                    });
+                }
+                catch
+                {
+                }
+
+                MessageBox.Show($"Exported:\n{path}", "Export CSV / Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnExport.Enabled = true;
+            }
         }
     }
 }

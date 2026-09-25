@@ -65,7 +65,8 @@ namespace StudentManagement.Reporting.Generators
             string outputDirectory)
         {
             Directory.CreateDirectory(outputDirectory);
-            var path = Path.Combine(outputDirectory, $"Ledger_{summary.RegistrationNo}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            var safeReg = SanitizeFilePart(summary.RegistrationNo);
+            var path = Path.Combine(outputDirectory, $"Ledger_{safeReg}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
 
             Document.Create(container =>
             {
@@ -73,51 +74,68 @@ namespace StudentManagement.Reporting.Generators
                 {
                     page.Size(PageSizes.A4);
                     page.Margin(28);
-                    page.DefaultTextStyle(x => x.FontSize(9));
+                    page.DefaultTextStyle(x => x.FontSize(9).FontColor(Colors.BlueGrey.Darken4));
 
                     page.Header().Column(col =>
                     {
-                        col.Item().AlignCenter().Text(institutionName).Bold().FontSize(16);
-                        col.Item().AlignCenter().Text("STUDENT FINANCIAL LEDGER STATEMENT").Bold();
-                        col.Item().PaddingTop(6).Text($"{summary.FullName}  |  {summary.RegistrationNo}");
-                        col.Item().Text($"Invoiced: ৳{summary.TotalInvoiced:N2}   Paid: ৳{summary.TotalPaid:N2}   Due: ৳{summary.NetDue:N2}   Advance: ৳{summary.AdvanceBalance:N2}");
+                        col.Item().AlignCenter().Text(institutionName).Bold().FontSize(16).FontColor(Colors.BlueGrey.Darken4);
+                        col.Item().AlignCenter().Text("STUDENT FINANCIAL LEDGER STATEMENT").Bold().FontSize(12);
+                        col.Item().PaddingTop(8).Text($"{summary.FullName}  |  {summary.RegistrationNo}").FontSize(10);
+                        col.Item().PaddingTop(4).Text(
+                            $"Invoiced: ৳{summary.TotalInvoiced:N2}   Paid: ৳{summary.TotalPaid:N2}   Due: ৳{summary.NetDue:N2}   Advance: ৳{summary.AdvanceBalance:N2}")
+                            .FontSize(9).FontColor(Colors.Grey.Darken2);
+                        col.Item().PaddingTop(6).BorderBottom(1).BorderColor(Colors.BlueGrey.Darken3);
                     });
 
-                    page.Content().PaddingTop(10).Table(table =>
+                    page.Content().PaddingTop(12).Column(body =>
                     {
-                        table.ColumnsDefinition(c =>
+                        if (entries == null || entries.Count == 0)
                         {
-                            c.RelativeColumn(1.2f);
-                            c.RelativeColumn(1.4f);
-                            c.RelativeColumn(2.4f);
-                            c.RelativeColumn(1.2f);
-                            c.RelativeColumn(1f);
-                            c.RelativeColumn(1f);
-                            c.RelativeColumn(1.1f);
-                        });
-
-                        table.Header(h =>
-                        {
-                            h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).Text("Date").FontColor(Colors.White);
-                            h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).Text("Voucher").FontColor(Colors.White);
-                            h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).Text("Particulars").FontColor(Colors.White);
-                            h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).Text("Period").FontColor(Colors.White);
-                            h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).AlignRight().Text("Debit").FontColor(Colors.White);
-                            h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).AlignRight().Text("Credit").FontColor(Colors.White);
-                            h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).AlignRight().Text("Balance").FontColor(Colors.White);
-                        });
-
-                        foreach (var e in entries)
-                        {
-                            table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).Text($"{e.TransactionDate:dd-MMM-yyyy}");
-                            table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).Text(e.VoucherNo);
-                            table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).Text(e.Particulars);
-                            table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).Text(e.FeePeriod ?? "");
-                            table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).AlignRight().Text(e.DebitAmount > 0 ? e.DebitAmount.ToString("N2") : "-");
-                            table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).AlignRight().Text(e.CreditAmount > 0 ? e.CreditAmount.ToString("N2") : "-");
-                            table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).AlignRight().Text(e.RunningBalance.ToString("N2"));
+                            body.Item().AlignCenter().Text("No ledger transactions found for this student.")
+                                .FontColor(Colors.Grey.Darken1);
+                            return;
                         }
+
+                        body.Item().Table(table =>
+                        {
+                            table.ColumnsDefinition(c =>
+                            {
+                                c.RelativeColumn(1.2f);
+                                c.RelativeColumn(1.4f);
+                                c.RelativeColumn(2.4f);
+                                c.RelativeColumn(1.2f);
+                                c.RelativeColumn(1f);
+                                c.RelativeColumn(1f);
+                                c.RelativeColumn(1.1f);
+                            });
+
+                            table.Header(h =>
+                            {
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).Text("Date").FontColor(Colors.White);
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).Text("Voucher").FontColor(Colors.White);
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).Text("Particulars").FontColor(Colors.White);
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).Text("Period").FontColor(Colors.White);
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).AlignRight().Text("Debit").FontColor(Colors.White);
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).AlignRight().Text("Credit").FontColor(Colors.White);
+                                h.Cell().Background(Colors.BlueGrey.Darken3).Padding(4).AlignRight().Text("Balance").FontColor(Colors.White);
+                            });
+
+                            foreach (var e in entries)
+                            {
+                                table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).Text($"{e.TransactionDate:dd-MMM-yyyy}");
+                                table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).Text(e.VoucherNo ?? "");
+                                table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).Text(e.Particulars ?? "");
+                                table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).Text(e.FeePeriod ?? "");
+                                table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).AlignRight().Text(e.DebitAmount > 0 ? e.DebitAmount.ToString("N2") : "-");
+                                table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).AlignRight().Text(e.CreditAmount > 0 ? e.CreditAmount.ToString("N2") : "-");
+                                table.Cell().BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(3).AlignRight().Text(e.RunningBalance.ToString("N2"));
+                            }
+                        });
                     });
+
+                    page.Footer().AlignCenter()
+                        .Text($"Printed: {DateTime.Now:dd-MMM-yyyy HH:mm}  |  Computer-generated ledger statement")
+                        .FontSize(8).FontColor(Colors.Grey.Darken1);
                 });
             }).GeneratePdf(path);
 
@@ -127,11 +145,12 @@ namespace StudentManagement.Reporting.Generators
         public static string ExportCsv(IReadOnlyList<LedgerEntryDto> entries, string registrationNo, string outputDirectory)
         {
             Directory.CreateDirectory(outputDirectory);
-            var path = Path.Combine(outputDirectory, $"Ledger_{registrationNo}_{DateTime.Now:yyyyMMddHHmmss}.csv");
+            var safeReg = SanitizeFilePart(registrationNo);
+            var path = Path.Combine(outputDirectory, $"Ledger_{safeReg}_{DateTime.Now:yyyyMMddHHmmss}.csv");
 
             using var writer = new StreamWriter(path, false, Encoding.UTF8);
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-            csv.WriteRecords(entries.Select(e => new
+            csv.WriteRecords((entries ?? Array.Empty<LedgerEntryDto>()).Select(e => new
             {
                 e.TransactionDate,
                 e.VoucherNo,
@@ -144,6 +163,15 @@ namespace StudentManagement.Reporting.Generators
             }));
 
             return path;
+        }
+
+        private static string SanitizeFilePart(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "Student";
+            var invalid = Path.GetInvalidFileNameChars();
+            var cleaned = new string(value.Select(ch => invalid.Contains(ch) ? '_' : ch).ToArray());
+            return string.IsNullOrWhiteSpace(cleaned) ? "Student" : cleaned;
         }
     }
 
