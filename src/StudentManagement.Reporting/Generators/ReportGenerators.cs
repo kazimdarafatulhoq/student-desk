@@ -12,8 +12,23 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+
 namespace StudentManagement.Reporting.Generators
 {
+    /// <summary>
+    /// Shared PDF text styles. Segoe UI / Nirmala UI cover Bengali Taka (৳) on Windows.
+    /// </summary>
+    internal static class PdfFonts
+    {
+        public static TextStyle Body(float size = 10f) =>
+            TextStyle.Default
+                .FontSize(size)
+                .FontFamily("Segoe UI")
+                .Fallback(x => x.FontFamily("Nirmala UI")
+                    .Fallback(y => y.FontFamily("Tahoma")
+                        .Fallback(z => z.FontFamily("Microsoft Sans Serif"))));
+    }
+
     public static class ReceiptSpooler
     {
         public static string GeneratePdf(FeeCollectionResult receipt, string institutionName, string outputDirectory)
@@ -27,7 +42,7 @@ namespace StudentManagement.Reporting.Generators
                 {
                     page.Size(PageSizes.A5);
                     page.Margin(30);
-                    page.DefaultTextStyle(x => x.FontSize(10));
+                    page.DefaultTextStyle(PdfFonts.Body(10));
 
                     page.Header().Column(col =>
                     {
@@ -74,7 +89,7 @@ namespace StudentManagement.Reporting.Generators
                 {
                     page.Size(PageSizes.A4);
                     page.Margin(28);
-                    page.DefaultTextStyle(x => x.FontSize(9).FontColor(Colors.BlueGrey.Darken4));
+                    page.DefaultTextStyle(PdfFonts.Body(9).FontColor(Colors.BlueGrey.Darken4));
 
                     page.Header().Column(col =>
                     {
@@ -200,7 +215,7 @@ namespace StudentManagement.Reporting.Generators
                     {
                         page.Size(PageSizes.A4);
                         page.Margin(28);
-                        page.DefaultTextStyle(x => x.FontSize(10).FontColor(Colors.BlueGrey.Darken4));
+                        page.DefaultTextStyle(PdfFonts.Body(10).FontColor(Colors.BlueGrey.Darken4));
 
                         page.Content().Column(col =>
                         {
