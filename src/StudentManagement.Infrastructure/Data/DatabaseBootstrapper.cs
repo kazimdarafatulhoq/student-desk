@@ -11,7 +11,7 @@ using StudentManagement.Domain.Enums;
 namespace StudentManagement.Infrastructure.Data
 {
     /// <summary>
-    /// Seeds demo users/lookups. Prefer running database/StudentManagementDB.sql once as an admin.
+    /// Seeds demo users/lookups. Prefer running database/StudentManagementSDB.sql once as an admin.
     /// Does not require CREATE DATABASE permission when the database already exists.
     /// </summary>
     public static class DatabaseBootstrapper
@@ -48,9 +48,15 @@ namespace StudentManagement.Infrastructure.Data
             if (!await db.FeeCategories.AnyAsync(ct))
             {
                 db.FeeCategories.AddRange(
-                    new FeeCategory { CategoryName = "Tuition Fee", IsRecurring = true },
-                    new FeeCategory { CategoryName = "Admission Fee", IsRecurring = false },
-                    new FeeCategory { CategoryName = "Exam Fee", IsRecurring = false });
+                    new FeeCategory { CategoryName = "Tuition Fee", Description = "Monthly tuition", IsRecurring = true },
+                    new FeeCategory { CategoryName = "Registration Fee", Description = "One-time / annual registration", IsRecurring = false },
+                    new FeeCategory { CategoryName = "New Admission / Re-admission", Description = "Admission or re-admission charge", IsRecurring = false },
+                    new FeeCategory { CategoryName = "Monthly Transport Fee", Description = "School transport / bus", IsRecurring = true },
+                    new FeeCategory { CategoryName = "Examination Fee (1st / 2nd Term / Annual / Test)", Description = "Term and test examination fees", IsRecurring = false },
+                    new FeeCategory { CategoryName = "Transcript / Testimonial / Certificate Fee", Description = "Document fees", IsRecurring = false },
+                    new FeeCategory { CategoryName = "Transfer Certificate / Certification Letter", Description = "TC and certification letters", IsRecurring = false },
+                    new FeeCategory { CategoryName = "Hostel Food Charges", Description = "Hostel boarding / food", IsRecurring = true },
+                    new FeeCategory { CategoryName = "Miscellaneous", Description = "Other charges", IsRecurring = false });
             }
 
             if (!await db.ExamTerms.AnyAsync(ct))
@@ -101,9 +107,10 @@ namespace StudentManagement.Infrastructure.Data
                     "SQL Server refused CREATE DATABASE (permission denied on 'master').\n\n" +
                     "One-time fix:\n" +
                     "1. Open SQL Server Management Studio as Administrator (or use the 'sa' login).\n" +
-                    "2. Open and execute: database\\StudentManagementDB.sql\n" +
-                    "3. Confirm appsettings.json points to that same server/instance.\n" +
-                    "4. Restart the application.",
+                    "2. Execute: database\\CreateDatabaseAndGrantAccess.sql\n" +
+                    "3. Execute: database\\StudentManagementSDB.sql\n" +
+                    "4. Confirm appsettings.json Initial Catalog=StudentManagementSDB.\n" +
+                    "5. Restart the application.",
                     ex);
             }
             catch (Exception ex)

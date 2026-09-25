@@ -26,25 +26,32 @@ Built with **C# / .NET 5 Windows Forms**, **EF Core 5 + SQL Server 2022**, and a
 Your Windows login may not have `CREATE DATABASE` permission. Create the database once as an admin:
 
 1. Open **SQL Server Management Studio** as Administrator (or connect with `sa`).
-2. Run [`database/CreateDatabaseAndGrantAccess.sql`](database/CreateDatabaseAndGrantAccess.sql) (creates DB + grants your login access).
-3. Run [`database/StudentManagementDB.sql`](database/StudentManagementDB.sql) for full schema and demo data.
-4. Update the connection string in:
+2. Run [`database/CreateDatabaseAndGrantAccess.sql`](database/CreateDatabaseAndGrantAccess.sql) — creates `StudentManagementSDB` and grants login `[anik]`.
+3. Run [`database/StudentManagementSDB.sql`](database/StudentManagementSDB.sql) — tables, views, stored procedures, and demo seed.
+4. Confirm the connection string in:
    - `src/StudentManagement.Desktop/appsettings.json`
    - `src/StudentManagement.Desktop/App.config`
+5. Set `OfflineMode` to `false` when SQL Server is available.
 
-Default connection string:
+See [`database/README.md`](database/README.md) for object list and SP reference.
 
-```
-Server=localhost\SQLEXPRESS;Database=StudentManagementDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true
-```
-
-If you use LocalDB instead, set:
+Configured connection (matches this machine):
 
 ```
-Server=(localdb)\MSSQLLocalDB;Database=StudentManagementDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true
+Data Source=NGBC-IT-168\MSSQLSERVER1;Initial Catalog=StudentManagementSDB;User Id=anik;Password=***;TrustServerCertificate=True;MultipleActiveResultSets=True;
 ```
 
-On startup the app seeds demo users when the database is reachable. It will **not** keep failing on CREATE DATABASE once `StudentManagementDB` exists.
+Local alternatives:
+
+```
+Server=localhost\SQLEXPRESS;Database=StudentManagementSDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true
+```
+
+```
+Server=(localdb)\MSSQLLocalDB;Database=StudentManagementSDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true
+```
+
+On startup the app re-hashes demo users and fills any missing lookup rows when the database is reachable.
 
 ### Default login
 
@@ -52,8 +59,10 @@ On startup the app seeds demo users when the database is reachable. It will **no
 |----------|----------|------|
 | `admin` | `Admin@123` | Super Admin |
 | `accounts` | `Accounts@123` | Accounts Manager |
+| `admission` | `Admission@123` | Admission Officer |
+| `teacher` | `Teacher@123` | Teacher |
 
-> Prefer the bootstrapper-created hashes (or create users in **User Management**). SQL seed user hashes are placeholders; if SQL seed users fail login, use bootstrap admin or recreate via the app.
+> SQL seed password hashes are placeholders. `DatabaseBootstrapper` replaces them on first app start so the passwords above work.
 
 ## Run
 
@@ -108,5 +117,6 @@ Requires the **.NET desktop development** workload. For .NET 5 WinForms, Visual 
 
 - Repositories + `IUnitOfWork` isolate SQL Server access  
 - Fee collection posts invoice / waiver / payment ledger rows in one transaction  
-- `vw_StudentLedgerDetailed` provides SQL windowed running balances  
+- `vw_StudentLedgerDetailed` / `vw_StudentBalanceSummary` provide SQL running balances  
+- Stored procedures cover registration/receipt/invoice numbering, ledger, dues, dashboard, and fee posting (`database/StudentManagementSDB.sql`)  
 - Desktop hosts child forms in `pnlContentContainer` (no MDI title-bar flicker)  

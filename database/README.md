@@ -1,0 +1,79 @@
+# Database scripts — StudentManagementSDB
+
+SQL Server 2022 scripts for Ideal High School Student Management.
+
+## Run order (SSMS as `sa` / Administrator)
+
+1. [`CreateDatabaseAndGrantAccess.sql`](CreateDatabaseAndGrantAccess.sql) — creates empty `StudentManagementSDB` and grants login `[anik]`.
+2. [`StudentManagementSDB.sql`](StudentManagementSDB.sql) — tables, indexes, views, stored procedures, demo seed.
+
+`StudentManagementDB.sql` is a stub that points here (old name). Do not use it for schema.
+
+## Connection string
+
+Must match the desktop app:
+
+```
+Data Source=NGBC-IT-168\MSSQLSERVER1;Initial Catalog=StudentManagementSDB;User Id=anik;Password=***;TrustServerCertificate=True;MultipleActiveResultSets=True;
+```
+
+Set `OfflineMode` to `false` in `App.config` / `appsettings.json` when SQL Server is available.
+
+## Objects created
+
+### Tables
+
+| Table | Purpose |
+|-------|---------|
+| `Users` | App logins / RBAC |
+| `Classes` / `Sections` | Academic structure |
+| `Students` | Admissions |
+| `FeeCategories` | Tuition + optional fee types |
+| `StudentFeeStructures` | Per-student fee amounts |
+| `StudentLedger` | Debit/credit accounting |
+| `FeeInvoices` / `FeePayments` | Billing & POS receipts |
+| `ExamTerms` / `ExamClearances` / `AdmitCards` | Exam flow |
+| `NumberSequences` | Atomic REG / RCP / INV counters |
+
+### Views
+
+- `vw_StudentLedgerDetailed` — ledger lines with running balance
+- `vw_StudentBalanceSummary` — net due per student
+- `vw_ActiveStudents` — active enrollment join
+
+### Stored procedures
+
+| Procedure | Use |
+|-----------|-----|
+| `usp_GetNextRegistrationNo` | `REG-YYYY-####` |
+| `usp_GetNextReceiptNo` | `RCP-yyyyMM-#####` |
+| `usp_GetNextInvoiceNo` | `INV-yyyyMM-#####` |
+| `usp_GetNextAdmitCardNo` | Admit card + barcode |
+| `usp_GetStudentBalance` | Net due header |
+| `usp_GetStudentLedger` | Header + detail |
+| `usp_GetDashboardStats` | Dashboard KPIs |
+| `usp_SearchStudents` | Search / filter |
+| `usp_GetOutstandingDues` | Receivables list |
+| `usp_GetClassSectionLookup` | Class/section picker |
+| `usp_PostTuitionInvoice` | Post invoice + ledger |
+| `usp_RecordFeePayment` | Post payment (+ optional waiver) |
+
+### Quick checks after install
+
+```sql
+USE StudentManagementSDB;
+EXEC dbo.usp_GetDashboardStats;
+EXEC dbo.usp_SearchStudents @Term = N'Ayesha';
+EXEC dbo.usp_GetStudentLedger @RegistrationNo = N'REG-2026-0001';
+```
+
+### Default users (passwords fixed on first app start)
+
+| Username | Password | Role |
+|----------|----------|------|
+| `admin` | `Admin@123` | Super Admin |
+| `accounts` | `Accounts@123` | Accounts Manager |
+| `admission` | `Admission@123` | Admission Officer |
+| `teacher` | `Teacher@123` | Teacher |
+
+SQL seed password hashes are placeholders. `DatabaseBootstrapper` re-hashes them when the desktop app starts against this database.
