@@ -84,12 +84,13 @@ namespace StudentManagement.Desktop.Forms
         private List<NamedFeeAmount> ReadOptionalFees()
         {
             var list = new List<NamedFeeAmount>();
+            // Names match frmFeeCollection designer labels and FeeCategories seed.
             AddIfPositive(list, "Registration Fee", txtRegistrationFee);
             AddIfPositive(list, "New Admission / Re-admission", txtAdmissionFee);
             AddIfPositive(list, "Monthly Transport Fee", txtTransportFee);
-            AddIfPositive(list, "Examination Fee (1st / 2nd Term / Annual / Test)", txtExaminationFee);
-            AddIfPositive(list, "Transcript / Testimonial / Certificate Fee", txtTranscriptFee);
-            AddIfPositive(list, "Transfer Certificate / Certification Letter", txtTransferCertificateFee);
+            AddIfPositive(list, "Examination Fee (Term / Annual)", txtExaminationFee);
+            AddIfPositive(list, "Transcript / Testimonial / Certificate", txtTranscriptFee);
+            AddIfPositive(list, "Transfer Certificate / Letter", txtTransferCertificateFee);
             AddIfPositive(list, "Hostel Food Charges", txtHostelFoodCharges);
             AddIfPositive(list, "Miscellaneous", txtMiscellaneous);
             return list;

@@ -47,16 +47,18 @@ namespace StudentManagement.Infrastructure.Data
 
             if (!await db.FeeCategories.AnyAsync(ct))
             {
+                // Names match Fee Collection Counter designer labels (+ dashboard ICT bar).
                 db.FeeCategories.AddRange(
-                    new FeeCategory { CategoryName = "Tuition Fee", Description = "Monthly tuition", IsRecurring = true },
-                    new FeeCategory { CategoryName = "Registration Fee", Description = "One-time / annual registration", IsRecurring = false },
-                    new FeeCategory { CategoryName = "New Admission / Re-admission", Description = "Admission or re-admission charge", IsRecurring = false },
-                    new FeeCategory { CategoryName = "Monthly Transport Fee", Description = "School transport / bus", IsRecurring = true },
-                    new FeeCategory { CategoryName = "Examination Fee (1st / 2nd Term / Annual / Test)", Description = "Term and test examination fees", IsRecurring = false },
-                    new FeeCategory { CategoryName = "Transcript / Testimonial / Certificate Fee", Description = "Document fees", IsRecurring = false },
-                    new FeeCategory { CategoryName = "Transfer Certificate / Certification Letter", Description = "TC and certification letters", IsRecurring = false },
-                    new FeeCategory { CategoryName = "Hostel Food Charges", Description = "Hostel boarding / food", IsRecurring = true },
-                    new FeeCategory { CategoryName = "Miscellaneous", Description = "Other charges", IsRecurring = false });
+                    new FeeCategory { CategoryName = "Tuition Fee", Description = "Monthly tuition (month matrix)", IsRecurring = true },
+                    new FeeCategory { CategoryName = "Registration Fee", Description = "Optional fee on Fee Collection Counter", IsRecurring = false },
+                    new FeeCategory { CategoryName = "New Admission / Re-admission", Description = "Optional fee on Fee Collection Counter", IsRecurring = false },
+                    new FeeCategory { CategoryName = "Monthly Transport Fee", Description = "Optional fee on Fee Collection Counter", IsRecurring = true },
+                    new FeeCategory { CategoryName = "Examination Fee (Term / Annual)", Description = "Optional fee / dashboard term exam bar", IsRecurring = false },
+                    new FeeCategory { CategoryName = "ICT & Computer Lab Fees", Description = "Dashboard revenue bar category", IsRecurring = true },
+                    new FeeCategory { CategoryName = "Transcript / Testimonial / Certificate", Description = "Optional fee on Fee Collection Counter", IsRecurring = false },
+                    new FeeCategory { CategoryName = "Transfer Certificate / Letter", Description = "Optional fee on Fee Collection Counter", IsRecurring = false },
+                    new FeeCategory { CategoryName = "Hostel Food Charges", Description = "Optional fee on Fee Collection Counter", IsRecurring = true },
+                    new FeeCategory { CategoryName = "Miscellaneous", Description = "Optional fee on Fee Collection Counter", IsRecurring = false });
             }
 
             if (!await db.ExamTerms.AnyAsync(ct))

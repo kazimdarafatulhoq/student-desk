@@ -21,19 +21,26 @@ Set `OfflineMode` to `false` in `App.config` / `appsettings.json` when SQL Serve
 
 ## Objects created
 
+Schema mirrors the WinForms modules: Admission, Fee Collection Counter (month matrix + optional fees), Student Ledger, Exam Clearance, Admit Card, Dashboard, and User Management.
+
 ### Tables
 
 | Table | Purpose |
 |-------|---------|
+| `InstitutionSettings` | Ideal High School & College / campus / session (matches AppSession) |
 | `Users` | App logins / RBAC |
-| `Classes` / `Sections` | Academic structure |
-| `Students` | Admissions |
-| `FeeCategories` | Tuition + optional fee types |
+| `Classes` / `Sections` | Academic structure (Class 6–10, A/B) |
+| `Students` | Admission form fields |
+| `FeeCategories` | Tuition + Fee Collection optional fees + ICT (dashboard) |
 | `StudentFeeStructures` | Per-student fee amounts |
 | `StudentLedger` | Debit/credit accounting |
 | `FeeInvoices` / `FeePayments` | Billing & POS receipts |
 | `ExamTerms` / `ExamClearances` / `AdmitCards` | Exam flow |
 | `NumberSequences` | Atomic REG / RCP / INV counters |
+
+### Fee categories (designer labels)
+
+Tuition Fee · Registration Fee · New Admission / Re-admission · Monthly Transport Fee · Examination Fee (Term / Annual) · ICT & Computer Lab Fees · Transcript / Testimonial / Certificate · Transfer Certificate / Letter · Hostel Food Charges · Miscellaneous
 
 ### Views
 

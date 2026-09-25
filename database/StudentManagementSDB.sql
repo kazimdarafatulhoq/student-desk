@@ -1,8 +1,10 @@
 /*
 ================================================================================
  StudentManagementSDB.sql
- Ideal High School — Student Management & Financial Accounting
- SQL Server 2022 schema: tables, indexes, views, stored procedures, seed data
+ Ideal High School & College — Student Management & Financial Accounting
+ SQL Server 2022 schema aligned with the WinForms desktop design:
+   Admission · Fee Collection Counter · Ledger · Exam Clearance · Admit Card
+   Dashboard · User Management
 
  Database name MUST match App.config / appsettings.json: StudentManagementSDB
 
@@ -63,7 +65,28 @@ IF OBJECT_ID(N'dbo.Students', N'U') IS NOT NULL DROP TABLE dbo.Students;
 IF OBJECT_ID(N'dbo.Sections', N'U') IS NOT NULL DROP TABLE dbo.Sections;
 IF OBJECT_ID(N'dbo.Classes', N'U') IS NOT NULL DROP TABLE dbo.Classes;
 IF OBJECT_ID(N'dbo.Users', N'U') IS NOT NULL DROP TABLE dbo.Users;
+IF OBJECT_ID(N'dbo.InstitutionSettings', N'U') IS NOT NULL DROP TABLE dbo.InstitutionSettings;
 IF OBJECT_ID(N'dbo.NumberSequences', N'U') IS NOT NULL DROP TABLE dbo.NumberSequences;
+GO
+
+/* Institution branding — matches AppSession / App.config design */
+CREATE TABLE dbo.InstitutionSettings
+(
+    SettingId           INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InstitutionSettings PRIMARY KEY,
+    InstitutionName     NVARCHAR(200) NOT NULL,
+    CampusName          NVARCHAR(200) NULL,
+    AcademicSession     NVARCHAR(20) NOT NULL,
+    AddressLine         NVARCHAR(300) NULL,
+    Phone               NVARCHAR(30) NULL,
+    Email               NVARCHAR(150) NULL,
+    CurrencySymbol      NVARCHAR(10) NOT NULL CONSTRAINT DF_Institution_Currency DEFAULT (N'৳'),
+    IsActive            BIT NOT NULL CONSTRAINT DF_Institution_IsActive DEFAULT (1),
+    CreatedAt           DATETIME2 NOT NULL CONSTRAINT DF_Institution_CreatedAt DEFAULT (SYSUTCDATETIME()),
+    CreatedBy           NVARCHAR(100) NULL,
+    UpdatedAt           DATETIME2 NULL,
+    UpdatedBy           NVARCHAR(100) NULL,
+    IsDeleted           BIT NOT NULL CONSTRAINT DF_Institution_IsDeleted DEFAULT (0)
+);
 GO
 
 /* ========================================================================
@@ -667,24 +690,38 @@ CREATE PROCEDURE dbo.usp_GetDashboardStats
 AS
 BEGIN
     SET NOCOUNT ON;
+    /* KPIs mirror frmDashboard cards: enrolled, clear, dues, collection, exam-eligible */
 
     DECLARE @Today DATE = CAST(GETDATE() AS DATE);
     DECLARE @MonthStart DATE = DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1);
+    DECLARE @Active INT = (SELECT COUNT(*) FROM dbo.Students WHERE IsDeleted = 0 AND Status = 1);
+    DECLARE @Clear INT = (SELECT COUNT(*) FROM dbo.vw_StudentBalanceSummary WHERE Status = 1 AND NetDue <= 0);
+    DECLARE @WithDues INT = (SELECT COUNT(*) FROM dbo.vw_StudentBalanceSummary WHERE Status = 1 AND NetDue > 0);
+    DECLARE @Receivables DECIMAL(18,2) = (SELECT ISNULL(SUM(NetDue), 0) FROM dbo.vw_StudentBalanceSummary WHERE Status = 1 AND NetDue > 0);
+    DECLARE @MonthlyTuition DECIMAL(18,2) = (SELECT ISNULL(SUM(MonthlyTuitionFee), 0) FROM dbo.Students WHERE IsDeleted = 0 AND Status = 1);
+    DECLARE @Rate INT = CASE WHEN @Active > 0 THEN CAST(ROUND(@Clear * 100.0 / @Active, 0) AS INT) ELSE 0 END;
 
     SELECT
-        (SELECT COUNT(*) FROM dbo.Students WHERE IsDeleted = 0 AND Status = 1) AS ActiveStudents,
-        (SELECT COUNT(*) FROM dbo.Students WHERE IsDeleted = 0) AS TotalStudents,
-        (SELECT ISNULL(SUM(DebitAmount - CreditAmount), 0)
-         FROM dbo.StudentLedger WHERE IsDeleted = 0) AS TotalReceivables,
-        (SELECT COUNT(*) FROM dbo.vw_StudentBalanceSummary WHERE NetDue > 0 AND Status = 1) AS StudentsWithDues,
+        @Active AS ActiveStudents,
+        @Clear AS ClearStudents,
+        @WithDues AS StudentsWithDues,
+        @Receivables AS TotalReceivables,
+        @Rate AS FeeCollectionRatePct,
+        @MonthlyTuition AS MonthlyTuitionBook,
         (SELECT ISNULL(SUM(AmountPaid), 0)
          FROM dbo.FeePayments
          WHERE IsDeleted = 0 AND CAST(PaymentDate AS DATE) = @Today) AS CollectionsToday,
+        (SELECT COUNT(*) FROM dbo.FeePayments
+         WHERE IsDeleted = 0 AND CAST(PaymentDate AS DATE) = @Today) AS ReceiptsToday,
         (SELECT ISNULL(SUM(AmountPaid), 0)
          FROM dbo.FeePayments
          WHERE IsDeleted = 0 AND CAST(PaymentDate AS DATE) >= @MonthStart) AS CollectionsThisMonth,
         (SELECT COUNT(*) FROM dbo.ExamClearances WHERE IsDeleted = 0 AND IsCleared = 1) AS ClearedForExam,
-        (SELECT COUNT(*) FROM dbo.AdmitCards WHERE IsDeleted = 0) AS AdmitCardsIssued;
+        (SELECT COUNT(*) FROM dbo.AdmitCards WHERE IsDeleted = 0) AS AdmitCardsIssued,
+        /* Category share bars on dashboard (invoice totals by design categories) */
+        (SELECT ISNULL(SUM(Amount), 0) FROM dbo.FeeInvoices WHERE IsDeleted = 0 AND CategoryName = N'Tuition Fee') AS TuitionInvoiced,
+        (SELECT ISNULL(SUM(Amount), 0) FROM dbo.FeeInvoices WHERE IsDeleted = 0 AND CategoryName = N'ICT & Computer Lab Fees') AS IctInvoiced,
+        (SELECT ISNULL(SUM(Amount), 0) FROM dbo.FeeInvoices WHERE IsDeleted = 0 AND CategoryName LIKE N'Examination Fee%') AS ExamInvoiced;
 END
 GO
 
@@ -969,17 +1006,32 @@ UNION ALL
 SELECT ClassId, N'B', 40, N'seed' FROM dbo.Classes;
 GO
 
+/* Fee categories — names match Fee Collection Counter designer (+ dashboard ICT bar) */
 INSERT INTO dbo.FeeCategories (CategoryName, Description, IsRecurring, CreatedBy)
 VALUES
-(N'Tuition Fee', N'Monthly tuition', 1, N'seed'),
-(N'Registration Fee', N'One-time / annual registration', 0, N'seed'),
-(N'New Admission / Re-admission', N'Admission or re-admission charge', 0, N'seed'),
-(N'Monthly Transport Fee', N'School transport / bus', 1, N'seed'),
-(N'Examination Fee (1st / 2nd Term / Annual / Test)', N'Term and test examination fees', 0, N'seed'),
-(N'Transcript / Testimonial / Certificate Fee', N'Document fees', 0, N'seed'),
-(N'Transfer Certificate / Certification Letter', N'TC and certification letters', 0, N'seed'),
-(N'Hostel Food Charges', N'Hostel boarding / food', 1, N'seed'),
-(N'Miscellaneous', N'Other charges', 0, N'seed');
+(N'Tuition Fee', N'Monthly tuition (Tuition Fee Months matrix)', 1, N'seed'),
+(N'Registration Fee', N'Optional fee on Fee Collection Counter', 0, N'seed'),
+(N'New Admission / Re-admission', N'Optional fee on Fee Collection Counter', 0, N'seed'),
+(N'Monthly Transport Fee', N'Optional fee on Fee Collection Counter', 1, N'seed'),
+(N'Examination Fee (Term / Annual)', N'Optional fee / dashboard term exam bar', 0, N'seed'),
+(N'ICT & Computer Lab Fees', N'Dashboard revenue bar category', 1, N'seed'),
+(N'Transcript / Testimonial / Certificate', N'Optional fee on Fee Collection Counter', 0, N'seed'),
+(N'Transfer Certificate / Letter', N'Optional fee on Fee Collection Counter', 0, N'seed'),
+(N'Hostel Food Charges', N'Optional fee on Fee Collection Counter', 1, N'seed'),
+(N'Miscellaneous', N'Optional fee on Fee Collection Counter', 0, N'seed');
+GO
+
+INSERT INTO dbo.InstitutionSettings
+    (InstitutionName, CampusName, AcademicSession, AddressLine, Phone, Email, CurrencySymbol, CreatedBy)
+VALUES
+(N'Ideal High School & College',
+ N'Dhanmondi Campus, Dhaka-1205',
+ N'2025-2026',
+ N'Dhanmondi, Dhaka-1205, Bangladesh',
+ N'02-55000000',
+ N'info@idealhighschool.edu',
+ N'৳',
+ N'seed');
 GO
 
 INSERT INTO dbo.ExamTerms (TermName, AcademicSession, StartDate, EndDate, TimetableJson, IsActive, CreatedBy)
