@@ -149,45 +149,43 @@ namespace StudentManagement.Reporting.Generators
 
     public static class AdmitCardPdfGenerator
     {
-        public static string GenerateBatch(IReadOnlyList<AdmitCardDto> cards, string institutionName, string outputDirectory)
+        public static string GenerateBatch(
+            IReadOnlyList<AdmitCardDto> cards,
+            string institutionName,
+            string outputDirectory,
+            string? campusAddress = null)
         {
             Directory.CreateDirectory(outputDirectory);
             var path = Path.Combine(outputDirectory, $"AdmitCards_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            var campus = string.IsNullOrWhiteSpace(campusAddress)
+                ? (cards.FirstOrDefault()?.CampusAddress ?? "Dhanmondi Campus, Dhaka-1205")
+                : campusAddress;
 
             Document.Create(container =>
             {
-                foreach (var card in cards)
+                for (int i = 0; i < cards.Count; i += 2)
                 {
+                    var first = cards[i];
+                    var second = i + 1 < cards.Count ? cards[i + 1] : null;
+
                     container.Page(page =>
                     {
-                        page.Size(PageSizes.A5);
-                        page.Margin(24);
-                        page.DefaultTextStyle(x => x.FontSize(10));
+                        page.Size(PageSizes.A4);
+                        page.Margin(28);
+                        page.DefaultTextStyle(x => x.FontSize(10).FontColor(Colors.BlueGrey.Darken4));
 
-                        page.Header().Column(col =>
+                        page.Content().Column(col =>
                         {
-                            col.Item().AlignCenter().Text(institutionName).Bold().FontSize(15).FontColor(Colors.Indigo.Darken2);
-                            col.Item().AlignCenter().Text("ADMIT CARD").Bold().FontSize(13);
-                            col.Item().AlignCenter().Text(card.TermName).FontSize(11);
-                            col.Item().PaddingTop(6).BorderBottom(1).BorderColor(Colors.Grey.Medium);
+                            ComposeCard(col, first, institutionName, campus);
+                            if (second != null)
+                            {
+                                col.Item().PaddingVertical(12).AlignCenter()
+                                    .Text("--- cut here ---")
+                                    .FontSize(8)
+                                    .FontColor(Colors.Grey.Darken1);
+                                ComposeCard(col, second, institutionName, campus);
+                            }
                         });
-
-                        page.Content().PaddingTop(10).Column(col =>
-                        {
-                            col.Spacing(5);
-                            col.Item().Text($"Admit No     : {card.AdmitCardNo}");
-                            col.Item().Text($"Registration : {card.RegistrationNo}");
-                            col.Item().Text($"Student Name : {card.FullName}");
-                            col.Item().Text($"Father       : {card.FatherName}");
-                            col.Item().Text($"Class/Sec    : {card.ClassName} - {card.SectionName}");
-                            col.Item().Text($"Roll No      : {card.RollNumber}");
-                            col.Item().PaddingTop(8).Text("Exam Timetable").Bold();
-                            col.Item().Text(FormatTimetable(card.TimetableJson)).FontSize(9);
-                            col.Item().PaddingTop(12).AlignCenter().Text($"* {card.BarcodeValue} *").FontFamily("Courier New").FontSize(12);
-                            col.Item().AlignCenter().Text("Barcode").FontSize(8).FontColor(Colors.Grey.Darken1);
-                        });
-
-                        page.Footer().AlignCenter().Text($"Issued: {card.IssuedAt:dd-MMM-yyyy}  |  Bring this card to every exam").FontSize(8);
                     });
                 }
             }).GeneratePdf(path);
@@ -195,28 +193,99 @@ namespace StudentManagement.Reporting.Generators
             return path;
         }
 
-        private static string FormatTimetable(string? json)
+        private static void ComposeCard(ColumnDescriptor col, AdmitCardDto card, string institutionName, string campus)
         {
-            if (string.IsNullOrWhiteSpace(json))
-                return "Timetable will be announced by the examination cell.";
-
-            try
+            col.Item().Border(1).BorderColor(Colors.Grey.Lighten1).Background(Colors.White).Padding(18).Column(cardCol =>
             {
-                using var doc = System.Text.Json.JsonDocument.Parse(json);
-                var sb = new StringBuilder();
-                foreach (var item in doc.RootElement.EnumerateArray())
+                cardCol.Item().AlignCenter().Text(institutionName.ToUpperInvariant())
+                    .Bold().FontSize(16).FontColor(Colors.BlueGrey.Darken4);
+                cardCol.Item().AlignCenter().Text(campus)
+                    .FontSize(9).FontColor(Colors.Grey.Darken1);
+                cardCol.Item().PaddingTop(10).AlignCenter().Element(e =>
                 {
-                    var subject = item.GetProperty("subject").GetString();
-                    var date = item.GetProperty("date").GetString();
-                    var time = item.GetProperty("time").GetString();
-                    sb.AppendLine($"• {subject} — {date} @ {time}");
-                }
-                return sb.ToString().TrimEnd();
-            }
-            catch
+                    e.Background(Colors.BlueGrey.Darken4).PaddingVertical(8).PaddingHorizontal(16)
+                        .AlignCenter()
+                        .Text((card.TermName ?? string.Empty).ToUpperInvariant() + " ADMIT CARD")
+                        .Bold().FontSize(11).FontColor(Colors.White);
+                });
+                cardCol.Item().PaddingTop(10).BorderBottom(1).BorderColor(Colors.BlueGrey.Darken4).PaddingBottom(4);
+
+                cardCol.Item().PaddingTop(12).Background(Colors.Grey.Lighten4).Padding(12).Row(row =>
+                {
+                    row.ConstantItem(90).Height(100).Background(Colors.White).Border(1).BorderColor(Colors.Grey.Lighten1)
+                        .AlignCenter().AlignMiddle().Element(photo =>
+                        {
+                            if (!string.IsNullOrWhiteSpace(card.PhotoPath) && File.Exists(card.PhotoPath))
+                            {
+                                photo.Image(card.PhotoPath);
+                            }
+                            else
+                            {
+                                photo.AlignCenter().AlignMiddle().Text("PHOTO")
+                                    .FontSize(9).FontColor(Colors.Grey.Darken1);
+                            }
+                        });
+
+                    row.RelativeItem().PaddingLeft(14).Column(info =>
+                    {
+                        info.Spacing(4);
+                        InfoLine(info, "Student Name:", card.FullName, false);
+                        InfoLine(info, "Registration No:", card.RegistrationNo, true);
+                        InfoLine(info, "Class & Section:", FormatClassSection(card), false);
+                        InfoLine(info, "Roll No:", card.RollNumber, false);
+                        InfoLine(info, "Venue:", card.Venue, false);
+                    });
+                });
+
+                cardCol.Item().PaddingTop(12).Background(Colors.Grey.Lighten4).Padding(12).Column(inst =>
+                {
+                    inst.Item().Text("Instructions to Candidates:")
+                        .Bold().FontSize(10).FontColor(Colors.BlueGrey.Darken4);
+                    inst.Item().PaddingTop(4).Text("1. Candidates must bring this Admit Card and Student ID to the examination hall.")
+                        .FontSize(8).FontColor(Colors.Grey.Darken1);
+                    inst.Item().Text("2. Programmable calculators, mobile phones, and electronic devices are strictly prohibited.")
+                        .FontSize(8).FontColor(Colors.Grey.Darken1);
+                    inst.Item().Text("3. " + card.FeeClearanceNote)
+                        .FontSize(8).FontColor(Colors.Grey.Darken1);
+                });
+
+                cardCol.Item().PaddingTop(28).Row(sig =>
+                {
+                    sig.RelativeItem().AlignCenter().Column(c =>
+                    {
+                        c.Item().Width(140).BorderBottom(1).BorderColor(Colors.BlueGrey.Darken4);
+                        c.Item().PaddingTop(4).Text("Class Teacher").FontSize(9).FontColor(Colors.Grey.Darken1);
+                    });
+                    sig.RelativeItem().AlignCenter().Column(c =>
+                    {
+                        c.Item().Width(160).BorderBottom(1).BorderColor(Colors.BlueGrey.Darken4);
+                        c.Item().PaddingTop(4).Text("Principal & Controller").Bold().FontSize(9).FontColor(Colors.BlueGrey.Darken4);
+                    });
+                });
+
+                cardCol.Item().PaddingTop(8).AlignCenter()
+                    .Text($"Admit No: {card.AdmitCardNo}   ·   Issued: {card.IssuedAt:dd-MMM-yyyy}")
+                    .FontSize(7).FontColor(Colors.Grey.Darken1);
+            });
+        }
+
+        private static void InfoLine(ColumnDescriptor col, string label, string value, bool accent)
+        {
+            col.Item().Row(r =>
             {
-                return json;
-            }
+                r.ConstantItem(110).Text(label).FontSize(9).FontColor(Colors.Grey.Darken1);
+                var text = r.RelativeItem().Text(value).Bold().FontSize(10);
+                if (accent)
+                    text.FontColor(Colors.Blue.Medium);
+                else
+                    text.FontColor(Colors.BlueGrey.Darken4);
+            });
+        }
+
+        private static string FormatClassSection(AdmitCardDto card)
+        {
+            var section = string.IsNullOrWhiteSpace(card.SectionName) ? "" : $" - Section {card.SectionName}";
+            return $"Class {card.ClassName}{section}";
         }
     }
 }

@@ -29,6 +29,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Forms\frmAdmitCardPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmAdmitCardPreview.Designer.cs">
+      <DependentUpon>frmAdmitCardPreview.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Forms\frmAdmitCardPreview.resx">
+      <DependentUpon>frmAdmitCardPreview.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Update="Forms\frmAdmitCardPrint.cs">
       <SubType>Form</SubType>
     </Compile>

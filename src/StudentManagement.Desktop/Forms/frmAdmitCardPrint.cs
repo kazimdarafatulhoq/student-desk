@@ -3,16 +3,12 @@ using StudentManagement.Application.Services;
 using StudentManagement.Desktop.Helpers;
 using StudentManagement.Desktop.Theme;
 using StudentManagement.Domain.Entities;
-using StudentManagement.Reporting.Generators;
 
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace StudentManagement.Desktop.Forms
@@ -75,6 +71,7 @@ namespace StudentManagement.Desktop.Forms
                 if (cboStudent.SelectedValue is not int studentId || cboTerm.SelectedValue is not int termId)
                     return;
 
+                btnIssue.Enabled = false;
                 var card = await _exams.IssueAdmitCardAsync(
                     studentId,
                     termId,
@@ -83,14 +80,30 @@ namespace StudentManagement.Desktop.Forms
                     txtReason.Text.Trim(),
                     AppSession.Current?.Role);
 
-                var path = AdmitCardPdfGenerator.GenerateBatch(new[] { card }, AppSession.InstitutionName, AppSession.ReportsPath);
-                lblStatus.ForeColor = UITheme.Success;
-                lblStatus.Text = $"Admit card {card.AdmitCardNo} issued. PDF: {path}";
+                using var preview = new frmAdmitCardPreview(
+                    new[] { card },
+                    AppSession.InstitutionName,
+                    AppSession.InstitutionCampus);
+                var result = preview.ShowDialog(FindForm());
+                if (result == DialogResult.OK)
+                {
+                    lblStatus.ForeColor = UITheme.Success;
+                    lblStatus.Text = $"Admit card {card.AdmitCardNo} printed. PDF: {preview.SavedPdfPath}";
+                }
+                else
+                {
+                    lblStatus.ForeColor = UITheme.TextMuted;
+                    lblStatus.Text = $"Admit card {card.AdmitCardNo} issued. Preview closed without printing.";
+                }
             }
             catch (Exception ex)
             {
                 lblStatus.ForeColor = UITheme.Danger;
                 lblStatus.Text = ex.Message;
+            }
+            finally
+            {
+                btnIssue.Enabled = true;
             }
         }
 
@@ -104,6 +117,7 @@ namespace StudentManagement.Desktop.Forms
                 if (cboTerm.SelectedValue is not int termId)
                     return;
 
+                btnBatch.Enabled = false;
                 int? classId = cboClass.SelectedValue is int c && c > 0 ? c : null;
                 var issued = new List<AdmitCardDto>();
                 var students = await _students.SearchAsync(new StudentSearchFilter { ClassId = classId });
@@ -130,14 +144,30 @@ namespace StudentManagement.Desktop.Forms
                     return;
                 }
 
-                var path = AdmitCardPdfGenerator.GenerateBatch(issued, AppSession.InstitutionName, AppSession.ReportsPath);
-                lblStatus.ForeColor = UITheme.Success;
-                lblStatus.Text = $"Batch printed: {issued.Count} card(s). PDF: {path}";
+                using var preview = new frmAdmitCardPreview(
+                    issued,
+                    AppSession.InstitutionName,
+                    AppSession.InstitutionCampus);
+                var result = preview.ShowDialog(FindForm());
+                if (result == DialogResult.OK)
+                {
+                    lblStatus.ForeColor = UITheme.Success;
+                    lblStatus.Text = $"Batch printed: {issued.Count} card(s). PDF: {preview.SavedPdfPath}";
+                }
+                else
+                {
+                    lblStatus.ForeColor = UITheme.TextMuted;
+                    lblStatus.Text = $"Batch issued {issued.Count} card(s). Preview closed without printing.";
+                }
             }
             catch (Exception ex)
             {
                 lblStatus.ForeColor = UITheme.Danger;
                 lblStatus.Text = ex.Message;
+            }
+            finally
+            {
+                btnBatch.Enabled = true;
             }
         }
     }

@@ -137,7 +137,13 @@ namespace StudentManagement.Application.Services
                 RollNumber = student.RollNumber,
                 TermName = term.TermName,
                 TimetableJson = term.TimetableJson,
-                IssuedAt = card.IssuedAt
+                IssuedAt = card.IssuedAt,
+                PhotoPath = student.PhotoPath,
+                Venue = "Main Auditorium & Hall 204",
+                CampusAddress = "Dhanmondi Campus, Dhaka-1205",
+                FeeClearanceNote = clearance.AdminOverride
+                    ? "Fee Clearance Verified: Issued with admin override."
+                    : "Fee Clearance Verified: All required tuition accounts verified."
             };
         }
 
@@ -157,7 +163,11 @@ namespace StudentManagement.Application.Services
                 RollNumber = c.Student?.RollNumber ?? string.Empty,
                 TermName = c.ExamTerm?.TermName ?? string.Empty,
                 TimetableJson = c.ExamTerm?.TimetableJson,
-                IssuedAt = c.IssuedAt
+                IssuedAt = c.IssuedAt,
+                PhotoPath = c.Student?.PhotoPath,
+                Venue = "Main Auditorium & Hall 204",
+                CampusAddress = "Dhanmondi Campus, Dhaka-1205",
+                FeeClearanceNote = "Fee Clearance Verified: All required tuition accounts verified."
             }).ToList();
         }
     }

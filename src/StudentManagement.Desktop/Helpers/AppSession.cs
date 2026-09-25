@@ -8,6 +8,7 @@ namespace StudentManagement.Desktop.Helpers
     {
         public static AuthSession? Current { get; private set; }
         public static string InstitutionName { get; set; } = "Ideal High School & College";
+        public static string InstitutionCampus { get; set; } = "Dhanmondi Campus, Dhaka-1205";
         public static string ReportsPath { get; set; } =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "StudentManagement", "Reports");
 
