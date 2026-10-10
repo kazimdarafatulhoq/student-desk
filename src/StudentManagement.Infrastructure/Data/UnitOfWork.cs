@@ -4,10 +4,9 @@ using StudentManagement.Application.Interfaces;
 using StudentManagement.Infrastructure.Repositories;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 namespace StudentManagement.Infrastructure.Data
 {
     public class UnitOfWork : IUnitOfWork, IAsyncDisposable
@@ -36,10 +35,50 @@ namespace StudentManagement.Infrastructure.Data
         public Task<int> SaveChangesAsync(CancellationToken ct = default)
             => _db.SaveChangesAsync(ct);
 
+        /// <summary>
+        /// Required when SqlServerRetryingExecutionStrategy (EnableRetryOnFailure) is active.
+        /// Begins, runs <paramref name="operation"/>, commits — all inside one retriable unit.
+        /// </summary>
+        public async Task ExecuteInTransactionAsync(Func<CancellationToken, Task> operation, CancellationToken ct = default)
+        {
+            if (operation is null)
+                throw new ArgumentNullException(nameof(operation));
+
+            var strategy = _db.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
+            {
+                await using var tx = await _db.Database.BeginTransactionAsync(ct);
+                _tx = tx;
+                try
+                {
+                    await operation(ct);
+                    await tx.CommitAsync(ct);
+                }
+                catch
+                {
+                    try { await tx.RollbackAsync(ct); }
+                    catch { /* ignore secondary rollback errors */ }
+                    throw;
+                }
+                finally
+                {
+                    _tx = null;
+                }
+            });
+        }
+
         public async Task BeginTransactionAsync(CancellationToken ct = default)
         {
             if (_tx is not null) return;
-            _tx = await _db.Database.BeginTransactionAsync(ct);
+
+            // Prefer ExecuteInTransactionAsync when EnableRetryOnFailure is configured.
+            // Direct BeginTransaction throws SqlServerRetryingExecutionStrategy errors.
+            var strategy = _db.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
+            {
+                if (_tx is null)
+                    _tx = await _db.Database.BeginTransactionAsync(ct);
+            });
         }
 
         public async Task CommitAsync(CancellationToken ct = default)

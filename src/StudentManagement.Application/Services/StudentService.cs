@@ -48,12 +48,11 @@ namespace StudentManagement.Application.Services
                 CreatedBy = request.CreatedBy
             };
 
-            await _uow.BeginTransactionAsync(ct);
-            try
+            await _uow.ExecuteInTransactionAsync(async token =>
             {
-                student = await _uow.Students.AddAsync(student, ct);
+                student = await _uow.Students.AddAsync(student, token);
 
-                var invoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(ct);
+                var invoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(token);
                 var voucherNo = $"INV-{DateTime.Now:yyyyMMdd}-{student.StudentId:D4}";
                 var period = DateTime.Today.ToString("MMM-yyyy");
 
@@ -70,7 +69,7 @@ namespace StudentManagement.Application.Services
                     Status = LedgerStatus.Open,
                     CreatedBy = request.CreatedBy
                 };
-                ledger = await _uow.Ledger.AddAsync(ledger, ct);
+                ledger = await _uow.Ledger.AddAsync(ledger, token);
 
                 await _uow.Fees.AddInvoiceAsync(new FeeInvoice
                 {
@@ -84,16 +83,10 @@ namespace StudentManagement.Application.Services
                     Status = LedgerStatus.Open,
                     LedgerId = ledger.LedgerId,
                     CreatedBy = request.CreatedBy
-                }, ct);
+                }, token);
 
-                await _uow.SaveChangesAsync(ct);
-                await _uow.CommitAsync(ct);
-            }
-            catch
-            {
-                await _uow.RollbackAsync(ct);
-                throw;
-            }
+                await _uow.SaveChangesAsync(token);
+            }, ct);
 
             return await MapAsync(student, ct);
         }

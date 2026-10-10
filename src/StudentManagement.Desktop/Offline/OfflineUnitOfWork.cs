@@ -39,6 +39,8 @@ namespace StudentManagement.Desktop.Offline
         public Task BeginTransactionAsync(CancellationToken ct = default) => Task.CompletedTask;
         public Task CommitAsync(CancellationToken ct = default) => Task.CompletedTask;
         public Task RollbackAsync(CancellationToken ct = default) => Task.CompletedTask;
+        public Task ExecuteInTransactionAsync(Func<CancellationToken, Task> operation, CancellationToken ct = default)
+            => operation(ct);
         public Task<bool> TestConnectionAsync(CancellationToken ct = default) => Task.FromResult(false);
     }
 

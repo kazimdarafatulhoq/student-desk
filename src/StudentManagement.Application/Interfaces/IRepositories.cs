@@ -76,6 +76,11 @@ namespace StudentManagement.Application.Interfaces
         Task BeginTransactionAsync(CancellationToken ct = default);
         Task CommitAsync(CancellationToken ct = default);
         Task RollbackAsync(CancellationToken ct = default);
+        /// <summary>
+        /// Runs work inside a SQL transaction compatible with EnableRetryOnFailure
+        /// (SqlServerRetryingExecutionStrategy). Prefer this over Begin/Commit.
+        /// </summary>
+        Task ExecuteInTransactionAsync(Func<CancellationToken, Task> operation, CancellationToken ct = default);
         Task<bool> TestConnectionAsync(CancellationToken ct = default);
     }
 }

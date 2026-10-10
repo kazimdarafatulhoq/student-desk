@@ -37,11 +37,14 @@ namespace StudentManagement.Application.Services
             var student = await _uow.Students.GetByIdAsync(request.StudentId, ct)
                           ?? throw new InvalidOperationException("Student not found.");
 
-            await _uow.BeginTransactionAsync(ct);
-            try
+            FeeCollection? collection = null;
+            string receiptNo = string.Empty;
+            string periods = string.Empty;
+
+            await _uow.ExecuteInTransactionAsync(async token =>
             {
-                var receiptNo = await _uow.Fees.GenerateReceiptNoAsync(ct);
-                var periods = request.FeePeriods.Count > 0
+                receiptNo = await _uow.Fees.GenerateReceiptNoAsync(token);
+                periods = request.FeePeriods.Count > 0
                     ? string.Join(", ", request.FeePeriods)
                     : "Other Charges";
                 var voucherNo = $"RCPT-{DateTime.Now:yyyyMMddHHmmss}";
@@ -51,7 +54,7 @@ namespace StudentManagement.Application.Services
                     await _uow.Fees.AddInvoiceAsync(new FeeInvoice
                     {
                         StudentId = request.StudentId,
-                        InvoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(ct),
+                        InvoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(token),
                         FeePeriod = periods,
                         CategoryName = "Tuition Fee",
                         Amount = request.TuitionAmount,
@@ -60,7 +63,7 @@ namespace StudentManagement.Application.Services
                         InvoiceDate = DateTime.Today,
                         Status = LedgerStatus.Paid,
                         CreatedBy = request.CollectedByUserId.ToString()
-                    }, ct);
+                    }, token);
 
                     await _uow.Ledger.AddAsync(new StudentLedger
                     {
@@ -74,7 +77,7 @@ namespace StudentManagement.Application.Services
                         EntryType = request.FineAmount > 0 ? LedgerEntryType.Fine : LedgerEntryType.Invoice,
                         Status = LedgerStatus.Open,
                         CreatedByUserId = request.CollectedByUserId
-                    }, ct);
+                    }, token);
                 }
 
                 foreach (var fee in otherFees)
@@ -82,14 +85,14 @@ namespace StudentManagement.Application.Services
                     await _uow.Fees.AddInvoiceAsync(new FeeInvoice
                     {
                         StudentId = request.StudentId,
-                        InvoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(ct),
+                        InvoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(token),
                         FeePeriod = periods,
                         CategoryName = fee.Name,
                         Amount = fee.Amount,
                         InvoiceDate = DateTime.Today,
                         Status = LedgerStatus.Paid,
                         CreatedBy = request.CollectedByUserId.ToString()
-                    }, ct);
+                    }, token);
 
                     await _uow.Ledger.AddAsync(new StudentLedger
                     {
@@ -103,7 +106,7 @@ namespace StudentManagement.Application.Services
                         EntryType = LedgerEntryType.Invoice,
                         Status = LedgerStatus.Open,
                         CreatedByUserId = request.CollectedByUserId
-                    }, ct);
+                    }, token);
                 }
 
                 if (request.WaiverAmount > 0)
@@ -120,7 +123,7 @@ namespace StudentManagement.Application.Services
                         EntryType = LedgerEntryType.Waiver,
                         Status = LedgerStatus.Waived,
                         CreatedByUserId = request.CollectedByUserId
-                    }, ct);
+                    }, token);
                 }
 
                 var otherNote = otherFees.Count > 0
@@ -143,9 +146,9 @@ namespace StudentManagement.Application.Services
                     Status = LedgerStatus.Paid,
                     ReferenceNo = request.TransactionRef,
                     CreatedByUserId = request.CollectedByUserId
-                }, ct);
+                }, token);
 
-                var collection = await _uow.Fees.AddCollectionAsync(new FeeCollection
+                collection = await _uow.Fees.AddCollectionAsync(new FeeCollection
                 {
                     StudentId = request.StudentId,
                     ReceiptNo = receiptNo,
@@ -159,32 +162,26 @@ namespace StudentManagement.Application.Services
                     Remarks = string.IsNullOrWhiteSpace(remarks) ? null : remarks,
                     LedgerId = paymentLedger.LedgerId,
                     CollectedByUserId = request.CollectedByUserId
-                }, ct);
+                }, token);
 
-                await _uow.SaveChangesAsync(ct);
-                await _uow.CommitAsync(ct);
+                await _uow.SaveChangesAsync(token);
+            }, ct);
 
-                var lineItems = BuildReceiptLines(request, otherFees);
+            var lineItems = BuildReceiptLines(request, otherFees);
 
-                return new FeeCollectionResult
-                {
-                    CollectionId = collection.CollectionId,
-                    ReceiptNo = receiptNo,
-                    AmountPaid = netPayable,
-                    PaymentDate = collection.PaymentDate,
-                    StudentName = student.FullName,
-                    RegistrationNo = student.RegistrationNo,
-                    FeePeriods = periods,
-                    PaymentMethod = request.PaymentMethod,
-                    PaymentMethodDisplay = FormatPaymentMethod(request.PaymentMethod),
-                    LineItems = lineItems
-                };
-            }
-            catch
+            return new FeeCollectionResult
             {
-                await _uow.RollbackAsync(ct);
-                throw;
-            }
+                CollectionId = collection!.CollectionId,
+                ReceiptNo = receiptNo,
+                AmountPaid = netPayable,
+                PaymentDate = collection.PaymentDate,
+                StudentName = student.FullName,
+                RegistrationNo = student.RegistrationNo,
+                FeePeriods = periods,
+                PaymentMethod = request.PaymentMethod,
+                PaymentMethodDisplay = FormatPaymentMethod(request.PaymentMethod),
+                LineItems = lineItems
+            };
         }
 
         /// <summary>Builds preview/PDF rows — only positive amounts, one description per charge.</summary>
