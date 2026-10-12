@@ -3,6 +3,7 @@ using StudentManagement.Application.Services;
 using StudentManagement.Desktop.Helpers;
 using StudentManagement.Desktop.Theme;
 using StudentManagement.Domain.Entities;
+using StudentManagement.Domain.Enums;
 
 using System;
 using System.ComponentModel;
@@ -21,6 +22,7 @@ namespace StudentManagement.Desktop.Forms
         private List<StudentDto> _lookup = new();
         private List<ExamTerm> _terms = new();
         private List<ClassDto> _classes = new();
+        private bool _suppressStudentFilter;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmAdmitCardPrint()
@@ -44,21 +46,77 @@ namespace StudentManagement.Desktop.Forms
             if (_students == null || _exams == null)
                 return;
 
-            _lookup = (await _students.GetLookupAsync()).ToList();
-            cboStudent.DisplayMember = "Display";
-            cboStudent.ValueMember = "StudentId";
-            cboStudent.DataSource = _lookup.Select(s => new { s.StudentId, Display = $"{s.RegistrationNo} — {s.FullName}" }).ToList();
+            _suppressStudentFilter = true;
+            try
+            {
+                _lookup = (await _students.GetLookupAsync()).ToList();
 
-            _terms = (await _exams.GetActiveTermsAsync()).ToList();
-            cboTerm.DisplayMember = nameof(ExamTerm.TermName);
-            cboTerm.ValueMember = nameof(ExamTerm.ExamTermId);
-            cboTerm.DataSource = _terms;
+                _terms = (await _exams.GetActiveTermsAsync()).ToList();
+                cboTerm.DisplayMember = nameof(ExamTerm.TermName);
+                cboTerm.ValueMember = nameof(ExamTerm.ExamTermId);
+                cboTerm.DataSource = _terms;
 
-            _classes = (await _students.GetClassesAsync()).ToList();
-            _classes.Insert(0, new ClassDto { ClassId = 0, ClassName = "All Classes" });
-            cboClass.DisplayMember = nameof(ClassDto.ClassName);
-            cboClass.ValueMember = nameof(ClassDto.ClassId);
-            cboClass.DataSource = _classes;
+                _classes = (await _students.GetClassesAsync()).ToList();
+                _classes.Insert(0, new ClassDto { ClassId = 0, ClassName = "All Classes" });
+                cboClass.DisplayMember = nameof(ClassDto.ClassName);
+                cboClass.ValueMember = nameof(ClassDto.ClassId);
+                cboClass.DataSource = _classes;
+
+                RefreshStudentList();
+            }
+            finally
+            {
+                _suppressStudentFilter = false;
+            }
+        }
+
+        private void RefreshStudentList()
+        {
+            var classId = StudentComboBinder.TryGetSelectedInt(cboClass);
+            StudentComboBinder.Bind(cboStudent, _lookup, txtStudentSearch.Text, classId);
+
+            var matchCount = FilterLookup(classId, txtStudentSearch.Text).Count;
+            var classLabel = classId is int id
+                ? (_classes.FirstOrDefault(c => c.ClassId == id)?.ClassName ?? $"Class {id}")
+                : "All Classes";
+
+            lblStatus.ForeColor = UITheme.TextMuted;
+            lblStatus.Text = matchCount == 0
+                ? $"No students in {classLabel} match this search."
+                : $"Showing {matchCount} student(s) · Class filter: {classLabel}. Single print uses the selected student; bulk uses this class filter.";
+        }
+
+        private List<StudentDto> FilterLookup(int? classId, string? search)
+        {
+            IEnumerable<StudentDto> query = _lookup;
+            if (classId is > 0)
+                query = query.Where(s => s.ClassId == classId.Value);
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var term = search.Trim();
+                query = query.Where(s =>
+                    (!string.IsNullOrEmpty(s.FullName) &&
+                     s.FullName.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (!string.IsNullOrEmpty(s.RegistrationNo) &&
+                     s.RegistrationNo.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (!string.IsNullOrEmpty(s.GuardianPhone) &&
+                     s.GuardianPhone.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (!string.IsNullOrEmpty(s.RollNumber) &&
+                     s.RollNumber.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0));
+            }
+            return query.ToList();
+        }
+
+        private void txtStudentSearch_TextChanged(object? sender, EventArgs e)
+        {
+            if (_suppressStudentFilter) return;
+            RefreshStudentList();
+        }
+
+        private void cboClass_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (_suppressStudentFilter) return;
+            RefreshStudentList();
         }
 
         private async void btnIssue_Click(object? sender, EventArgs e)
@@ -68,13 +126,19 @@ namespace StudentManagement.Desktop.Forms
 
             try
             {
-                if (cboStudent.SelectedValue is not int studentId || cboTerm.SelectedValue is not int termId)
+                var studentId = StudentComboBinder.TryGetSelectedInt(cboStudent);
+                var termId = StudentComboBinder.TryGetSelectedInt(cboTerm);
+                if (studentId is null || termId is null)
+                {
+                    lblStatus.ForeColor = UITheme.Warning;
+                    lblStatus.Text = "Select a student and exam term first.";
                     return;
+                }
 
                 btnIssue.Enabled = false;
                 var card = await _exams.IssueAdmitCardAsync(
-                    studentId,
-                    termId,
+                    studentId.Value,
+                    termId.Value,
                     AppSession.Current?.UserId ?? 0,
                     chkOverride.Checked,
                     txtReason.Text.Trim(),
@@ -114,33 +178,52 @@ namespace StudentManagement.Desktop.Forms
 
             try
             {
-                if (cboTerm.SelectedValue is not int termId)
+                var termId = StudentComboBinder.TryGetSelectedInt(cboTerm);
+                if (termId is null)
+                {
+                    lblStatus.ForeColor = UITheme.Warning;
+                    lblStatus.Text = "Select an exam term first.";
                     return;
+                }
 
                 btnBatch.Enabled = false;
-                int? classId = cboClass.SelectedValue is int c && c > 0 ? c : null;
+                var classId = StudentComboBinder.TryGetSelectedInt(cboClass);
+                var classLabel = classId is int id
+                    ? (_classes.FirstOrDefault(c => c.ClassId == id)?.ClassName ?? $"Class {id}")
+                    : "All Classes";
+
+                // Bulk uses the same class + search filter currently shown in the student list.
+                var students = FilterLookup(classId, txtStudentSearch.Text);
+
+                if (students.Count == 0)
+                {
+                    lblStatus.ForeColor = UITheme.Warning;
+                    lblStatus.Text = $"No active students found for bulk print ({classLabel}).";
+                    return;
+                }
+
                 var issued = new List<AdmitCardDto>();
-                var students = await _students.SearchAsync(new StudentSearchFilter { ClassId = classId });
+                var skipped = 0;
 
                 foreach (var s in students)
                 {
                     try
                     {
                         var card = await _exams.IssueAdmitCardAsync(
-                            s.StudentId, termId, AppSession.Current?.UserId ?? 0,
+                            s.StudentId, termId.Value, AppSession.Current?.UserId ?? 0,
                             chkOverride.Checked, txtReason.Text.Trim(), AppSession.Current?.Role);
                         issued.Add(card);
                     }
                     catch
                     {
-                        // skip blocked students in batch
+                        skipped++;
                     }
                 }
 
                 if (issued.Count == 0)
                 {
                     lblStatus.ForeColor = UITheme.Warning;
-                    lblStatus.Text = "No admit cards issued. Students may have outstanding dues.";
+                    lblStatus.Text = $"No admit cards issued for {classLabel}. {skipped} student(s) blocked (dues) or failed.";
                     return;
                 }
 
@@ -152,12 +235,14 @@ namespace StudentManagement.Desktop.Forms
                 if (result == DialogResult.OK)
                 {
                     lblStatus.ForeColor = UITheme.Success;
-                    lblStatus.Text = $"Batch printed: {issued.Count} card(s). PDF: {preview.SavedPdfPath}";
+                    lblStatus.Text = $"Batch printed ({classLabel}): {issued.Count} card(s)" +
+                                     (skipped > 0 ? $", {skipped} skipped." : ".") +
+                                     $" PDF: {preview.SavedPdfPath}";
                 }
                 else
                 {
                     lblStatus.ForeColor = UITheme.TextMuted;
-                    lblStatus.Text = $"Batch issued {issued.Count} card(s). Preview closed without printing.";
+                    lblStatus.Text = $"Batch issued {issued.Count} card(s) for {classLabel}. Preview closed without printing.";
                 }
             }
             catch (Exception ex)

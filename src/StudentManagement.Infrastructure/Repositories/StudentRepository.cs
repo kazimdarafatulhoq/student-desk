@@ -220,8 +220,11 @@ EXEC dbo.usp_SetStudentStatus
         public async Task<IReadOnlyList<Student>> GetLookupAsync(CancellationToken ct = default)
             => await _db.Students.AsNoTracking()
                 .Include(s => s.Class)
+                .Include(s => s.Section)
                 .Where(s => !s.IsDeleted && s.Status == StudentStatus.Active)
-                .OrderBy(s => s.FullName)
+                .OrderBy(s => s.ClassId)
+                .ThenBy(s => s.RollNumber)
+                .ThenBy(s => s.FullName)
                 .ToListAsync(ct);
     }
 

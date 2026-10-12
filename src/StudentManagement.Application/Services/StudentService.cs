@@ -125,8 +125,13 @@ namespace StudentManagement.Application.Services
                 StudentId = s.StudentId,
                 RegistrationNo = s.RegistrationNo,
                 FullName = s.FullName,
+                ClassId = s.ClassId,
                 ClassName = s.Class?.ClassName ?? string.Empty,
-                RollNumber = s.RollNumber
+                SectionId = s.SectionId,
+                SectionName = s.Section?.SectionName ?? string.Empty,
+                RollNumber = s.RollNumber,
+                GuardianPhone = s.GuardianPhone,
+                Status = s.Status
             }).ToList();
         }
 

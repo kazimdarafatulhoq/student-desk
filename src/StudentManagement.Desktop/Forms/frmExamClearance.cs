@@ -8,10 +8,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace StudentManagement.Desktop.Forms
@@ -23,6 +20,8 @@ namespace StudentManagement.Desktop.Forms
         private ExamService? _exams;
         private List<StudentDto> _lookup = new();
         private List<ExamTerm> _terms = new();
+        private List<ClassDto> _classes = new();
+        private bool _suppressStudentFilter;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmExamClearance()
@@ -46,15 +45,51 @@ namespace StudentManagement.Desktop.Forms
             if (_students == null || _exams == null)
                 return;
 
-            _lookup = (await _students.GetLookupAsync()).ToList();
-            cboStudent.DisplayMember = "Display";
-            cboStudent.ValueMember = "StudentId";
-            cboStudent.DataSource = _lookup.Select(s => new { s.StudentId, Display = $"{s.RegistrationNo} — {s.FullName}" }).ToList();
+            _suppressStudentFilter = true;
+            try
+            {
+                _lookup = (await _students.GetLookupAsync()).ToList();
 
-            _terms = (await _exams.GetActiveTermsAsync()).ToList();
-            cboTerm.DisplayMember = nameof(ExamTerm.TermName);
-            cboTerm.ValueMember = nameof(ExamTerm.ExamTermId);
-            cboTerm.DataSource = _terms;
+                _classes = (await _students.GetClassesAsync()).ToList();
+                _classes.Insert(0, new ClassDto { ClassId = 0, ClassName = "All Classes" });
+                cboClass.DisplayMember = nameof(ClassDto.ClassName);
+                cboClass.ValueMember = nameof(ClassDto.ClassId);
+                cboClass.DataSource = _classes;
+
+                _terms = (await _exams.GetActiveTermsAsync()).ToList();
+                cboTerm.DisplayMember = nameof(ExamTerm.TermName);
+                cboTerm.ValueMember = nameof(ExamTerm.ExamTermId);
+                cboTerm.DataSource = _terms;
+
+                RefreshStudentList();
+            }
+            finally
+            {
+                _suppressStudentFilter = false;
+            }
+        }
+
+        private void RefreshStudentList()
+        {
+            var classId = StudentComboBinder.TryGetSelectedInt(cboClass);
+            StudentComboBinder.Bind(cboStudent, _lookup, txtStudentSearch.Text, classId);
+            var matchCount = cboStudent.Items.Count;
+            lblResult.ForeColor = UITheme.TextMuted;
+            lblResult.Text = matchCount == 0
+                ? "No students match this search/class filter."
+                : $"Showing {matchCount} student(s). Select a term and verify clearance.";
+        }
+
+        private void txtStudentSearch_TextChanged(object? sender, EventArgs e)
+        {
+            if (_suppressStudentFilter) return;
+            RefreshStudentList();
+        }
+
+        private void cboClass_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (_suppressStudentFilter) return;
+            RefreshStudentList();
         }
 
         private async void btnVerify_Click(object? sender, EventArgs e)
@@ -64,12 +99,18 @@ namespace StudentManagement.Desktop.Forms
 
             try
             {
-                if (cboStudent.SelectedValue is not int studentId || cboTerm.SelectedValue is not int termId)
+                var studentId = StudentComboBinder.TryGetSelectedInt(cboStudent);
+                var termId = StudentComboBinder.TryGetSelectedInt(cboTerm);
+                if (studentId is null || termId is null)
+                {
+                    lblResult.ForeColor = UITheme.Warning;
+                    lblResult.Text = "Select a student and exam term first.";
                     return;
+                }
 
                 var result = await _exams.VerifyClearanceAsync(
-                    studentId,
-                    termId,
+                    studentId.Value,
+                    termId.Value,
                     chkOverride.Checked,
                     txtOverrideReason.Text.Trim(),
                     AppSession.Current?.UserId,
