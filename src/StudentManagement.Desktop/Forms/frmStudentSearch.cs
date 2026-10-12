@@ -22,6 +22,8 @@ namespace StudentManagement.Desktop.Forms
         public event Action<StudentDto>? OpenLedgerRequested;
         public event Action<StudentDto>? CollectFeeRequested;
         public event Action<StudentDto>? PrintAdmitRequested;
+        /// <summary>Ask main menu to open Edit Profile inside the content panel.</summary>
+        public event Action<int>? EditStudentRequested;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmStudentSearch()
@@ -118,27 +120,16 @@ namespace StudentManagement.Desktop.Forms
             return _rows[dgvStudents.CurrentRow.Index];
         }
 
-        private async void btnEdit_Click(object? sender, EventArgs e)
+        private void btnEdit_Click(object? sender, EventArgs e)
         {
             var s = Selected();
-            if (s is null || _students == null)
+            if (s is null)
             {
                 MessageBox.Show("Select a student first.", "Edit Profile", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            using (var editor = new frmStudentAdmission(_students, s.StudentId))
-            {
-                editor.StartPosition = FormStartPosition.CenterParent;
-                editor.FormBorderStyle = FormBorderStyle.Sizable;
-                editor.MaximizeBox = true;
-                editor.MinimizeBox = false;
-                editor.ShowInTaskbar = false;
-                editor.Width = Math.Min(1120, Screen.FromControl(this).WorkingArea.Width - 40);
-                editor.Height = Math.Min(760, Screen.FromControl(this).WorkingArea.Height - 40);
-                if (editor.ShowDialog(FindForm()) == DialogResult.OK)
-                    await SearchAsync();
-            }
+            EditStudentRequested?.Invoke(s.StudentId);
         }
 
         private async void btnInactive_Click(object? sender, EventArgs e)

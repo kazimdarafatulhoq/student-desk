@@ -23,6 +23,11 @@ namespace StudentManagement.Desktop.Forms
         private int? _editStudentId;
         private string? _existingPhotoPath;
         private bool _lookupsReady;
+        private bool _suppressSectionReload;
+        private EventHandler? _classChangedHandler;
+
+        /// <summary>Raised after a successful edit save / inactive when hosted in main menu.</summary>
+        public event Action? EditCompleted;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmStudentAdmission()
@@ -85,8 +90,22 @@ namespace StudentManagement.Desktop.Forms
             IReadOnlyList<ClassDto> classes = await _students.GetClassesAsync();
             cboClass.DisplayMember = nameof(ClassDto.ClassName);
             cboClass.ValueMember = nameof(ClassDto.ClassId);
+
+            _suppressSectionReload = true;
             cboClass.DataSource = classes.ToList();
-            cboClass.SelectedIndexChanged += async (s, e) => await LoadSectionsAsync();
+            _suppressSectionReload = false;
+
+            if (_classChangedHandler == null)
+            {
+                _classChangedHandler = async (s, e) =>
+                {
+                    if (_suppressSectionReload)
+                        return;
+                    await LoadSectionsAsync();
+                };
+                cboClass.SelectedIndexChanged += _classChangedHandler;
+            }
+
             if (classes.Count > 0)
                 await LoadSectionsAsync();
             UpdateAge();
@@ -97,7 +116,7 @@ namespace StudentManagement.Desktop.Forms
         {
             if (_students == null)
                 return;
-            if (!(cboClass.SelectedValue is int classId))
+            if (!(cboClass.SelectedValue is int classId) || classId <= 0)
                 return;
             IReadOnlyList<SectionDto> sections = await _students.GetSectionsAsync(classId);
             cboSection.DisplayMember = nameof(SectionDto.SectionName);
@@ -110,59 +129,66 @@ namespace StudentManagement.Desktop.Forms
             if (_students == null || !_editStudentId.HasValue)
                 return;
 
-            await LoadLookupsAsync();
-
-            StudentDto? student = await _students.GetByIdAsync(_editStudentId.Value);
-            if (student is null)
+            try
             {
-                MessageBox.Show("Student not found.", "Edit Profile", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                DialogResult = DialogResult.Cancel;
-                Close();
-                return;
+                _suppressSectionReload = true;
+                await LoadLookupsAsync();
+
+                StudentDto? student = await _students.GetByIdAsync(_editStudentId.Value);
+                if (student is null)
+                {
+                    MessageBox.Show("Student not found.", "Edit Profile", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    EditCompleted?.Invoke();
+                    return;
+                }
+
+                txtRegNo.Text = student.RegistrationNo;
+                txtFullName.Text = student.FullName;
+                txtFatherName.Text = student.FatherName;
+                txtMotherName.Text = student.MotherName;
+                cboBloodGroup.SelectedItem = student.BloodGroup;
+                cboGender.SelectedItem = student.Gender;
+                dtpDateOfBirth.Value = student.DateOfBirth < dtpDateOfBirth.MinDate
+                    ? DateTime.Today.AddYears(-12)
+                    : student.DateOfBirth;
+                txtGuardianPhone.Text = student.GuardianPhone;
+                txtPresentAddress.Text = student.PresentAddress ?? string.Empty;
+                txtPermanentAddress.Text = student.PermanentAddress ?? string.Empty;
+                chkSameAddress.Checked = string.Equals(
+                    student.PresentAddress?.Trim(),
+                    student.PermanentAddress?.Trim(),
+                    StringComparison.OrdinalIgnoreCase);
+
+                cboClass.SelectedValue = student.ClassId;
+                await LoadSectionsAsync();
+                cboSection.SelectedValue = student.SectionId;
+                txtRollNumber.Text = student.RollNumber;
+                txtTuitionFee.Text = student.MonthlyTuitionFee.ToString("0.##");
+                cboStatus.SelectedItem = student.Status;
+
+                _existingPhotoPath = student.PhotoPath;
+                if (!string.IsNullOrWhiteSpace(student.PhotoPath) && File.Exists(student.PhotoPath))
+                {
+                    try
+                    {
+                        using (Image src = Image.FromFile(student.PhotoPath))
+                            picStudent.Image = new Bitmap(src);
+                        lblPhotoHint.Text = Path.GetFileName(student.PhotoPath);
+                        lblPhotoHint.ForeColor = UITheme.Success;
+                    }
+                    catch
+                    {
+                        lblPhotoHint.Text = "Photo file missing";
+                    }
+                }
+
+                UpdateAge();
+                btnMarkInactive.Enabled = student.Status == StudentStatus.Active;
             }
-
-            txtRegNo.Text = student.RegistrationNo;
-            txtFullName.Text = student.FullName;
-            txtFatherName.Text = student.FatherName;
-            txtMotherName.Text = student.MotherName;
-            cboBloodGroup.SelectedItem = student.BloodGroup;
-            cboGender.SelectedItem = student.Gender;
-            dtpDateOfBirth.Value = student.DateOfBirth < dtpDateOfBirth.MinDate
-                ? DateTime.Today.AddYears(-12)
-                : student.DateOfBirth;
-            txtGuardianPhone.Text = student.GuardianPhone;
-            txtPresentAddress.Text = student.PresentAddress ?? string.Empty;
-            txtPermanentAddress.Text = student.PermanentAddress ?? string.Empty;
-            chkSameAddress.Checked = string.Equals(
-                student.PresentAddress?.Trim(),
-                student.PermanentAddress?.Trim(),
-                StringComparison.OrdinalIgnoreCase);
-
-            cboClass.SelectedValue = student.ClassId;
-            await LoadSectionsAsync();
-            cboSection.SelectedValue = student.SectionId;
-            txtRollNumber.Text = student.RollNumber;
-            txtTuitionFee.Text = student.MonthlyTuitionFee.ToString("0.##");
-            cboStatus.SelectedItem = student.Status;
-
-            _existingPhotoPath = student.PhotoPath;
-            if (!string.IsNullOrWhiteSpace(student.PhotoPath) && File.Exists(student.PhotoPath))
+            finally
             {
-                try
-                {
-                    using (Image src = Image.FromFile(student.PhotoPath))
-                        picStudent.Image = new Bitmap(src);
-                    lblPhotoHint.Text = Path.GetFileName(student.PhotoPath);
-                    lblPhotoHint.ForeColor = UITheme.Success;
-                }
-                catch
-                {
-                    lblPhotoHint.Text = "Photo file missing";
-                }
+                _suppressSectionReload = false;
             }
-
-            UpdateAge();
-            btnMarkInactive.Enabled = student.Status == StudentStatus.Active;
         }
 
         private void UpdateAge()
@@ -362,15 +388,9 @@ namespace StudentManagement.Desktop.Forms
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
-            if (Modal)
-            {
-                DialogResult = DialogResult.OK;
-                Close();
-            }
-            else
-            {
-                btnMarkInactive.Enabled = dto.Status == StudentStatus.Active;
-            }
+            btnMarkInactive.Enabled = dto.Status == StudentStatus.Active;
+            // Return to Student Directory inside main menu content area.
+            EditCompleted?.Invoke();
         }
 
         private async void btnMarkInactive_Click(object? sender, EventArgs e)
@@ -393,12 +413,7 @@ namespace StudentManagement.Desktop.Forms
                 cboStatus.SelectedItem = StudentStatus.Inactive;
                 MessageBox.Show("Student marked Inactive.", "Status Updated",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                if (Modal)
-                {
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
+                EditCompleted?.Invoke();
             }
             catch (Exception ex)
             {

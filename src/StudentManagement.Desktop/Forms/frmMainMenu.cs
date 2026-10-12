@@ -168,6 +168,15 @@ namespace StudentManagement.Desktop.Forms
             if (_scope == null)
                 return;
 
+            Form form = _scope.ServiceProvider.GetRequiredService<T>();
+            ShowInContent(form, typeof(T).Name);
+
+            if (form is frmStudentSearch search)
+                search.EditStudentRequested += OpenStudentEditor;
+        }
+
+        private void ShowInContent(Form form, string navFormName)
+        {
             if (_activeChild != null)
             {
                 pnlContentContainer.Controls.Remove(_activeChild);
@@ -175,7 +184,6 @@ namespace StudentManagement.Desktop.Forms
                 _activeChild = null;
             }
 
-            Form form = _scope.ServiceProvider.GetRequiredService<T>();
             form.TopLevel = false;
             form.FormBorderStyle = FormBorderStyle.None;
             form.Dock = DockStyle.Fill;
@@ -183,7 +191,21 @@ namespace StudentManagement.Desktop.Forms
             pnlContentContainer.Controls.Add(form);
             form.Show();
             _activeChild = form;
-            HighlightNav(typeof(T).Name);
+            HighlightNav(navFormName);
+        }
+
+        /// <summary>Open Edit Student Profile inside the main content panel (not a popup).</summary>
+        private void OpenStudentEditor(int studentId)
+        {
+            if (_scope == null || studentId <= 0)
+                return;
+
+            var students = _scope.ServiceProvider.GetRequiredService<StudentService>();
+            var editor = new frmStudentAdmission(students, studentId);
+            editor.EditCompleted += () => OpenChild<frmStudentSearch>();
+            ShowInContent(editor, nameof(frmStudentAdmission));
+            // Keep Student Directory nav highlighted for edit-from-directory context.
+            HighlightNav(nameof(frmStudentSearch));
         }
 
         private void HighlightNav(string formName)
@@ -405,7 +427,7 @@ namespace StudentManagement.Desktop.Forms
 
         private void btnDashboard_Click(object? sender, EventArgs e) { OpenChild<frmDashboard>(); }
         private void btnAdmission_Click(object? sender, EventArgs e) { OpenChild<frmStudentAdmission>(); }
-        private void btnSearch_Click(object? sender, EventArgs e) { OpenChild<frmStudentSearch>(); }
+        private void btnSearch_Click(object? sender, EventArgs e) => OpenChild<frmStudentSearch>();
         private void btnFeeCollection_Click(object? sender, EventArgs e) { OpenChild<frmFeeCollection>(); }
         private void btnLedger_Click(object? sender, EventArgs e) { OpenChild<frmStudentLedger>(); }
         private void btnExamClearance_Click(object? sender, EventArgs e) { OpenChild<frmExamClearance>(); }
