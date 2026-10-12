@@ -27,7 +27,7 @@ namespace StudentManagement.Desktop.Forms
         private EventHandler? _classChangedHandler;
 
         /// <summary>Raised after a successful edit save / inactive when hosted in main menu.</summary>
-        public event Action? EditCompleted;
+        public event System.Action EditCompleted = delegate { };
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmStudentAdmission()
@@ -141,6 +141,8 @@ namespace StudentManagement.Desktop.Forms
                     EditCompleted?.Invoke();
                     return;
                 }
+
+                // (student found — continue binding below)
 
                 txtRegNo.Text = student.RegistrationNo;
                 txtFullName.Text = student.FullName;

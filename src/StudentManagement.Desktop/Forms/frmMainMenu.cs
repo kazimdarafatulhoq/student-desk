@@ -171,8 +171,15 @@ namespace StudentManagement.Desktop.Forms
             Form form = _scope.ServiceProvider.GetRequiredService<T>();
             ShowInContent(form, typeof(T).Name);
 
-            if (form is frmStudentSearch search)
-                search.EditStudentRequested += OpenStudentEditor;
+            WireStudentDirectoryEvents(form as frmStudentSearch);
+        }
+
+        private void WireStudentDirectoryEvents(frmStudentSearch? search)
+        {
+            if (search == null)
+                return;
+            search.EditStudentRequested -= OpenStudentEditor;
+            search.EditStudentRequested += OpenStudentEditor;
         }
 
         private void ShowInContent(Form form, string navFormName)
@@ -200,12 +207,17 @@ namespace StudentManagement.Desktop.Forms
             if (_scope == null || studentId <= 0)
                 return;
 
-            var students = _scope.ServiceProvider.GetRequiredService<StudentService>();
-            var editor = new frmStudentAdmission(students, studentId);
-            editor.EditCompleted += () => OpenChild<frmStudentSearch>();
+            StudentService students = _scope.ServiceProvider.GetRequiredService<StudentService>();
+            frmStudentAdmission editor = new frmStudentAdmission(students, studentId);
+            editor.EditCompleted += OnStudentEditCompleted;
             ShowInContent(editor, nameof(frmStudentAdmission));
             // Keep Student Directory nav highlighted for edit-from-directory context.
             HighlightNav(nameof(frmStudentSearch));
+        }
+
+        private void OnStudentEditCompleted()
+        {
+            OpenChild<frmStudentSearch>();
         }
 
         private void HighlightNav(string formName)

@@ -19,11 +19,12 @@ namespace StudentManagement.Desktop.Forms
         private StudentService? _students;
         private List<StudentDto> _rows = new();
 
-        public event Action<StudentDto>? OpenLedgerRequested;
-        public event Action<StudentDto>? CollectFeeRequested;
-        public event Action<StudentDto>? PrintAdmitRequested;
+        public event System.Action<StudentDto>? OpenLedgerRequested;
+        public event System.Action<StudentDto>? CollectFeeRequested;
+        public event System.Action<StudentDto>? PrintAdmitRequested;
+
         /// <summary>Ask main menu to open Edit Profile inside the content panel.</summary>
-        public event Action<int>? EditStudentRequested;
+        public event System.Action<int> EditStudentRequested = delegate { };
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmStudentSearch()
@@ -129,7 +130,7 @@ namespace StudentManagement.Desktop.Forms
                 return;
             }
 
-            EditStudentRequested?.Invoke(s.StudentId);
+            EditStudentRequested(s.StudentId);
         }
 
         private async void btnInactive_Click(object? sender, EventArgs e)
