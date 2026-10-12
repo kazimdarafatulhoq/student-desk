@@ -118,14 +118,29 @@ namespace StudentManagement.Application.Services
             return student is null ? null : await MapAsync(student, ct);
         }
 
-        public async Task UpdateAsync(StudentDto dto, CancellationToken ct = default)
+        public async Task UpdateAsync(StudentDto dto, string? updatedBy = null, CancellationToken ct = default)
         {
+            if (dto.StudentId <= 0)
+                throw new ArgumentException("Student id is required.");
+            if (string.IsNullOrWhiteSpace(dto.FullName))
+                throw new ArgumentException("Full name is required.");
+            if (string.IsNullOrWhiteSpace(dto.FatherName))
+                throw new ArgumentException("Father's name is required.");
+            if (string.IsNullOrWhiteSpace(dto.GuardianPhone))
+                throw new ArgumentException("Guardian phone is required.");
+            if (dto.ClassId <= 0 || dto.SectionId <= 0)
+                throw new ArgumentException("Class and section are required.");
+            if (string.IsNullOrWhiteSpace(dto.RollNumber))
+                throw new ArgumentException("Roll number is required.");
+            if (dto.MonthlyTuitionFee < 0)
+                throw new ArgumentException("Tuition fee cannot be negative.");
+
             var student = await _uow.Students.GetByIdAsync(dto.StudentId, ct)
                           ?? throw new InvalidOperationException("Student not found.");
 
             student.FullName = dto.FullName.Trim();
             student.FatherName = dto.FatherName.Trim();
-            student.MotherName = dto.MotherName.Trim();
+            student.MotherName = dto.MotherName?.Trim() ?? string.Empty;
             student.BloodGroup = dto.BloodGroup;
             student.Gender = dto.Gender;
             student.DateOfBirth = dto.DateOfBirth.Date;
@@ -137,11 +152,30 @@ namespace StudentManagement.Application.Services
             student.RollNumber = dto.RollNumber.Trim();
             student.MonthlyTuitionFee = dto.MonthlyTuitionFee;
             student.Status = dto.Status;
+            student.PhotoPath = dto.PhotoPath;
+            if (!string.IsNullOrWhiteSpace(dto.AcademicSession))
+                student.AcademicSession = dto.AcademicSession;
             student.UpdatedAt = DateTime.UtcNow;
+            student.UpdatedBy = updatedBy;
 
             await _uow.Students.UpdateAsync(student, ct);
             await _uow.SaveChangesAsync(ct);
         }
+
+        public async Task SetStatusAsync(int studentId, StudentStatus status, string? updatedBy = null, CancellationToken ct = default)
+        {
+            var student = await _uow.Students.GetByIdAsync(studentId, ct)
+                          ?? throw new InvalidOperationException("Student not found.");
+
+            student.Status = status;
+            student.UpdatedAt = DateTime.UtcNow;
+            student.UpdatedBy = updatedBy;
+            await _uow.Students.UpdateAsync(student, ct);
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public Task MarkInactiveAsync(int studentId, string? updatedBy = null, CancellationToken ct = default)
+            => SetStatusAsync(studentId, StudentStatus.Inactive, updatedBy, ct);
 
         public async Task<IReadOnlyList<ClassDto>> GetClassesAsync(CancellationToken ct = default)
         {

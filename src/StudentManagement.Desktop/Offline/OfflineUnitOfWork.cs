@@ -207,7 +207,12 @@ namespace StudentManagement.Desktop.Offline
             return Task.FromResult(student);
         }
 
-        public Task UpdateAsync(Student student, CancellationToken ct = default) => Task.CompletedTask;
+        public Task UpdateAsync(Student student, CancellationToken ct = default)
+        {
+            student.Class = _s.Classes.FirstOrDefault(c => c.ClassId == student.ClassId);
+            student.Section = _s.Sections.FirstOrDefault(c => c.SectionId == student.SectionId);
+            return Task.CompletedTask;
+        }
 
         public Task<string> GenerateNextRegistrationNoAsync(int year, CancellationToken ct = default)
         {

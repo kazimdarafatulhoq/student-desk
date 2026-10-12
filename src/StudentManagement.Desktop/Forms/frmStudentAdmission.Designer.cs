@@ -47,8 +47,13 @@ namespace StudentManagement.Desktop.Forms
         private TextBox txtRollNumber;
         private Label lblTuitionFee;
         private TextBox txtTuitionFee;
+        private Label lblStatus;
+        private ComboBox cboStatus;
+        private Label lblRegNo;
+        private TextBox txtRegNo;
         private Button btnSave;
         private Button btnReset;
+        private Button btnMarkInactive;
 
         protected override void Dispose(bool disposing)
         {
@@ -101,8 +106,13 @@ namespace StudentManagement.Desktop.Forms
             this.txtRollNumber = new System.Windows.Forms.TextBox();
             this.lblTuitionFee = new System.Windows.Forms.Label();
             this.txtTuitionFee = new System.Windows.Forms.TextBox();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.cboStatus = new System.Windows.Forms.ComboBox();
+            this.lblRegNo = new System.Windows.Forms.Label();
+            this.txtRegNo = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
+            this.btnMarkInactive = new System.Windows.Forms.Button();
             this.grpPhoto.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picStudent)).BeginInit();
             this.grpPersonal.SuspendLayout();
@@ -462,11 +472,15 @@ namespace StudentManagement.Desktop.Forms
             this.grpAcademic.Controls.Add(this.txtRollNumber);
             this.grpAcademic.Controls.Add(this.lblTuitionFee);
             this.grpAcademic.Controls.Add(this.txtTuitionFee);
+            this.grpAcademic.Controls.Add(this.lblStatus);
+            this.grpAcademic.Controls.Add(this.cboStatus);
+            this.grpAcademic.Controls.Add(this.lblRegNo);
+            this.grpAcademic.Controls.Add(this.txtRegNo);
             this.grpAcademic.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.grpAcademic.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
             this.grpAcademic.Location = new System.Drawing.Point(16, 442);
             this.grpAcademic.Name = "grpAcademic";
-            this.grpAcademic.Size = new System.Drawing.Size(920, 130);
+            this.grpAcademic.Size = new System.Drawing.Size(920, 160);
             this.grpAcademic.TabIndex = 5;
             this.grpAcademic.TabStop = false;
             this.grpAcademic.Text = "3. ACADEMIC ENROLLMENT";
@@ -554,9 +568,55 @@ namespace StudentManagement.Desktop.Forms
             this.txtTuitionFee.TabIndex = 7;
             this.txtTuitionFee.Text = "2500";
             //
+            // lblStatus
+            //
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblStatus.Location = new System.Drawing.Point(680, 40);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(39, 15);
+            this.lblStatus.TabIndex = 8;
+            this.lblStatus.Text = "Status";
+            this.lblStatus.Visible = false;
+            //
+            // cboStatus
+            //
+            this.cboStatus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.cboStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cboStatus.ForeColor = System.Drawing.Color.White;
+            this.cboStatus.Location = new System.Drawing.Point(680, 60);
+            this.cboStatus.Name = "cboStatus";
+            this.cboStatus.Size = new System.Drawing.Size(160, 23);
+            this.cboStatus.TabIndex = 9;
+            this.cboStatus.Visible = false;
+            //
+            // lblRegNo
+            //
+            this.lblRegNo.AutoSize = true;
+            this.lblRegNo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(147)))), ((int)(((byte)(166)))));
+            this.lblRegNo.Location = new System.Drawing.Point(20, 100);
+            this.lblRegNo.Name = "lblRegNo";
+            this.lblRegNo.Size = new System.Drawing.Size(95, 15);
+            this.lblRegNo.TabIndex = 10;
+            this.lblRegNo.Text = "Registration No";
+            this.lblRegNo.Visible = false;
+            //
+            // txtRegNo
+            //
+            this.txtRegNo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.txtRegNo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtRegNo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(163)))), ((int)(((byte)(184)))));
+            this.txtRegNo.Location = new System.Drawing.Point(20, 120);
+            this.txtRegNo.Name = "txtRegNo";
+            this.txtRegNo.ReadOnly = true;
+            this.txtRegNo.Size = new System.Drawing.Size(220, 23);
+            this.txtRegNo.TabIndex = 11;
+            this.txtRegNo.Visible = false;
+            //
             // btnSave
             //
-            this.btnSave.Location = new System.Drawing.Point(16, 592);
+            this.btnSave.Location = new System.Drawing.Point(16, 622);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(220, 40);
             this.btnSave.TabIndex = 6;
@@ -565,13 +625,24 @@ namespace StudentManagement.Desktop.Forms
             //
             // btnReset
             //
-            this.btnReset.Location = new System.Drawing.Point(250, 592);
+            this.btnReset.Location = new System.Drawing.Point(250, 622);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(140, 40);
             this.btnReset.TabIndex = 7;
             this.btnReset.Tag = "ghost";
             this.btnReset.Text = "Reset Form";
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            //
+            // btnMarkInactive
+            //
+            this.btnMarkInactive.Location = new System.Drawing.Point(410, 622);
+            this.btnMarkInactive.Name = "btnMarkInactive";
+            this.btnMarkInactive.Size = new System.Drawing.Size(160, 40);
+            this.btnMarkInactive.TabIndex = 8;
+            this.btnMarkInactive.Tag = "danger";
+            this.btnMarkInactive.Text = "Mark Inactive";
+            this.btnMarkInactive.Visible = false;
+            this.btnMarkInactive.Click += new System.EventHandler(this.btnMarkInactive_Click);
             //
             // frmStudentAdmission
             //
@@ -588,6 +659,7 @@ namespace StudentManagement.Desktop.Forms
             this.Controls.Add(this.grpAcademic);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnReset);
+            this.Controls.Add(this.btnMarkInactive);
             this.Name = "frmStudentAdmission";
             this.Text = "Student Admission";
             this.grpPhoto.ResumeLayout(false);

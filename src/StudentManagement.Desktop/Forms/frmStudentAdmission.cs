@@ -20,6 +20,9 @@ namespace StudentManagement.Desktop.Forms
     {
         private StudentService? _students;
         private string? _selectedPhotoPath;
+        private int? _editStudentId;
+        private string? _existingPhotoPath;
+        private bool _lookupsReady;
 
         /// <summary>Parameterless constructor required by the WinForms designer.</summary>
         public frmStudentAdmission()
@@ -27,6 +30,7 @@ namespace StudentManagement.Desktop.Forms
             InitializeComponent();
             if (!DesignTime.IsActive)
                 UITheme.ApplyForm(this);
+            ApplyModeChrome(editMode: false);
         }
 
         public frmStudentAdmission(StudentService students) : this()
@@ -34,17 +38,50 @@ namespace StudentManagement.Desktop.Forms
             _students = students;
             if (!DesignTime.IsActive)
                 UITheme.ApplyForm(this);
-            Load += async (s, e) => await LoadLookupsAsync();
             dtpDateOfBirth.ValueChanged += (s, e) => UpdateAge();
+            Load += async (s, e) =>
+            {
+                if (IsEditMode)
+                    await LoadStudentForEditAsync();
+                else
+                    await LoadLookupsAsync();
+            };
+        }
+
+        /// <summary>Edit existing student (opened from Student Directory).</summary>
+        public frmStudentAdmission(StudentService students, int studentId) : this(students)
+        {
+            _editStudentId = studentId;
+            ApplyModeChrome(editMode: true);
+        }
+
+        public bool IsEditMode => _editStudentId.HasValue;
+
+        private void ApplyModeChrome(bool editMode)
+        {
+            lblStatus.Visible = editMode;
+            cboStatus.Visible = editMode;
+            lblRegNo.Visible = editMode;
+            txtRegNo.Visible = editMode;
+            btnMarkInactive.Visible = editMode;
+            btnReset.Visible = !editMode;
+            btnSave.Text = editMode ? "Save Changes" : "Save & Complete Admission";
+            lblTitle.Text = editMode ? "Edit Student Profile" : "Student Registration & Admission Form";
+            lblCap.Text = editMode
+                ? "Update biodata, class placement, and active/inactive status."
+                : "Capture student photo, biodata, guardian contacts, and class placement.";
+            Text = editMode ? "Edit Student Profile" : "Student Admission";
         }
 
         private async Task LoadLookupsAsync()
         {
-            if (_students == null)
+            if (_students == null || _lookupsReady)
                 return;
 
             cboBloodGroup.DataSource = Enum.GetValues(typeof(BloodGroup));
             cboGender.DataSource = Enum.GetValues(typeof(Gender));
+            cboStatus.DataSource = Enum.GetValues(typeof(StudentStatus));
+
             IReadOnlyList<ClassDto> classes = await _students.GetClassesAsync();
             cboClass.DisplayMember = nameof(ClassDto.ClassName);
             cboClass.ValueMember = nameof(ClassDto.ClassId);
@@ -53,6 +90,7 @@ namespace StudentManagement.Desktop.Forms
             if (classes.Count > 0)
                 await LoadSectionsAsync();
             UpdateAge();
+            _lookupsReady = true;
         }
 
         private async Task LoadSectionsAsync()
@@ -65,6 +103,66 @@ namespace StudentManagement.Desktop.Forms
             cboSection.DisplayMember = nameof(SectionDto.SectionName);
             cboSection.ValueMember = nameof(SectionDto.SectionId);
             cboSection.DataSource = sections.ToList();
+        }
+
+        private async Task LoadStudentForEditAsync()
+        {
+            if (_students == null || !_editStudentId.HasValue)
+                return;
+
+            await LoadLookupsAsync();
+
+            StudentDto? student = await _students.GetByIdAsync(_editStudentId.Value);
+            if (student is null)
+            {
+                MessageBox.Show("Student not found.", "Edit Profile", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                DialogResult = DialogResult.Cancel;
+                Close();
+                return;
+            }
+
+            txtRegNo.Text = student.RegistrationNo;
+            txtFullName.Text = student.FullName;
+            txtFatherName.Text = student.FatherName;
+            txtMotherName.Text = student.MotherName;
+            cboBloodGroup.SelectedItem = student.BloodGroup;
+            cboGender.SelectedItem = student.Gender;
+            dtpDateOfBirth.Value = student.DateOfBirth < dtpDateOfBirth.MinDate
+                ? DateTime.Today.AddYears(-12)
+                : student.DateOfBirth;
+            txtGuardianPhone.Text = student.GuardianPhone;
+            txtPresentAddress.Text = student.PresentAddress ?? string.Empty;
+            txtPermanentAddress.Text = student.PermanentAddress ?? string.Empty;
+            chkSameAddress.Checked = string.Equals(
+                student.PresentAddress?.Trim(),
+                student.PermanentAddress?.Trim(),
+                StringComparison.OrdinalIgnoreCase);
+
+            cboClass.SelectedValue = student.ClassId;
+            await LoadSectionsAsync();
+            cboSection.SelectedValue = student.SectionId;
+            txtRollNumber.Text = student.RollNumber;
+            txtTuitionFee.Text = student.MonthlyTuitionFee.ToString("0.##");
+            cboStatus.SelectedItem = student.Status;
+
+            _existingPhotoPath = student.PhotoPath;
+            if (!string.IsNullOrWhiteSpace(student.PhotoPath) && File.Exists(student.PhotoPath))
+            {
+                try
+                {
+                    using (Image src = Image.FromFile(student.PhotoPath))
+                        picStudent.Image = new Bitmap(src);
+                    lblPhotoHint.Text = Path.GetFileName(student.PhotoPath);
+                    lblPhotoHint.ForeColor = UITheme.Success;
+                }
+                catch
+                {
+                    lblPhotoHint.Text = "Photo file missing";
+                }
+            }
+
+            UpdateAge();
+            btnMarkInactive.Enabled = student.Status == StudentStatus.Active;
         }
 
         private void UpdateAge()
@@ -104,11 +202,8 @@ namespace StudentManagement.Desktop.Forms
                         old.Dispose();
                     }
 
-                    // Load a copy so the source file is not locked.
                     using (Image src = Image.FromFile(dlg.FileName))
-                    {
                         picStudent.Image = new Bitmap(src);
-                    }
 
                     _selectedPhotoPath = dlg.FileName;
                     lblPhotoHint.Text = Path.GetFileName(dlg.FileName);
@@ -125,6 +220,7 @@ namespace StudentManagement.Desktop.Forms
         private void btnClearPhoto_Click(object? sender, EventArgs e)
         {
             ClearPhoto();
+            _existingPhotoPath = null;
         }
 
         private void ClearPhoto()
@@ -171,54 +267,18 @@ namespace StudentManagement.Desktop.Forms
                 if (chkSameAddress.Checked)
                     txtPermanentAddress.Text = txtPresentAddress.Text;
 
-                StudentDto result = await _students.AdmitAsync(new StudentAdmissionRequest
-                {
-                    FullName = txtFullName.Text,
-                    FatherName = txtFatherName.Text,
-                    MotherName = txtMotherName.Text,
-                    BloodGroup = (BloodGroup)cboBloodGroup.SelectedItem!,
-                    Gender = (Gender)cboGender.SelectedItem!,
-                    DateOfBirth = dtpDateOfBirth.Value.Date,
-                    GuardianPhone = txtGuardianPhone.Text,
-                    PresentAddress = txtPresentAddress.Text,
-                    PermanentAddress = txtPermanentAddress.Text,
-                    ClassId = (int)cboClass.SelectedValue!,
-                    SectionId = (int)cboSection.SelectedValue!,
-                    RollNumber = txtRollNumber.Text,
-                    MonthlyTuitionFee = decimal.Parse(txtTuitionFee.Text.Trim()),
-                    AcademicSession = AppSession.Current != null ? AppSession.Current.AcademicSession : "2025-2026",
-                    CreatedBy = AppSession.Current != null ? AppSession.Current.Username : null,
-                    PhotoPath = _selectedPhotoPath
-                });
+                if (!decimal.TryParse(txtTuitionFee.Text.Trim(), out var tuition))
+                    throw new ArgumentException("Monthly tuition fee must be a valid number.");
 
-                // Copy selected image into app Photos folder using registration ID.
-                string? savedPhoto = SavePhotoForStudent(result.RegistrationNo);
-                if (!string.IsNullOrEmpty(savedPhoto))
-                {
-                    result.PhotoPath = savedPhoto;
-                    // Persist renamed path when backend is online.
-                    try
-                    {
-                        result.PhotoPath = savedPhoto;
-                        await _students.UpdateAsync(result);
-                    }
-                    catch
-                    {
-                        // Offline demo store may not persist photo path updates; UI still works.
-                    }
-                }
-
-                MessageBox.Show(
-                    "Student admitted successfully.\nRegistration ID: " + result.RegistrationNo +
-                    (string.IsNullOrEmpty(savedPhoto) ? string.Empty : "\nPhoto saved."),
-                    "Admission Saved",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                btnReset_Click(sender, e);
+                if (IsEditMode)
+                    await SaveEditAsync(tuition);
+                else
+                    await SaveAdmitAsync(tuition);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Admission Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, IsEditMode ? "Update Failed" : "Admission Failed",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -226,8 +286,132 @@ namespace StudentManagement.Desktop.Forms
             }
         }
 
+        private async Task SaveAdmitAsync(decimal tuition)
+        {
+            StudentDto result = await _students!.AdmitAsync(new StudentAdmissionRequest
+            {
+                FullName = txtFullName.Text,
+                FatherName = txtFatherName.Text,
+                MotherName = txtMotherName.Text,
+                BloodGroup = (BloodGroup)cboBloodGroup.SelectedItem!,
+                Gender = (Gender)cboGender.SelectedItem!,
+                DateOfBirth = dtpDateOfBirth.Value.Date,
+                GuardianPhone = txtGuardianPhone.Text,
+                PresentAddress = txtPresentAddress.Text,
+                PermanentAddress = txtPermanentAddress.Text,
+                ClassId = (int)cboClass.SelectedValue!,
+                SectionId = (int)cboSection.SelectedValue!,
+                RollNumber = txtRollNumber.Text,
+                MonthlyTuitionFee = tuition,
+                AcademicSession = AppSession.Current != null ? AppSession.Current.AcademicSession : "2025-2026",
+                CreatedBy = AppSession.Current != null ? AppSession.Current.Username : null,
+                PhotoPath = _selectedPhotoPath
+            });
+
+            string? savedPhoto = SavePhotoForStudent(result.RegistrationNo);
+            if (!string.IsNullOrEmpty(savedPhoto))
+            {
+                result.PhotoPath = savedPhoto;
+                try { await _students.UpdateAsync(result, AppSession.Current?.Username); }
+                catch { /* offline may skip */ }
+            }
+
+            MessageBox.Show(
+                "Student admitted successfully.\nRegistration ID: " + result.RegistrationNo +
+                (string.IsNullOrEmpty(savedPhoto) ? string.Empty : "\nPhoto saved."),
+                "Admission Saved",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            btnReset_Click(this, EventArgs.Empty);
+        }
+
+        private async Task SaveEditAsync(decimal tuition)
+        {
+            string regNo = txtRegNo.Text.Trim();
+            string? photo = _existingPhotoPath;
+            string? saved = SavePhotoForStudent(regNo);
+            if (!string.IsNullOrEmpty(saved))
+                photo = saved;
+
+            var dto = new StudentDto
+            {
+                StudentId = _editStudentId!.Value,
+                RegistrationNo = regNo,
+                FullName = txtFullName.Text,
+                FatherName = txtFatherName.Text,
+                MotherName = txtMotherName.Text,
+                BloodGroup = (BloodGroup)cboBloodGroup.SelectedItem!,
+                Gender = (Gender)cboGender.SelectedItem!,
+                DateOfBirth = dtpDateOfBirth.Value.Date,
+                GuardianPhone = txtGuardianPhone.Text,
+                PresentAddress = txtPresentAddress.Text,
+                PermanentAddress = txtPermanentAddress.Text,
+                ClassId = (int)cboClass.SelectedValue!,
+                SectionId = (int)cboSection.SelectedValue!,
+                RollNumber = txtRollNumber.Text,
+                MonthlyTuitionFee = tuition,
+                Status = cboStatus.SelectedItem is StudentStatus st ? st : StudentStatus.Active,
+                AcademicSession = AppSession.Current != null ? AppSession.Current.AcademicSession : "2025-2026",
+                PhotoPath = photo
+            };
+
+            await _students!.UpdateAsync(dto, AppSession.Current?.Username);
+            MessageBox.Show(
+                "Student profile updated.\nRegistration ID: " + regNo + "\nStatus: " + dto.Status,
+                "Profile Saved",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            if (Modal)
+            {
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            else
+            {
+                btnMarkInactive.Enabled = dto.Status == StudentStatus.Active;
+            }
+        }
+
+        private async void btnMarkInactive_Click(object? sender, EventArgs e)
+        {
+            if (_students == null || !_editStudentId.HasValue)
+                return;
+
+            var confirm = MessageBox.Show(
+                "Mark this student as Inactive?\nThey will remain in the directory but cannot enroll for new fees/exams as Active.",
+                "Mark Inactive",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes)
+                return;
+
+            try
+            {
+                btnMarkInactive.Enabled = false;
+                await _students.MarkInactiveAsync(_editStudentId.Value, AppSession.Current?.Username);
+                cboStatus.SelectedItem = StudentStatus.Inactive;
+                MessageBox.Show("Student marked Inactive.", "Status Updated",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (Modal)
+                {
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Inactive Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnMarkInactive.Enabled = true;
+            }
+        }
+
         private void btnReset_Click(object? sender, EventArgs e)
         {
+            if (IsEditMode)
+                return;
+
             txtFullName.Clear();
             txtFatherName.Clear();
             txtMotherName.Clear();

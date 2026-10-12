@@ -8,10 +8,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace StudentManagement.Desktop.Forms
@@ -57,6 +54,13 @@ namespace StudentManagement.Desktop.Forms
             cboClass.ValueMember = nameof(ClassDto.ClassId);
             cboClass.DataSource = classes;
             cboClass.SelectedIndexChanged += async (_, _) => await LoadSectionsAsync();
+
+            cboStatus.Items.Clear();
+            cboStatus.Items.Add("All Status");
+            foreach (StudentStatus st in Enum.GetValues(typeof(StudentStatus)))
+                cboStatus.Items.Add(st.ToString());
+            cboStatus.SelectedIndex = 0;
+
             await LoadSectionsAsync();
         }
 
@@ -82,19 +86,27 @@ namespace StudentManagement.Desktop.Forms
             if (_students == null)
                 return;
 
+            StudentStatus? statusFilter = null;
+            if (cboStatus.SelectedIndex > 0
+                && Enum.TryParse(cboStatus.SelectedItem?.ToString(), out StudentStatus parsed))
+                statusFilter = parsed;
+
             var filter = new StudentSearchFilter
             {
                 Query = txtQuery.Text.Trim(),
                 ClassId = cboClass.SelectedValue is int c && c > 0 ? c : null,
-                SectionId = cboSection.SelectedValue is int s && s > 0 ? s : null
+                SectionId = cboSection.SelectedValue is int s && s > 0 ? s : null,
+                Status = statusFilter
             };
 
             _rows = (await _students.SearchAsync(filter)).ToList();
             dgvStudents.Rows.Clear();
             foreach (var row in _rows)
             {
-                dgvStudents.Rows.Add("●", row.RegistrationNo, row.FullName, row.ClassName, row.RollNumber,
+                int idx = dgvStudents.Rows.Add("●", row.RegistrationNo, row.FullName, row.ClassName, row.RollNumber,
                     row.GuardianPhone, row.AdmissionDate.ToString("dd-MMM-yyyy"), row.Status.ToString());
+                if (row.Status != StudentStatus.Active)
+                    dgvStudents.Rows[idx].DefaultCellStyle.ForeColor = UITheme.TextMuted;
             }
             lblCount.Text = $"{_rows.Count} record(s)";
         }
@@ -106,12 +118,64 @@ namespace StudentManagement.Desktop.Forms
             return _rows[dgvStudents.CurrentRow.Index];
         }
 
-        private void btnEdit_Click(object? sender, EventArgs e)
+        private async void btnEdit_Click(object? sender, EventArgs e)
         {
             var s = Selected();
-            if (s is null) return;
-            MessageBox.Show($"Open editor for {s.RegistrationNo} — {s.FullName}\nUse Admission module values to update via service.",
-                "Edit Profile", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (s is null || _students == null)
+            {
+                MessageBox.Show("Select a student first.", "Edit Profile", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (var editor = new frmStudentAdmission(_students, s.StudentId))
+            {
+                editor.StartPosition = FormStartPosition.CenterParent;
+                editor.FormBorderStyle = FormBorderStyle.Sizable;
+                editor.MaximizeBox = true;
+                editor.MinimizeBox = false;
+                editor.ShowInTaskbar = false;
+                editor.Width = Math.Min(1120, Screen.FromControl(this).WorkingArea.Width - 40);
+                editor.Height = Math.Min(760, Screen.FromControl(this).WorkingArea.Height - 40);
+                if (editor.ShowDialog(FindForm()) == DialogResult.OK)
+                    await SearchAsync();
+            }
+        }
+
+        private async void btnInactive_Click(object? sender, EventArgs e)
+        {
+            var s = Selected();
+            if (s is null || _students == null)
+            {
+                MessageBox.Show("Select a student first.", "Mark Inactive", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (s.Status == StudentStatus.Inactive)
+            {
+                MessageBox.Show($"{s.RegistrationNo} is already Inactive.", "Mark Inactive",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                $"Mark {s.RegistrationNo} — {s.FullName} as Inactive?",
+                "Mark Inactive",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes)
+                return;
+
+            try
+            {
+                await _students.MarkInactiveAsync(s.StudentId, AppSession.Current?.Username);
+                await SearchAsync();
+                MessageBox.Show("Student marked Inactive.", "Status Updated",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Inactive Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnLedger_Click(object? sender, EventArgs e)
