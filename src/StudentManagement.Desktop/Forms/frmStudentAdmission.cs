@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using StudentManagement.Application.DTOs;
@@ -23,8 +24,9 @@ namespace StudentManagement.Desktop.Forms
         private int? _editStudentId;
         private string? _existingPhotoPath;
         private bool _lookupsReady;
-        private bool _suppressSectionReload;
-        private EventHandler? _classChangedHandler;
+        private int _suppressSectionReload;
+        private bool _classHandlerWired;
+        private readonly SemaphoreSlim _dbGate = new SemaphoreSlim(1, 1);
 
         /// <summary>Raised after a successful edit save / inactive when hosted in main menu.</summary>
         public event System.Action EditCompleted = delegate { };
@@ -78,7 +80,20 @@ namespace StudentManagement.Desktop.Forms
             Text = editMode ? "Edit Student Profile" : "Student Admission";
         }
 
-        private async Task LoadLookupsAsync()
+        private void WireClassChangedHandler()
+        {
+            if (_classHandlerWired)
+                return;
+            _classHandlerWired = true;
+            cboClass.SelectedIndexChanged += async (s, e) =>
+            {
+                if (_suppressSectionReload > 0)
+                    return;
+                await LoadSectionsAsync();
+            };
+        }
+
+        private async Task LoadLookupsAsync(bool loadDefaultSections = true)
         {
             if (_students == null || _lookupsReady)
                 return;
@@ -87,27 +102,37 @@ namespace StudentManagement.Desktop.Forms
             cboGender.DataSource = Enum.GetValues(typeof(Gender));
             cboStatus.DataSource = Enum.GetValues(typeof(StudentStatus));
 
-            IReadOnlyList<ClassDto> classes = await _students.GetClassesAsync();
+            await _dbGate.WaitAsync();
+            IReadOnlyList<ClassDto> classes;
+            try
+            {
+                classes = await _students.GetClassesAsync();
+            }
+            finally
+            {
+                _dbGate.Release();
+            }
+
             cboClass.DisplayMember = nameof(ClassDto.ClassName);
             cboClass.ValueMember = nameof(ClassDto.ClassId);
 
-            _suppressSectionReload = true;
-            cboClass.DataSource = classes.ToList();
-            _suppressSectionReload = false;
-
-            if (_classChangedHandler == null)
+            _suppressSectionReload++;
+            try
             {
-                _classChangedHandler = async (s, e) =>
-                {
-                    if (_suppressSectionReload)
-                        return;
-                    await LoadSectionsAsync();
-                };
-                cboClass.SelectedIndexChanged += _classChangedHandler;
+                cboClass.DataSource = classes.ToList();
+            }
+            finally
+            {
+                _suppressSectionReload--;
             }
 
-            if (classes.Count > 0)
+            // Do not wire class-change until after initial bind (avoids concurrent DbContext use).
+            if (loadDefaultSections && classes.Count > 0)
                 await LoadSectionsAsync();
+
+            if (!IsEditMode)
+                WireClassChangedHandler();
+
             UpdateAge();
             _lookupsReady = true;
         }
@@ -118,10 +143,19 @@ namespace StudentManagement.Desktop.Forms
                 return;
             if (!(cboClass.SelectedValue is int classId) || classId <= 0)
                 return;
-            IReadOnlyList<SectionDto> sections = await _students.GetSectionsAsync(classId);
-            cboSection.DisplayMember = nameof(SectionDto.SectionName);
-            cboSection.ValueMember = nameof(SectionDto.SectionId);
-            cboSection.DataSource = sections.ToList();
+
+            await _dbGate.WaitAsync();
+            try
+            {
+                IReadOnlyList<SectionDto> sections = await _students.GetSectionsAsync(classId);
+                cboSection.DisplayMember = nameof(SectionDto.SectionName);
+                cboSection.ValueMember = nameof(SectionDto.SectionId);
+                cboSection.DataSource = sections.ToList();
+            }
+            finally
+            {
+                _dbGate.Release();
+            }
         }
 
         private async Task LoadStudentForEditAsync()
@@ -129,20 +163,29 @@ namespace StudentManagement.Desktop.Forms
             if (_students == null || !_editStudentId.HasValue)
                 return;
 
+            _suppressSectionReload++;
             try
             {
-                _suppressSectionReload = true;
-                await LoadLookupsAsync();
+                // Load class list only — sections loaded once after SelectedValue is set.
+                await LoadLookupsAsync(loadDefaultSections: false);
 
-                StudentDto? student = await _students.GetByIdAsync(_editStudentId.Value);
+                await _dbGate.WaitAsync();
+                StudentDto? student;
+                try
+                {
+                    student = await _students.GetByIdAsync(_editStudentId.Value);
+                }
+                finally
+                {
+                    _dbGate.Release();
+                }
+
                 if (student is null)
                 {
                     MessageBox.Show("Student not found.", "Edit Profile", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    EditCompleted?.Invoke();
+                    EditCompleted.Invoke();
                     return;
                 }
-
-                // (student found — continue binding below)
 
                 txtRegNo.Text = student.RegistrationNo;
                 txtFullName.Text = student.FullName;
@@ -189,7 +232,8 @@ namespace StudentManagement.Desktop.Forms
             }
             finally
             {
-                _suppressSectionReload = false;
+                _suppressSectionReload--;
+                WireClassChangedHandler();
             }
         }
 
