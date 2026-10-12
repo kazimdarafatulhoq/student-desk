@@ -55,18 +55,39 @@ namespace StudentManagement.Desktop.Forms
 
         private void frmMainMenu_FormClosed(object? sender, FormClosedEventArgs e)
         {
-            if (_clockTimer != null)
+            ReleaseScopeAndTimer();
+        }
+
+        /// <summary>Safe cleanup for close / sign-out (never throws to the UI).</summary>
+        private void ReleaseScopeAndTimer()
+        {
+            try
             {
-                _clockTimer.Stop();
-                _clockTimer.Dispose();
+                if (_clockTimer != null)
+                {
+                    _clockTimer.Stop();
+                    _clockTimer.Dispose();
+                    _clockTimer = null;
+                }
+            }
+            catch
+            {
                 _clockTimer = null;
             }
 
-            if (_scope != null)
+            var scope = _scope;
+            _scope = null;
+            if (scope == null)
+                return;
+
+            try
             {
-                try { _scope.Dispose(); }
-                catch { /* ignore dispose races on sign-out / restart */ }
-                _scope = null;
+                scope.Dispose();
+            }
+            catch
+            {
+                // MS.DI can throw if a scoped service only implements IAsyncDisposable.
+                // App is closing / restarting — swallow so Sign Out does not crash.
             }
         }
 
@@ -399,6 +420,8 @@ namespace StudentManagement.Desktop.Forms
         private void btnLogout_Click(object? sender, EventArgs e)
         {
             AppSession.Clear();
+            // Dispose DI scope before restart so FormClosed does not hit a half-torn-down provider.
+            ReleaseScopeAndTimer();
             System.Windows.Forms.Application.Restart();
         }
     }

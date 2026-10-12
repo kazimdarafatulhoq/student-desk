@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 namespace StudentManagement.Infrastructure.Data
 {
     /// <summary>
-    /// Implements both IDisposable and IAsyncDisposable so DI scope disposal
-    /// on form close / sign-out (sync) does not throw.
+    /// Sync IDisposable only — WinForms / MS.DI scope.Dispose() on close/sign-out
+    /// cannot call DisposeAsync. DbContext lifetime is owned by the DI container.
     /// </summary>
-    public class UnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly StudentManagementDbContext _db;
         private IDbContextTransaction? _tx;
@@ -76,8 +76,6 @@ namespace StudentManagement.Infrastructure.Data
         {
             if (_tx is not null) return;
 
-            // Prefer ExecuteInTransactionAsync when EnableRetryOnFailure is configured.
-            // Direct BeginTransaction throws SqlServerRetryingExecutionStrategy errors.
             var strategy = _db.Database.CreateExecutionStrategy();
             await strategy.ExecuteAsync(async () =>
             {
@@ -119,27 +117,17 @@ namespace StudentManagement.Infrastructure.Data
             if (_disposed) return;
             _disposed = true;
 
-            try { _tx?.Dispose(); }
-            catch { /* ignore */ }
-            _tx = null;
-
-            _db.Dispose();
-            GC.SuppressFinalize(this);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            if (_disposed) return;
-            _disposed = true;
-
-            if (_tx is not null)
+            try
             {
-                try { await _tx.DisposeAsync(); }
-                catch { /* ignore */ }
-                _tx = null;
+                _tx?.Dispose();
+            }
+            catch
+            {
+                // ignore
             }
 
-            await _db.DisposeAsync();
+            _tx = null;
+            // Do NOT dispose _db — StudentManagementDbContext is owned by DI.
             GC.SuppressFinalize(this);
         }
     }
