@@ -214,6 +214,112 @@ namespace StudentManagement.Desktop.Offline
             return Task.CompletedTask;
         }
 
+        public async Task<(int StudentId, string RegistrationNo)> AdmitViaProcedureAsync(
+            StudentAdmissionRequest request, CancellationToken ct = default)
+        {
+            var year = DateTime.Now.Year;
+            var regNo = await GenerateNextRegistrationNoAsync(year, ct);
+            var student = new Student
+            {
+                RegistrationNo = regNo,
+                FullName = request.FullName.Trim(),
+                FatherName = request.FatherName.Trim(),
+                MotherName = request.MotherName?.Trim() ?? string.Empty,
+                BloodGroup = request.BloodGroup,
+                Gender = request.Gender,
+                DateOfBirth = request.DateOfBirth.Date,
+                GuardianPhone = request.GuardianPhone.Trim(),
+                PresentAddress = request.PresentAddress?.Trim(),
+                PermanentAddress = request.PermanentAddress?.Trim(),
+                ClassId = request.ClassId,
+                SectionId = request.SectionId,
+                RollNumber = request.RollNumber.Trim(),
+                MonthlyTuitionFee = request.MonthlyTuitionFee,
+                AdmissionDate = DateTime.Today,
+                Status = StudentStatus.Active,
+                AcademicSession = string.IsNullOrWhiteSpace(request.AcademicSession)
+                    ? "2025-2026"
+                    : request.AcademicSession.Trim(),
+                PhotoPath = request.PhotoPath,
+                CreatedBy = request.CreatedBy
+            };
+            student = await AddAsync(student, ct);
+
+            var period = DateTime.Today.ToString("MMM-yyyy");
+            var ledger = new StudentLedger
+            {
+                StudentId = student.StudentId,
+                TransactionDate = DateTime.Now,
+                VoucherNo = $"INV-{DateTime.Now:yyyyMMdd}-{student.StudentId:D4}",
+                Particulars = $"Admission / Tuition Fee - {period}",
+                FeePeriod = period,
+                DebitAmount = request.MonthlyTuitionFee,
+                CreditAmount = 0,
+                EntryType = LedgerEntryType.Invoice,
+                Status = LedgerStatus.Open,
+                CreatedBy = request.CreatedBy
+            };
+            ledger.LedgerId = _s.NextLedgerId++;
+            _s.Ledger.Add(ledger);
+
+            _s.Invoices.Add(new FeeInvoice
+            {
+                InvoiceId = _s.NextInvoiceId++,
+                StudentId = student.StudentId,
+                InvoiceNo = $"INV-{DateTime.Now:yyyyMM}-{_s.Invoices.Count + 1:D5}",
+                FeePeriod = period,
+                CategoryName = "Tuition Fee",
+                Amount = request.MonthlyTuitionFee,
+                InvoiceDate = DateTime.Today,
+                DueDate = DateTime.Today.AddDays(10),
+                Status = LedgerStatus.Open,
+                LedgerId = ledger.LedgerId,
+                CreatedBy = request.CreatedBy
+            });
+
+            return (student.StudentId, student.RegistrationNo);
+        }
+
+        public Task UpdateViaProcedureAsync(StudentDto dto, string? updatedBy, CancellationToken ct = default)
+        {
+            var student = _s.Students.FirstOrDefault(s => s.StudentId == dto.StudentId)
+                          ?? throw new InvalidOperationException("Student not found.");
+
+            student.FullName = dto.FullName.Trim();
+            student.FatherName = dto.FatherName.Trim();
+            student.MotherName = dto.MotherName?.Trim() ?? string.Empty;
+            student.BloodGroup = dto.BloodGroup;
+            student.Gender = dto.Gender;
+            student.DateOfBirth = dto.DateOfBirth.Date;
+            student.GuardianPhone = dto.GuardianPhone.Trim();
+            student.PresentAddress = dto.PresentAddress;
+            student.PermanentAddress = dto.PermanentAddress;
+            student.ClassId = dto.ClassId;
+            student.SectionId = dto.SectionId;
+            student.RollNumber = dto.RollNumber.Trim();
+            student.MonthlyTuitionFee = dto.MonthlyTuitionFee;
+            student.Status = dto.Status;
+            student.PhotoPath = dto.PhotoPath;
+            if (!string.IsNullOrWhiteSpace(dto.AcademicSession))
+                student.AcademicSession = dto.AcademicSession;
+            student.UpdatedAt = DateTime.UtcNow;
+            student.UpdatedBy = updatedBy;
+            student.Class = _s.Classes.FirstOrDefault(c => c.ClassId == student.ClassId);
+            student.Section = _s.Sections.FirstOrDefault(c => c.SectionId == student.SectionId);
+            return Task.CompletedTask;
+        }
+
+        public Task SetStatusViaProcedureAsync(
+            int studentId, StudentStatus status, string? updatedBy, CancellationToken ct = default)
+        {
+            var student = _s.Students.FirstOrDefault(s => s.StudentId == studentId)
+                          ?? throw new InvalidOperationException("Student not found.");
+            student.Status = status;
+            student.UpdatedAt = DateTime.UtcNow;
+            student.UpdatedBy = updatedBy;
+            return Task.CompletedTask;
+        }
+
         public Task<string> GenerateNextRegistrationNoAsync(int year, CancellationToken ct = default)
         {
             int next = _s.Students.Count + 1;
@@ -335,6 +441,107 @@ namespace StudentManagement.Desktop.Offline
         {
             var months = Enumerable.Range(1, 12).Select(m => new DateTime(DateTime.Now.Year, m, 1).ToString("MMM-yyyy")).ToList();
             return Task.FromResult((IReadOnlyList<string>)months);
+        }
+
+        public Task<(string InvoiceNo, long LedgerId)> PostTuitionInvoiceViaProcedureAsync(
+            int studentId, string feePeriod, decimal amount, string categoryName,
+            decimal fineAmount, int? userId, CancellationToken ct = default)
+        {
+            var ledger = new StudentLedger
+            {
+                LedgerId = _s.NextLedgerId++,
+                StudentId = studentId,
+                TransactionDate = DateTime.Now,
+                VoucherNo = $"INV-{DateTime.Now:yyyyMMdd}-{studentId:D4}",
+                Particulars = $"{categoryName} - {feePeriod}",
+                FeePeriod = feePeriod,
+                DebitAmount = amount + fineAmount,
+                CreditAmount = 0,
+                EntryType = fineAmount > 0 ? LedgerEntryType.Fine : LedgerEntryType.Invoice,
+                Status = LedgerStatus.Open,
+                CreatedByUserId = userId
+            };
+            _s.Ledger.Add(ledger);
+
+            var invoiceNo = $"INV-{DateTime.Now:yyyyMM}-{_s.Invoices.Count + 1:D5}";
+            _s.Invoices.Add(new FeeInvoice
+            {
+                InvoiceId = _s.NextInvoiceId++,
+                StudentId = studentId,
+                InvoiceNo = invoiceNo,
+                FeePeriod = feePeriod,
+                CategoryName = categoryName,
+                Amount = amount,
+                FineAmount = fineAmount,
+                InvoiceDate = DateTime.Today,
+                Status = LedgerStatus.Open,
+                LedgerId = ledger.LedgerId,
+                CreatedBy = "offline"
+            });
+
+            return Task.FromResult((invoiceNo, ledger.LedgerId));
+        }
+
+        public Task<(string ReceiptNo, long LedgerId, long CollectionId)> RecordPaymentViaProcedureAsync(
+            int studentId, decimal amountPaid, PaymentMethod paymentMethod, string? feePeriods,
+            decimal fineCollected, decimal waiverApplied, string? transactionRef, string? remarks,
+            int collectedByUserId, CancellationToken ct = default)
+        {
+            var receiptNo = $"RCP-{DateTime.Now:yyyyMM}-{_s.Payments.Count + 1:D5}";
+            var ledger = new StudentLedger
+            {
+                LedgerId = _s.NextLedgerId++,
+                StudentId = studentId,
+                TransactionDate = DateTime.Now,
+                VoucherNo = receiptNo,
+                Particulars = $"Fee Collection via {paymentMethod} ({feePeriods})",
+                FeePeriod = feePeriods,
+                DebitAmount = 0,
+                CreditAmount = amountPaid,
+                EntryType = LedgerEntryType.Payment,
+                Status = LedgerStatus.Paid,
+                ReferenceNo = transactionRef,
+                CreatedByUserId = collectedByUserId
+            };
+            _s.Ledger.Add(ledger);
+
+            if (waiverApplied > 0)
+            {
+                _s.Ledger.Add(new StudentLedger
+                {
+                    LedgerId = _s.NextLedgerId++,
+                    StudentId = studentId,
+                    TransactionDate = DateTime.Now,
+                    VoucherNo = $"WVR-{receiptNo}",
+                    Particulars = "Waiver / Discount",
+                    FeePeriod = feePeriods,
+                    DebitAmount = 0,
+                    CreditAmount = waiverApplied,
+                    EntryType = LedgerEntryType.Waiver,
+                    Status = LedgerStatus.Waived,
+                    CreatedByUserId = collectedByUserId
+                });
+            }
+
+            var collection = new FeeCollection
+            {
+                CollectionId = _s.NextPaymentId++,
+                StudentId = studentId,
+                ReceiptNo = receiptNo,
+                PaymentDate = DateTime.Now,
+                AmountPaid = amountPaid,
+                FineCollected = fineCollected,
+                WaiverApplied = waiverApplied,
+                PaymentMethod = paymentMethod,
+                TransactionRef = transactionRef,
+                FeePeriods = feePeriods,
+                Remarks = remarks,
+                LedgerId = ledger.LedgerId,
+                CollectedByUserId = collectedByUserId
+            };
+            _s.Payments.Add(collection);
+
+            return Task.FromResult((receiptNo, ledger.LedgerId, collection.CollectionId));
         }
     }
 

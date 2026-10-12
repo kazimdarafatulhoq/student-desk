@@ -28,10 +28,13 @@ Your Windows login may not have `CREATE DATABASE` permission. Create the databas
 1. Open **SQL Server Management Studio** as Administrator (or connect with `sa`).
 2. Run [`database/CreateDatabaseAndGrantAccess.sql`](database/CreateDatabaseAndGrantAccess.sql) — creates `StudentManagementSDB` and grants login `[anik]`.
 3. Run [`database/StudentManagementSDB.sql`](database/StudentManagementSDB.sql) — tables, views, stored procedures, and demo seed.
-4. Confirm the connection string in:
+4. Run [`database/StoredProcedures_StudentSave.sql`](database/StoredProcedures_StudentSave.sql) — admit / update / status SPs used by Save & Edit Profile.
+5. Confirm the connection string in:
    - `src/StudentManagement.Desktop/appsettings.json`
    - `src/StudentManagement.Desktop/App.config`
-5. Set `OfflineMode` to `false` when SQL Server is available.
+6. Set `OfflineMode` to `false` when SQL Server is available.
+
+Admission, Edit Profile, Mark Inactive, and Fee Collection **save through SQL stored procedures** (`usp_AdmitStudent`, `usp_UpdateStudent`, `usp_SetStudentStatus`, `usp_PostTuitionInvoice`, `usp_RecordFeePayment`).
 
 See [`database/README.md`](database/README.md) for object list and SP reference.
 

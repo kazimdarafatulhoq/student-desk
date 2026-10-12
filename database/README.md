@@ -6,6 +6,7 @@ SQL Server 2022 scripts for Ideal High School Student Management.
 
 1. [`CreateDatabaseAndGrantAccess.sql`](CreateDatabaseAndGrantAccess.sql) — creates empty `StudentManagementSDB` and grants login `[anik]`.
 2. [`StudentManagementSDB.sql`](StudentManagementSDB.sql) — tables, indexes, views, stored procedures, demo seed.
+3. [`StoredProcedures_StudentSave.sql`](StoredProcedures_StudentSave.sql) — admit / update / status SPs used by Save & Edit Profile (run after schema, or again after upgrades).
 
 `StudentManagementDB.sql` is a stub that points here (old name). Do not use it for schema.
 
@@ -62,8 +63,13 @@ Tuition Fee · Registration Fee · New Admission / Re-admission · Monthly Trans
 | `usp_SearchStudents` | Search / filter |
 | `usp_GetOutstandingDues` | Receivables list |
 | `usp_GetClassSectionLookup` | Class/section picker |
-| `usp_PostTuitionInvoice` | Post invoice + ledger |
-| `usp_RecordFeePayment` | Post payment (+ optional waiver) |
+| `usp_PostTuitionInvoice` | Post invoice + ledger (**Fee Collection** save) |
+| `usp_RecordFeePayment` | Post payment (+ optional waiver) (**Fee Collection** save) |
+| `usp_AdmitStudent` | Admit student + opening tuition invoice (**Admission** save) |
+| `usp_UpdateStudent` | Edit student profile (**Edit Profile** save) |
+| `usp_SetStudentStatus` | Mark inactive / change status |
+
+The desktop app persists **admission, profile edit, status change, and fee collection** through these stored procedures (not EF entity inserts for those paths).
 
 ### Quick checks after install
 

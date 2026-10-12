@@ -1,6 +1,5 @@
 using StudentManagement.Application.DTOs;
 using StudentManagement.Application.Interfaces;
-using StudentManagement.Domain.Entities;
 using StudentManagement.Domain.Enums;
 
 using System;
@@ -37,144 +36,62 @@ namespace StudentManagement.Application.Services
             var student = await _uow.Students.GetByIdAsync(request.StudentId, ct)
                           ?? throw new InvalidOperationException("Student not found.");
 
-            FeeCollection? collection = null;
-            string receiptNo = string.Empty;
-            string periods = string.Empty;
+            var periods = request.FeePeriods.Count > 0
+                ? string.Join(", ", request.FeePeriods)
+                : "Other Charges";
 
-            await _uow.ExecuteInTransactionAsync(async token =>
+            var otherNote = otherFees.Count > 0
+                ? " | " + string.Join(", ", otherFees.Select(f => $"{f.Name}: ৳{f.Amount:N2}"))
+                : string.Empty;
+            var remarks = string.IsNullOrWhiteSpace(request.Remarks)
+                ? otherNote.TrimStart(' ', '|')
+                : request.Remarks.Trim() + otherNote;
+
+            // Each SP manages its own transaction (usp_PostTuitionInvoice / usp_RecordFeePayment).
+            if (request.TuitionAmount > 0 && request.FeePeriods.Count > 0)
             {
-                receiptNo = await _uow.Fees.GenerateReceiptNoAsync(token);
-                periods = request.FeePeriods.Count > 0
-                    ? string.Join(", ", request.FeePeriods)
-                    : "Other Charges";
-                var voucherNo = $"RCPT-{DateTime.Now:yyyyMMddHHmmss}";
+                await _uow.Fees.PostTuitionInvoiceViaProcedureAsync(
+                    request.StudentId,
+                    periods,
+                    request.TuitionAmount,
+                    "Tuition Fee",
+                    request.FineAmount,
+                    request.CollectedByUserId,
+                    ct);
+            }
 
-                if (request.TuitionAmount > 0 && request.FeePeriods.Count > 0)
-                {
-                    await _uow.Fees.AddInvoiceAsync(new FeeInvoice
-                    {
-                        StudentId = request.StudentId,
-                        InvoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(token),
-                        FeePeriod = periods,
-                        CategoryName = "Tuition Fee",
-                        Amount = request.TuitionAmount,
-                        FineAmount = request.FineAmount,
-                        WaiverAmount = request.WaiverAmount,
-                        InvoiceDate = DateTime.Today,
-                        Status = LedgerStatus.Paid,
-                        CreatedBy = request.CollectedByUserId.ToString()
-                    }, token);
+            foreach (var fee in otherFees)
+            {
+                await _uow.Fees.PostTuitionInvoiceViaProcedureAsync(
+                    request.StudentId,
+                    periods,
+                    fee.Amount,
+                    fee.Name.Trim(),
+                    0,
+                    request.CollectedByUserId,
+                    ct);
+            }
 
-                    await _uow.Ledger.AddAsync(new StudentLedger
-                    {
-                        StudentId = request.StudentId,
-                        TransactionDate = DateTime.Now,
-                        VoucherNo = $"INV-{voucherNo}",
-                        Particulars = $"Tuition Fee Invoice ({periods})",
-                        FeePeriod = periods,
-                        DebitAmount = request.TuitionAmount + request.FineAmount,
-                        CreditAmount = 0,
-                        EntryType = request.FineAmount > 0 ? LedgerEntryType.Fine : LedgerEntryType.Invoice,
-                        Status = LedgerStatus.Open,
-                        CreatedByUserId = request.CollectedByUserId
-                    }, token);
-                }
-
-                foreach (var fee in otherFees)
-                {
-                    await _uow.Fees.AddInvoiceAsync(new FeeInvoice
-                    {
-                        StudentId = request.StudentId,
-                        InvoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(token),
-                        FeePeriod = periods,
-                        CategoryName = fee.Name,
-                        Amount = fee.Amount,
-                        InvoiceDate = DateTime.Today,
-                        Status = LedgerStatus.Paid,
-                        CreatedBy = request.CollectedByUserId.ToString()
-                    }, token);
-
-                    await _uow.Ledger.AddAsync(new StudentLedger
-                    {
-                        StudentId = request.StudentId,
-                        TransactionDate = DateTime.Now,
-                        VoucherNo = $"INV-{voucherNo}-{fee.Name.GetHashCode():X4}",
-                        Particulars = fee.Name,
-                        FeePeriod = periods,
-                        DebitAmount = fee.Amount,
-                        CreditAmount = 0,
-                        EntryType = LedgerEntryType.Invoice,
-                        Status = LedgerStatus.Open,
-                        CreatedByUserId = request.CollectedByUserId
-                    }, token);
-                }
-
-                if (request.WaiverAmount > 0)
-                {
-                    await _uow.Ledger.AddAsync(new StudentLedger
-                    {
-                        StudentId = request.StudentId,
-                        TransactionDate = DateTime.Now,
-                        VoucherNo = $"WVR-{voucherNo}",
-                        Particulars = $"Waiver / Discount ({periods})",
-                        FeePeriod = periods,
-                        DebitAmount = 0,
-                        CreditAmount = request.WaiverAmount,
-                        EntryType = LedgerEntryType.Waiver,
-                        Status = LedgerStatus.Waived,
-                        CreatedByUserId = request.CollectedByUserId
-                    }, token);
-                }
-
-                var otherNote = otherFees.Count > 0
-                    ? " | " + string.Join(", ", otherFees.Select(f => $"{f.Name}: ৳{f.Amount:N2}"))
-                    : string.Empty;
-                var remarks = string.IsNullOrWhiteSpace(request.Remarks)
-                    ? otherNote.TrimStart(' ', '|')
-                    : request.Remarks.Trim() + otherNote;
-
-                var paymentLedger = await _uow.Ledger.AddAsync(new StudentLedger
-                {
-                    StudentId = request.StudentId,
-                    TransactionDate = DateTime.Now,
-                    VoucherNo = voucherNo,
-                    Particulars = $"Fee Collection via {request.PaymentMethod} ({periods})",
-                    FeePeriod = periods,
-                    DebitAmount = 0,
-                    CreditAmount = netPayable,
-                    EntryType = LedgerEntryType.Payment,
-                    Status = LedgerStatus.Paid,
-                    ReferenceNo = request.TransactionRef,
-                    CreatedByUserId = request.CollectedByUserId
-                }, token);
-
-                collection = await _uow.Fees.AddCollectionAsync(new FeeCollection
-                {
-                    StudentId = request.StudentId,
-                    ReceiptNo = receiptNo,
-                    PaymentDate = DateTime.Now,
-                    AmountPaid = netPayable,
-                    FineCollected = request.FineAmount,
-                    WaiverApplied = request.WaiverAmount,
-                    PaymentMethod = request.PaymentMethod,
-                    TransactionRef = request.TransactionRef,
-                    FeePeriods = periods,
-                    Remarks = string.IsNullOrWhiteSpace(remarks) ? null : remarks,
-                    LedgerId = paymentLedger.LedgerId,
-                    CollectedByUserId = request.CollectedByUserId
-                }, token);
-
-                await _uow.SaveChangesAsync(token);
-            }, ct);
+            var (receiptNo, _, collectionId) = await _uow.Fees.RecordPaymentViaProcedureAsync(
+                request.StudentId,
+                netPayable,
+                request.PaymentMethod,
+                periods,
+                request.FineAmount,
+                request.WaiverAmount,
+                request.TransactionRef,
+                string.IsNullOrWhiteSpace(remarks) ? null : remarks,
+                request.CollectedByUserId,
+                ct);
 
             var lineItems = BuildReceiptLines(request, otherFees);
 
             return new FeeCollectionResult
             {
-                CollectionId = collection!.CollectionId,
+                CollectionId = collectionId,
                 ReceiptNo = receiptNo,
                 AmountPaid = netPayable,
-                PaymentDate = collection.PaymentDate,
+                PaymentDate = DateTime.Now,
                 StudentName = student.FullName,
                 RegistrationNo = student.RegistrationNo,
                 FeePeriods = periods,

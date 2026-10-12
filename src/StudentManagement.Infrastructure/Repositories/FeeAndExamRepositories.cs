@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StudentManagement.Application.DTOs;
 using StudentManagement.Application.Interfaces;
@@ -7,6 +8,7 @@ using StudentManagement.Infrastructure.Data;
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -136,8 +138,8 @@ namespace StudentManagement.Infrastructure.Repositories
             var paidSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var periods in paid.Where(p => !string.IsNullOrWhiteSpace(p)))
             {
-foreach (var part in periods!.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                paidSet.Add(part.Trim());
+                foreach (var part in periods!.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    paidSet.Add(part.Trim());
             }
 
             var year = DateTime.Now.Year;
@@ -147,6 +149,105 @@ foreach (var part in periods!.Split(new[] { ',' }, StringSplitOptions.RemoveEmpt
                 .ToList();
 
             return all;
+        }
+
+        public async Task<(string InvoiceNo, long LedgerId)> PostTuitionInvoiceViaProcedureAsync(
+            int studentId, string feePeriod, decimal amount, string categoryName,
+            decimal fineAmount, int? userId, CancellationToken ct = default)
+        {
+            var pInvoiceNo = new SqlParameter("@InvoiceNo", SqlDbType.NVarChar, 50)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var pLedgerId = new SqlParameter("@LedgerId", SqlDbType.BigInt)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            await _db.Database.ExecuteSqlRawAsync(@"
+EXEC dbo.usp_PostTuitionInvoice
+    @StudentId = @StudentId,
+    @FeePeriod = @FeePeriod,
+    @Amount = @Amount,
+    @CategoryName = @CategoryName,
+    @FineAmount = @FineAmount,
+    @UserId = @UserId,
+    @InvoiceNo = @InvoiceNo OUTPUT,
+    @LedgerId = @LedgerId OUTPUT",
+                new SqlParameter("@StudentId", studentId),
+                new SqlParameter("@FeePeriod", feePeriod),
+                new SqlParameter("@Amount", amount),
+                new SqlParameter("@CategoryName",
+                    string.IsNullOrWhiteSpace(categoryName) ? "Tuition Fee" : categoryName.Trim()),
+                new SqlParameter("@FineAmount", fineAmount),
+                new SqlParameter("@UserId", (object?)userId ?? DBNull.Value),
+                pInvoiceNo,
+                pLedgerId);
+
+            var invoiceNo = Convert.ToString(pInvoiceNo.Value) ?? string.Empty;
+            var ledgerId = Convert.ToInt64(pLedgerId.Value);
+            if (string.IsNullOrWhiteSpace(invoiceNo) || ledgerId <= 0)
+                throw new InvalidOperationException("usp_PostTuitionInvoice did not return invoice identifiers.");
+
+            return (invoiceNo, ledgerId);
+        }
+
+        public async Task<(string ReceiptNo, long LedgerId, long CollectionId)> RecordPaymentViaProcedureAsync(
+            int studentId, decimal amountPaid, PaymentMethod paymentMethod, string? feePeriods,
+            decimal fineCollected, decimal waiverApplied, string? transactionRef, string? remarks,
+            int collectedByUserId, CancellationToken ct = default)
+        {
+            var pReceiptNo = new SqlParameter("@ReceiptNo", SqlDbType.NVarChar, 50)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var pLedgerId = new SqlParameter("@LedgerId", SqlDbType.BigInt)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            await _db.Database.ExecuteSqlRawAsync(@"
+EXEC dbo.usp_RecordFeePayment
+    @StudentId = @StudentId,
+    @AmountPaid = @AmountPaid,
+    @PaymentMethod = @PaymentMethod,
+    @FeePeriods = @FeePeriods,
+    @FineCollected = @FineCollected,
+    @WaiverApplied = @WaiverApplied,
+    @TransactionRef = @TransactionRef,
+    @Remarks = @Remarks,
+    @CollectedByUserId = @CollectedByUserId,
+    @ReceiptNo = @ReceiptNo OUTPUT,
+    @LedgerId = @LedgerId OUTPUT",
+                new SqlParameter("@StudentId", studentId),
+                new SqlParameter("@AmountPaid", amountPaid),
+                new SqlParameter("@PaymentMethod", (int)paymentMethod),
+                new SqlParameter("@FeePeriods",
+                    string.IsNullOrWhiteSpace(feePeriods) ? (object)DBNull.Value : feePeriods),
+                new SqlParameter("@FineCollected", fineCollected),
+                new SqlParameter("@WaiverApplied", waiverApplied),
+                new SqlParameter("@TransactionRef",
+                    string.IsNullOrWhiteSpace(transactionRef) ? (object)DBNull.Value : transactionRef),
+                new SqlParameter("@Remarks",
+                    string.IsNullOrWhiteSpace(remarks) ? (object)DBNull.Value : remarks),
+                new SqlParameter("@CollectedByUserId", collectedByUserId),
+                pReceiptNo,
+                pLedgerId);
+
+            var receiptNo = Convert.ToString(pReceiptNo.Value) ?? string.Empty;
+            var ledgerId = Convert.ToInt64(pLedgerId.Value);
+            if (string.IsNullOrWhiteSpace(receiptNo) || ledgerId <= 0)
+                throw new InvalidOperationException("usp_RecordFeePayment did not return payment identifiers.");
+
+            var collectionId = await _db.FeePayments.AsNoTracking()
+                .Where(p => p.ReceiptNo == receiptNo)
+                .Select(p => p.CollectionId)
+                .FirstOrDefaultAsync(ct);
+
+            if (collectionId <= 0)
+                throw new InvalidOperationException("Payment was posted but collection row was not found.");
+
+            return (receiptNo, ledgerId, collectionId);
         }
     }
 

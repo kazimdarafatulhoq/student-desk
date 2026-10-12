@@ -1,5 +1,6 @@
 using StudentManagement.Application.DTOs;
 using StudentManagement.Domain.Entities;
+using StudentManagement.Domain.Enums;
 
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,15 @@ namespace StudentManagement.Application.Interfaces
         Task UpdateAsync(Student student, CancellationToken ct = default);
         Task<string> GenerateNextRegistrationNoAsync(int year, CancellationToken ct = default);
         Task<IReadOnlyList<Student>> GetLookupAsync(CancellationToken ct = default);
+
+        /// <summary>Admit via dbo.usp_AdmitStudent (student + opening tuition invoice).</summary>
+        Task<(int StudentId, string RegistrationNo)> AdmitViaProcedureAsync(StudentAdmissionRequest request, CancellationToken ct = default);
+
+        /// <summary>Edit profile via dbo.usp_UpdateStudent.</summary>
+        Task UpdateViaProcedureAsync(StudentDto dto, string? updatedBy, CancellationToken ct = default);
+
+        /// <summary>Mark inactive / change status via dbo.usp_SetStudentStatus.</summary>
+        Task SetStatusViaProcedureAsync(int studentId, StudentStatus status, string? updatedBy, CancellationToken ct = default);
     }
 
     public interface IAcademicRepository
@@ -44,6 +54,17 @@ namespace StudentManagement.Application.Interfaces
         Task<string> GenerateReceiptNoAsync(CancellationToken ct = default);
         Task<string> GenerateInvoiceNoAsync(CancellationToken ct = default);
         Task<IReadOnlyList<string>> GetUnpaidPeriodsAsync(int studentId, CancellationToken ct = default);
+
+        /// <summary>Post invoice + ledger debit via dbo.usp_PostTuitionInvoice.</summary>
+        Task<(string InvoiceNo, long LedgerId)> PostTuitionInvoiceViaProcedureAsync(
+            int studentId, string feePeriod, decimal amount, string categoryName,
+            decimal fineAmount, int? userId, CancellationToken ct = default);
+
+        /// <summary>Record payment (+ optional waiver) via dbo.usp_RecordFeePayment.</summary>
+        Task<(string ReceiptNo, long LedgerId, long CollectionId)> RecordPaymentViaProcedureAsync(
+            int studentId, decimal amountPaid, PaymentMethod paymentMethod, string? feePeriods,
+            decimal fineCollected, decimal waiverApplied, string? transactionRef, string? remarks,
+            int collectedByUserId, CancellationToken ct = default);
     }
 
     public interface IUserRepository

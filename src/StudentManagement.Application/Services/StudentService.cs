@@ -22,71 +22,11 @@ namespace StudentManagement.Application.Services
         {
             ValidateAdmission(request);
 
-            var year = DateTime.Now.Year;
-            var regNo = await _uow.Students.GenerateNextRegistrationNoAsync(year, ct);
+            // Persist via dbo.usp_AdmitStudent (registration + student + opening invoice/ledger).
+            var (studentId, _) = await _uow.Students.AdmitViaProcedureAsync(request, ct);
 
-            var student = new Student
-            {
-                RegistrationNo = regNo,
-                FullName = request.FullName.Trim(),
-                FatherName = request.FatherName.Trim(),
-                MotherName = request.MotherName.Trim(),
-                BloodGroup = request.BloodGroup,
-                Gender = request.Gender,
-                DateOfBirth = request.DateOfBirth.Date,
-                GuardianPhone = request.GuardianPhone.Trim(),
-                PresentAddress = request.PresentAddress?.Trim(),
-                PermanentAddress = request.PermanentAddress?.Trim(),
-                ClassId = request.ClassId,
-                SectionId = request.SectionId,
-                RollNumber = request.RollNumber.Trim(),
-                MonthlyTuitionFee = request.MonthlyTuitionFee,
-                AdmissionDate = DateTime.Today,
-                Status = StudentStatus.Active,
-                AcademicSession = request.AcademicSession,
-                PhotoPath = request.PhotoPath,
-                CreatedBy = request.CreatedBy
-            };
-
-            await _uow.ExecuteInTransactionAsync(async token =>
-            {
-                student = await _uow.Students.AddAsync(student, token);
-
-                var invoiceNo = await _uow.Fees.GenerateInvoiceNoAsync(token);
-                var voucherNo = $"INV-{DateTime.Now:yyyyMMdd}-{student.StudentId:D4}";
-                var period = DateTime.Today.ToString("MMM-yyyy");
-
-                var ledger = new StudentLedger
-                {
-                    StudentId = student.StudentId,
-                    TransactionDate = DateTime.Now,
-                    VoucherNo = voucherNo,
-                    Particulars = $"Admission / Tuition Fee - {period}",
-                    FeePeriod = period,
-                    DebitAmount = request.MonthlyTuitionFee,
-                    CreditAmount = 0,
-                    EntryType = LedgerEntryType.Invoice,
-                    Status = LedgerStatus.Open,
-                    CreatedBy = request.CreatedBy
-                };
-                ledger = await _uow.Ledger.AddAsync(ledger, token);
-
-                await _uow.Fees.AddInvoiceAsync(new FeeInvoice
-                {
-                    StudentId = student.StudentId,
-                    InvoiceNo = invoiceNo,
-                    FeePeriod = period,
-                    CategoryName = "Tuition Fee",
-                    Amount = request.MonthlyTuitionFee,
-                    InvoiceDate = DateTime.Today,
-                    DueDate = DateTime.Today.AddDays(10),
-                    Status = LedgerStatus.Open,
-                    LedgerId = ledger.LedgerId,
-                    CreatedBy = request.CreatedBy
-                }, token);
-
-                await _uow.SaveChangesAsync(token);
-            }, ct);
+            var student = await _uow.Students.GetByIdAsync(studentId, ct)
+                          ?? throw new InvalidOperationException("Student was admitted but could not be reloaded.");
 
             return await MapAsync(student, ct);
         }
@@ -135,43 +75,21 @@ namespace StudentManagement.Application.Services
             if (dto.MonthlyTuitionFee < 0)
                 throw new ArgumentException("Tuition fee cannot be negative.");
 
-            var student = await _uow.Students.GetByIdAsync(dto.StudentId, ct)
-                          ?? throw new InvalidOperationException("Student not found.");
-
-            student.FullName = dto.FullName.Trim();
-            student.FatherName = dto.FatherName.Trim();
-            student.MotherName = dto.MotherName?.Trim() ?? string.Empty;
-            student.BloodGroup = dto.BloodGroup;
-            student.Gender = dto.Gender;
-            student.DateOfBirth = dto.DateOfBirth.Date;
-            student.GuardianPhone = dto.GuardianPhone.Trim();
-            student.PresentAddress = dto.PresentAddress;
-            student.PermanentAddress = dto.PermanentAddress;
-            student.ClassId = dto.ClassId;
-            student.SectionId = dto.SectionId;
-            student.RollNumber = dto.RollNumber.Trim();
-            student.MonthlyTuitionFee = dto.MonthlyTuitionFee;
-            student.Status = dto.Status;
-            student.PhotoPath = dto.PhotoPath;
-            if (!string.IsNullOrWhiteSpace(dto.AcademicSession))
-                student.AcademicSession = dto.AcademicSession;
-            student.UpdatedAt = DateTime.UtcNow;
-            student.UpdatedBy = updatedBy;
-
-            await _uow.Students.UpdateAsync(student, ct);
-            await _uow.SaveChangesAsync(ct);
+            // Persist via dbo.usp_UpdateStudent.
+            await _uow.Students.UpdateViaProcedureAsync(dto, updatedBy, ct);
         }
 
         public async Task SetStatusAsync(int studentId, StudentStatus status, string? updatedBy = null, CancellationToken ct = default)
         {
-            var student = await _uow.Students.GetByIdAsync(studentId, ct)
-                          ?? throw new InvalidOperationException("Student not found.");
+            if (studentId <= 0)
+                throw new ArgumentException("Student id is required.");
 
-            student.Status = status;
-            student.UpdatedAt = DateTime.UtcNow;
-            student.UpdatedBy = updatedBy;
-            await _uow.Students.UpdateAsync(student, ct);
-            await _uow.SaveChangesAsync(ct);
+            var exists = await _uow.Students.GetByIdAsync(studentId, ct);
+            if (exists is null)
+                throw new InvalidOperationException("Student not found.");
+
+            // Persist via dbo.usp_SetStudentStatus.
+            await _uow.Students.SetStatusViaProcedureAsync(studentId, status, updatedBy, ct);
         }
 
         public Task MarkInactiveAsync(int studentId, string? updatedBy = null, CancellationToken ct = default)
