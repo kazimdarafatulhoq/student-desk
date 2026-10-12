@@ -59,9 +59,15 @@ namespace StudentManagement.Desktop.Forms
             {
                 _clockTimer.Stop();
                 _clockTimer.Dispose();
+                _clockTimer = null;
             }
+
             if (_scope != null)
-                _scope.Dispose();
+            {
+                try { _scope.Dispose(); }
+                catch { /* ignore dispose races on sign-out / restart */ }
+                _scope = null;
+            }
         }
 
         private async void frmMainMenu_Load(object? sender, EventArgs e)

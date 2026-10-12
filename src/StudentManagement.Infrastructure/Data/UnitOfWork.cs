@@ -9,10 +9,15 @@ using System.Threading.Tasks;
 
 namespace StudentManagement.Infrastructure.Data
 {
-    public class UnitOfWork : IUnitOfWork, IAsyncDisposable
+    /// <summary>
+    /// Implements both IDisposable and IAsyncDisposable so DI scope disposal
+    /// on form close / sign-out (sync) does not throw.
+    /// </summary>
+    public class UnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
     {
         private readonly StudentManagementDbContext _db;
         private IDbContextTransaction? _tx;
+        private bool _disposed;
 
         public UnitOfWork(StudentManagementDbContext db)
         {
@@ -109,11 +114,33 @@ namespace StudentManagement.Infrastructure.Data
             }
         }
 
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            try { _tx?.Dispose(); }
+            catch { /* ignore */ }
+            _tx = null;
+
+            _db.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
         public async ValueTask DisposeAsync()
         {
+            if (_disposed) return;
+            _disposed = true;
+
             if (_tx is not null)
-                await _tx.DisposeAsync();
+            {
+                try { await _tx.DisposeAsync(); }
+                catch { /* ignore */ }
+                _tx = null;
+            }
+
             await _db.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }
